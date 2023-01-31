@@ -1,23 +1,40 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import './styles/App.css';
+import fetcher from './fetcher';
+
+import UserContext from './components/contexts/UserContext';
+import Header from './components/Header';
+import Home from './components/Home';
+import Courses from './components/Courses';
 
 function App() {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    async function getUser() {
+      const response = await fetcher('current_user');
+      const data = await response.json();
+      setUser(data);
+    }
+    getUser();
+  }, []);
+
+  if (user === null) return 'Loading...';
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <BrowserRouter>
+        <UserContext.Provider value={{ user, set: setUser }}>
+          <Header />
+          <main>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="courses" element={<Courses />} />
+            </Routes>
+          </main>
+        </UserContext.Provider>
+      </BrowserRouter>
     </div>
   );
 }

@@ -5,7 +5,7 @@ export default function Field({
   prefix,
   attributes = [],
   type = 'text',
-  label,
+  labelText,
   errors = {},
   toValidate,
   required,
@@ -41,24 +41,31 @@ export default function Field({
     validate();
   }, [toValidate, inputRef, match, attributeName]);
 
+  const label = (
+    <label htmlFor={`${prefix || ''}_${attributes.join('_')}`}>
+      {labelText || attributeName}
+    </label>
+  );
+  const input = (
+    <input
+      type={type}
+      name={
+        (prefix || attributes[0]) +
+        attributes
+          .slice(prefix ? 0 : 1)
+          .map((attribute) => `[${attribute}]`)
+          .join('')
+      }
+      id={`${prefix || ''}_${attributes.join('_')}`}
+      required={required}
+      ref={inputRef}
+    />
+  );
+
   return (
     <div className="field">
-      <label htmlFor={`${prefix || ''}_${attributes.join('_')}`}>
-        {label || attributeName}
-      </label>
-      <input
-        type={type}
-        name={
-          (prefix || attributes[0]) +
-          attributes
-            .slice(prefix ? 0 : 1)
-            .map((attribute) => `[${attribute}]`)
-            .join('')
-        }
-        id={`${prefix || ''}_${attributes.join('_')}`}
-        required={required}
-        ref={inputRef}
-      />
+      {type === 'checkbox' ? input : label}
+      {type === 'checkbox' ? label : input}
       {displayError && <div className="error">{displayError}</div>}
     </div>
   );

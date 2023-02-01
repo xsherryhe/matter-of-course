@@ -6,6 +6,8 @@ import fetcher from './fetcher';
 import UserContext from './components/contexts/UserContext';
 import Header from './components/Header';
 import Home from './components/Home';
+import SignUp from './components/SignUp';
+import LogIn from './components/LogIn';
 import Courses from './components/Courses';
 
 function App() {
@@ -30,6 +32,8 @@ function App() {
           <main>
             <Routes>
               <Route path="/" element={<Home />} />
+              <Route path="sign-up" element={<SignUp />} />
+              <Route path="log-in" element={<LogIn />} />
               <Route path="courses" element={<Courses />} />
             </Routes>
           </main>

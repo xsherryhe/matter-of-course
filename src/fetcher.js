@@ -25,7 +25,7 @@ export default async function fetcher(
   try {
     response = await duration(
       5000,
-      fetch(`${server}/${path}`, {
+      fetch(`${server}/${path}.json`, {
         mode: 'cors',
         credentials: 'include',
         headers: { 'X-CSRF-Token': headerData.csrf, ...headers },
@@ -36,7 +36,7 @@ export default async function fetcher(
     throw new Error(errorMessage);
   }
 
-  if (response.status !== 200) {
+  if (response.status !== 200 && !response.body) {
     const statusErrorMessage = statusErrorMessages[response.status] || '';
     throw new Error([errorMessage, statusErrorMessage].join(' '));
   }

@@ -9,7 +9,7 @@ export default function PasswordCreationFields({ prefix, errors, toValidate }) {
     <div>
       <Field
         prefix={prefix}
-        attribute="password"
+        attributes={['password']}
         type="password"
         errors={errors}
         toValidate={toValidate}
@@ -18,12 +18,12 @@ export default function PasswordCreationFields({ prefix, errors, toValidate }) {
       />
       <Field
         prefix={prefix}
-        attribute="password_confirmation"
+        attributes={['password_confirmation']}
         type="password"
         errors={errors}
         toValidate={toValidate}
         parentInputRef={passwordConfirmRef}
-        match={{ name: 'password', ref: passwordRef }}
+        match={{ name: 'Password', ref: passwordRef }}
       />
     </div>
   );

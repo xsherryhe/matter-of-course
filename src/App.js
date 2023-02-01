@@ -4,6 +4,7 @@ import './styles/App.css';
 import fetcher from './fetcher';
 
 import UserContext from './components/contexts/UserContext';
+import MessageContext from './components/contexts/MessageContext';
 import Header from './components/Header';
 import Home from './components/Home';
 import SignUp from './components/SignUp';
@@ -12,6 +13,7 @@ import Courses from './components/Courses';
 
 function App() {
   const [user, setUser] = useState(null);
+  const [message, setMessage] = useState(null);
 
   useEffect(() => {
     async function getUser() {
@@ -27,17 +29,21 @@ function App() {
   return (
     <div className="App">
       <BrowserRouter>
-        <UserContext.Provider value={{ user, set: setUser }}>
-          <Header />
-          <main>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="sign-up" element={<SignUp />} />
-              <Route path="log-in" element={<LogIn />} />
-              <Route path="courses" element={<Courses />} />
-            </Routes>
-          </main>
-        </UserContext.Provider>
+        <MessageContext.Provider value={{ message, set: setMessage }}>
+          <UserContext.Provider value={{ user, set: setUser }}>
+            <Header />
+            {message}
+            <main>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/home" element={<Home />} />
+                <Route path="/sign-up" element={<SignUp />} />
+                <Route path="/log-in" element={<LogIn />} />
+                <Route path="/courses" element={<Courses />} />
+              </Routes>
+            </main>
+          </UserContext.Provider>
+        </MessageContext.Provider>
       </BrowserRouter>
     </div>
   );

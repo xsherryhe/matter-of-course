@@ -1,29 +1,34 @@
 import { useContext } from 'react';
-import { Link } from 'react-router-dom';
 import '../styles/Header.css';
 
 import UserContext from './contexts/UserContext';
+import NavLink from './NavLink';
+import LogInButton from './LogInButton';
+import LogOutButton from './LogOutButton';
+import SignUpButton from './SignUpButton';
 
 export default function Header() {
   const user = useContext(UserContext).user;
 
   let userDisplay = (
-    <div className="buttons">
-      <Link to="log-in">
-        <button>Log In</button>
-      </Link>
-      <Link to="sign-up">
-        <button>Sign Up</button>
-      </Link>
+    <div className="display">
+      <LogInButton />
+      <SignUpButton />
     </div>
   );
-  if (user) userDisplay = user.name;
+  if (user)
+    userDisplay = (
+      <div className="display">
+        {user.name}
+        <LogOutButton />
+      </div>
+    );
 
   return (
     <header>
-      <Link to="/" className="logo">
+      <NavLink to="/" className="logo">
         Matter of Course
-      </Link>
+      </NavLink>
       <div>{userDisplay}</div>
     </header>
   );

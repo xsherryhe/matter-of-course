@@ -1,18 +1,29 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import fetcher from '../fetcher';
+import MessageContext from './contexts/MessageContext';
+import UserContext from './contexts/UserContext';
 import Field from './Field';
 import PasswordCreationFields from './PasswordCreationFields';
 
 export default function SignUp() {
   const [toValidate, setToValidate] = useState(false);
   const [errors, setErrors] = useState({});
+  const [searchParams] = useSearchParams();
+  const from = searchParams.get('from') || '';
+  const navigate = useNavigate();
+
+  const setMessage = useContext(MessageContext).set;
+  const setUser = useContext(UserContext).set;
 
   function handleErrors(data) {
     setErrors(data);
   }
 
   function completeSignUp(data) {
-    console.log(data);
+    navigate('/' + from);
+    setMessage(data.message);
+    setUser(data.user);
   }
 
   function validate(form) {
@@ -20,7 +31,6 @@ export default function SignUp() {
     return form.checkValidity();
   }
 
-  // TO DO: client side validation
   async function handleSubmit(e) {
     e.preventDefault();
     if (!validate(e.target)) return;
@@ -39,27 +49,27 @@ export default function SignUp() {
       <h1>Sign up</h1>
       <Field
         prefix="user"
-        attribute="first_name"
+        attributes={['profile_attributes', 'first_name']}
         errors={errors}
         toValidate={toValidate}
         required={true}
       />
       <Field
         prefix="user"
-        attribute="middle_name"
+        attributes={['profile_attributes', 'middle_name']}
         errors={errors}
         toValidate={toValidate}
       />
       <Field
         prefix="user"
-        attribute="last_name"
+        attributes={['profile_attributes', 'last_name']}
         errors={errors}
         toValidate={toValidate}
         required={true}
       />
       <Field
         prefix="user"
-        attribute="email"
+        attributes={['email']}
         type="email"
         errors={errors}
         toValidate={toValidate}
@@ -67,7 +77,7 @@ export default function SignUp() {
       />
       <Field
         prefix="user"
-        attribute="username"
+        attributes={['username']}
         errors={errors}
         toValidate={toValidate}
         required={true}

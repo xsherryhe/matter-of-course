@@ -36,7 +36,7 @@ export default async function fetcher(
     throw new Error(errorMessage);
   }
 
-  if (response.status !== 200 && !response.body) {
+  if (response.status >= 400 && !response.body) {
     const statusErrorMessage = statusErrorMessages[response.status] || '';
     throw new Error([errorMessage, statusErrorMessage].join(' '));
   }

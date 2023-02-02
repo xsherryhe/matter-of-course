@@ -6,13 +6,15 @@ export default function Field({
   attributes = [],
   type = 'text',
   labelText,
+  attributeText,
   errors = {},
   toValidate,
   required,
   match,
   parentInputRef,
 }) {
-  const attributeName = humanName(attributes[attributes.length - 1]);
+  const attributeName =
+    attributeText || humanName(attributes[attributes.length - 1]);
   const [error, setError] = useState(null);
   const errorAttributes = attributes
     .map((attribute) => attribute.split('_attributes')[0])

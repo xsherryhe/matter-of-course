@@ -7,7 +7,7 @@ import MessageContext from './contexts/MessageContext';
 import UserContext from './contexts/UserContext';
 import withFormValidation from './higher-order/withFormValidation';
 
-function LogInBase({ validate, toValidate, errors, setErrors }) {
+function LogInBase({ validate, toValidate, errors, handleErrors }) {
   const [loading, setLoading] = useState(false);
   const [searchParams] = useSearchParams();
   const from = searchParams.get('from') || '';
@@ -15,11 +15,6 @@ function LogInBase({ validate, toValidate, errors, setErrors }) {
 
   const setMessage = useContext(MessageContext).set;
   const { user, set: setUser } = useContext(UserContext);
-
-  function handleErrors(status, data) {
-    if (status === 401) setMessage(<span className="error">{data.error}</span>);
-    else setErrors(data);
-  }
 
   function completeLogIn(data) {
     setMessage(data.message);
@@ -37,8 +32,8 @@ function LogInBase({ validate, toValidate, errors, setErrors }) {
       body: new FormData(e.target),
     });
     const data = await response.json();
-    if (response.status === 200) completeLogIn(data);
-    else handleErrors(response.status, data);
+    if (response.status < 400) completeLogIn(data);
+    else handleErrors(data, response.status);
     setLoading(false);
   }
 
@@ -82,5 +77,5 @@ function LogInBase({ validate, toValidate, errors, setErrors }) {
   );
 }
 
-const LogIn = withFormValidation(LogInBase);
+const LogIn = withFormValidation(LogInBase, { authenticated: true });
 export default LogIn;

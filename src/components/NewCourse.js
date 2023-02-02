@@ -1,22 +1,25 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import fetcher from '../fetcher';
+import MessageContext from './contexts/MessageContext';
 
 import Field from './Field';
 import withFormValidation from './higher-order/withFormValidation';
 
-function NewCourseBase({ validate, toValidate, errors, setErrors }) {
+function NewCourseBase({ validate, toValidate, errors, handleErrors }) {
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const setMessage = useContext(MessageContext).set;
 
-  function handleErrors(data) {
-    console.log(data);
-    // setErrors(data);
+  // TO DO: Navigate to new course
+  function completeCreateCourse(data) {
+    setMessage('You successfully created a new course!');
+    navigate(`/course/${data.id}`, { state: { courseData: data } });
   }
-
-  function completeCreateCourse(data) {}
 
   async function handleSubmit(e) {
     e.preventDefault();
-    // if (!validate(e.target)) return;
+    if (!validate(e.target)) return;
 
     setLoading(true);
     const response = await fetcher('courses', {
@@ -24,8 +27,8 @@ function NewCourseBase({ validate, toValidate, errors, setErrors }) {
       body: new FormData(e.target),
     });
     const data = await response.json();
-    if (response.status === 200) completeCreateCourse(data);
-    else handleErrors(data);
+    if (response.status < 400) completeCreateCourse(data);
+    else handleErrors(data, response.status);
     setLoading(false);
   }
 
@@ -52,9 +55,9 @@ function NewCourseBase({ validate, toValidate, errors, setErrors }) {
         attributes={['instructor_logins']}
         type="textarea"
         labelText="Instructors (username or email, comma-separated)"
+        attributeText="Instructors"
         errors={errors}
         toValidate={toValidate}
-        required={true}
       />
       <button disabled={loading} type="submit">
         Create Course
@@ -63,5 +66,5 @@ function NewCourseBase({ validate, toValidate, errors, setErrors }) {
   );
 }
 
-const NewCourse = withFormValidation(NewCourseBase);
+const NewCourse = withFormValidation(NewCourseBase, { authenticated: true });
 export default NewCourse;

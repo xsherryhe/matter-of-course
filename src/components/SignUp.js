@@ -8,7 +8,7 @@ import Field from './Field';
 import PasswordCreationFields from './PasswordCreationFields';
 import withFormValidation from './higher-order/withFormValidation';
 
-function SignUpBase({ validate, toValidate, errors, setErrors }) {
+function SignUpBase({ validate, toValidate, errors, handleErrors }) {
   const [loading, setLoading] = useState(false);
   const [searchParams] = useSearchParams();
   const from = searchParams.get('from') || '';
@@ -33,8 +33,8 @@ function SignUpBase({ validate, toValidate, errors, setErrors }) {
       body: new FormData(e.target),
     });
     const data = await response.json();
-    if (response.status === 200) completeSignUp(data);
-    else setErrors(data);
+    if (response.status < 400) completeSignUp(data);
+    else handleErrors(data);
     setLoading(false);
   }
 

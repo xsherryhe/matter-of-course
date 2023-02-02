@@ -7,24 +7,25 @@ import MessageContext from './contexts/MessageContext';
 import UserContext from './contexts/UserContext';
 
 export default function LogIn() {
-  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
   const [toValidate, setToValidate] = useState(false);
+  const [errors, setErrors] = useState({});
   const [searchParams] = useSearchParams();
   const from = searchParams.get('from') || '';
   const navigate = useNavigate();
 
   const setMessage = useContext(MessageContext).set;
-  const setUser = useContext(UserContext).set;
+  const { user, set: setUser } = useContext(UserContext);
 
   function handleErrors(status, data) {
     if (status === 401) setMessage(<span className="error">{data.error}</span>);
     else setErrors(data);
   }
 
-  function completeSignUp(data) {
-    navigate('/' + from);
+  function completeLogIn(data) {
     setMessage(data.message);
     setUser(data.user);
+    navigate('/' + from);
   }
 
   function validate(form) {
@@ -36,13 +37,20 @@ export default function LogIn() {
     e.preventDefault();
     if (!validate(e.target)) return;
 
+    setLoading(true);
     const response = await fetcher('users/sign_in', {
       method: 'POST',
       body: new FormData(e.target),
     });
     const data = await response.json();
-    if (response.status === 200) completeSignUp(data);
+    if (response.status === 200) completeLogIn(data);
     else handleErrors(response.status, data);
+    setLoading(false);
+  }
+
+  if (user) {
+    setMessage('You are already signed in.');
+    return navigate('/');
   }
 
   return (
@@ -70,7 +78,9 @@ export default function LogIn() {
         errors={errors}
         toValidate={toValidate}
       />
-      <button type="submit">Log in</button>
+      <button disabled={loading} type="submit">
+        Log in
+      </button>
     </form>
     // Sign up link
     // Forgot password link

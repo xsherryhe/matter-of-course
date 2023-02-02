@@ -7,6 +7,7 @@ import Field from './Field';
 import PasswordCreationFields from './PasswordCreationFields';
 
 export default function SignUp() {
+  const [loading, setLoading] = useState(false);
   const [toValidate, setToValidate] = useState(false);
   const [errors, setErrors] = useState({});
   const [searchParams] = useSearchParams();
@@ -14,16 +15,16 @@ export default function SignUp() {
   const navigate = useNavigate();
 
   const setMessage = useContext(MessageContext).set;
-  const setUser = useContext(UserContext).set;
+  const { user, set: setUser } = useContext(UserContext);
 
   function handleErrors(data) {
     setErrors(data);
   }
 
   function completeSignUp(data) {
-    navigate('/' + from);
     setMessage(data.message);
     setUser(data.user);
+    navigate('/' + from);
   }
 
   function validate(form) {
@@ -35,6 +36,7 @@ export default function SignUp() {
     e.preventDefault();
     if (!validate(e.target)) return;
 
+    setLoading(true);
     const response = await fetcher('users', {
       method: 'POST',
       body: new FormData(e.target),
@@ -42,6 +44,12 @@ export default function SignUp() {
     const data = await response.json();
     if (response.status === 200) completeSignUp(data);
     else handleErrors(data);
+    setLoading(false);
+  }
+
+  if (user) {
+    setMessage('You are already signed in.');
+    return navigate('/');
   }
 
   return (
@@ -87,7 +95,9 @@ export default function SignUp() {
         errors={errors}
         toValidate={toValidate}
       />
-      <button type="submit">Sign up</button>
+      <button disabled={loading} type="submit">
+        Sign up
+      </button>
     </form>
     // Log in link
     // Forgot password link

@@ -8,3 +8,12 @@ export function humanName(string, { capitalizeAll = true } = {}) {
     .map((word, i) => (capitalizeAll || i === 0 ? capitalize(word) : word))
     .join(' ');
 }
+
+export function list(array) {
+  return array
+    .map(
+      (listItem, i) =>
+        (i === array.length - 1 && i > 0 ? 'and ' : '') + listItem
+    )
+    .join(array.length < 3 ? ' ' : ', ');
+}

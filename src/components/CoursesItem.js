@@ -7,6 +7,7 @@ export default function CoursesItem({ course }) {
     <Link to={`/course/${course.id}`}>
       <div>{course.title}</div>
       <div>{course.description}</div>
+      <div>{course.status}</div>
       <CourseInstructors instructors={course.instructors} />
     </Link>
   );

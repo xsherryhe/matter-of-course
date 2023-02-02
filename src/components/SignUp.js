@@ -1,15 +1,15 @@
 import { useContext, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import fetcher from '../fetcher';
+
 import MessageContext from './contexts/MessageContext';
 import UserContext from './contexts/UserContext';
 import Field from './Field';
 import PasswordCreationFields from './PasswordCreationFields';
+import withFormValidation from './higher-order/withFormValidation';
 
-export default function SignUp() {
+function SignUpBase({ validate, toValidate, errors, setErrors }) {
   const [loading, setLoading] = useState(false);
-  const [toValidate, setToValidate] = useState(false);
-  const [errors, setErrors] = useState({});
   const [searchParams] = useSearchParams();
   const from = searchParams.get('from') || '';
   const navigate = useNavigate();
@@ -17,19 +17,10 @@ export default function SignUp() {
   const setMessage = useContext(MessageContext).set;
   const { user, set: setUser } = useContext(UserContext);
 
-  function handleErrors(data) {
-    setErrors(data);
-  }
-
   function completeSignUp(data) {
     setMessage(data.message);
     setUser(data.user);
     navigate('/' + from);
-  }
-
-  function validate(form) {
-    setToValidate((validate) => (validate === 'true' ? true : 'true'));
-    return form.checkValidity();
   }
 
   async function handleSubmit(e) {
@@ -43,7 +34,7 @@ export default function SignUp() {
     });
     const data = await response.json();
     if (response.status === 200) completeSignUp(data);
-    else handleErrors(data);
+    else setErrors(data);
     setLoading(false);
   }
 
@@ -104,3 +95,6 @@ export default function SignUp() {
     // Confirmation instructions link
   );
 }
+
+const SignUp = withFormValidation(SignUpBase);
+export default SignUp;

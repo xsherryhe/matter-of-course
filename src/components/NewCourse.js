@@ -2,11 +2,10 @@ import { useState } from 'react';
 import fetcher from '../fetcher';
 
 import Field from './Field';
+import withFormValidation from './higher-order/withFormValidation';
 
-export default function NewCourse() {
+function NewCourseBase({ validate, toValidate, errors, setErrors }) {
   const [loading, setLoading] = useState(false);
-  const [toValidate, setToValidate] = useState(false);
-  const [errors, setErrors] = useState({});
 
   function handleErrors(data) {
     console.log(data);
@@ -14,11 +13,6 @@ export default function NewCourse() {
   }
 
   function completeCreateCourse(data) {}
-
-  function validate(form) {
-    setToValidate((validate) => (validate === 'true' ? true : 'true'));
-    return form.checkValidity();
-  }
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -68,3 +62,6 @@ export default function NewCourse() {
     </form>
   );
 }
+
+const NewCourse = withFormValidation(NewCourseBase);
+export default NewCourse;

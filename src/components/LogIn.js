@@ -5,11 +5,10 @@ import fetcher from '../fetcher';
 import Field from './Field';
 import MessageContext from './contexts/MessageContext';
 import UserContext from './contexts/UserContext';
+import withFormValidation from './higher-order/withFormValidation';
 
-export default function LogIn() {
+function LogInBase({ validate, toValidate, errors, setErrors }) {
   const [loading, setLoading] = useState(false);
-  const [toValidate, setToValidate] = useState(false);
-  const [errors, setErrors] = useState({});
   const [searchParams] = useSearchParams();
   const from = searchParams.get('from') || '';
   const navigate = useNavigate();
@@ -26,11 +25,6 @@ export default function LogIn() {
     setMessage(data.message);
     setUser(data.user);
     navigate('/' + from);
-  }
-
-  function validate(form) {
-    setToValidate((validate) => (validate === 'true' ? true : 'true'));
-    return form.checkValidity();
   }
 
   async function handleSubmit(e) {
@@ -87,3 +81,6 @@ export default function LogIn() {
     // Confirmation instructions link
   );
 }
+
+const LogIn = withFormValidation(LogInBase);
+export default LogIn;

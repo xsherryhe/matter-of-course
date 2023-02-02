@@ -12,6 +12,7 @@ import LogIn from './components/LogIn';
 import Courses from './components/Courses';
 import NewCourse from './components/NewCourse';
 import Course from './components/Course';
+import UserCourses from './components/UserCourses';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -42,6 +43,7 @@ function App() {
                 <Route path="/sign-up" element={<SignUp />} />
                 <Route path="/log-in" element={<LogIn />} />
                 <Route path="/courses" element={<Courses />} />
+                <Route path="/my-courses" element={<UserCourses />} />
                 <Route path="/new-course" element={<NewCourse />} />
                 <Route path="/course/:id" element={<Course />} />
               </Routes>

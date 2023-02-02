@@ -22,6 +22,9 @@ export default function Header() {
         <NavLink to="/new-course">
           <button>New Course</button>
         </NavLink>
+        <NavLink to="/my-courses">
+          <button>My Courses</button>
+        </NavLink>
         {user.name}
         <LogOutButton />
       </div>

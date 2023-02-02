@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import fetcher from '../fetcher';
 
-import CoursesItem from './CoursesItem';
+import CourseItem from './CourseItem';
 
 export default function Courses() {
   const [courses, setCourses] = useState(null);
@@ -20,7 +20,7 @@ export default function Courses() {
     <div>
       <h1>All Courses</h1>
       {courses.map((course) => (
-        <CoursesItem key={course.id} course={course} />
+        <CourseItem key={course.id} course={course} />
       ))}
     </div>
   );

@@ -14,11 +14,10 @@ export default function Course() {
 
   // TO DO: Link to creator
   function handleErrors(data, status) {
-    if (status === 401)
-      setError(
-        `This course is ${data.status}. For details, contact the course creator, ${data.creator.name}.`
-      );
-    else setError(data);
+    if (!(status === 401)) return;
+    setError(
+      `This course is ${data.status}. For details, contact the course creator, ${data.creator.name}.`
+    );
   }
 
   useEffect(() => {

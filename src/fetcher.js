@@ -19,13 +19,13 @@ function duration(milliseconds, promise) {
 
 export default async function fetcher(
   path = '',
-  { headers = {}, ...options } = {}
+  { headers = {}, query = '', ...options } = {}
 ) {
   let response;
   try {
     response = await duration(
       5000,
-      fetch(`${server}/${path}.json`, {
+      fetch(`${server}/${path}.json${query ? `?${query}` : ''}`, {
         mode: 'cors',
         credentials: 'include',
         headers: { 'X-CSRF-Token': headerData.csrf, ...headers },
@@ -36,7 +36,10 @@ export default async function fetcher(
     throw new Error(errorMessage);
   }
 
-  if (response.status >= 400 && !response.body) {
+  if (
+    response.status >= 400 &&
+    (!response.body || ![401, 422].includes(response.status))
+  ) {
     const statusErrorMessage = statusErrorMessages[response.status] || '';
     throw new Error([errorMessage, statusErrorMessage].join(' '));
   }

@@ -10,6 +10,7 @@ import Home from './components/Home';
 import SignUp from './components/SignUp';
 import LogIn from './components/LogIn';
 import Courses from './components/Courses';
+import NewCourse from './components/NewCourse';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -40,6 +41,7 @@ function App() {
                 <Route path="/sign-up" element={<SignUp />} />
                 <Route path="/log-in" element={<LogIn />} />
                 <Route path="/courses" element={<Courses />} />
+                <Route path="/new-course" element={<NewCourse />} />
               </Routes>
             </main>
           </UserContext.Provider>

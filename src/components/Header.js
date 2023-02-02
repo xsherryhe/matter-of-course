@@ -19,6 +19,9 @@ export default function Header() {
   if (user)
     userDisplay = (
       <div className="display">
+        <NavLink to="/new-course">
+          <button>New Course</button>
+        </NavLink>
         {user.name}
         <LogOutButton />
       </div>
@@ -29,7 +32,7 @@ export default function Header() {
       <NavLink to="/" className="logo">
         Matter of Course
       </NavLink>
-      <div>{userDisplay}</div>
+      {userDisplay}
     </header>
   );
 }

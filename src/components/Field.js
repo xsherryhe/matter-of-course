@@ -41,26 +41,19 @@ export default function Field({
     validate();
   }, [toValidate, inputRef, match, attributeName]);
 
-  const label = (
-    <label htmlFor={`${prefix || ''}_${attributes.join('_')}`}>
-      {labelText || attributeName}
-    </label>
+  const id = `${prefix || ''}_${attributes.join('_')}`;
+  const name =
+    (prefix || attributes[0]) +
+    attributes
+      .slice(prefix ? 0 : 1)
+      .map((attribute) => `[${attribute}]`)
+      .join('');
+  const label = <label htmlFor={id}>{labelText || attributeName}</label>;
+  let input = (
+    <input type={type} name={name} id={id} required={required} ref={inputRef} />
   );
-  const input = (
-    <input
-      type={type}
-      name={
-        (prefix || attributes[0]) +
-        attributes
-          .slice(prefix ? 0 : 1)
-          .map((attribute) => `[${attribute}]`)
-          .join('')
-      }
-      id={`${prefix || ''}_${attributes.join('_')}`}
-      required={required}
-      ref={inputRef}
-    />
-  );
+  if (type === 'textarea')
+    input = <textarea name={name} id={id} required={required} ref={inputRef} />;
 
   return (
     <div className="field">

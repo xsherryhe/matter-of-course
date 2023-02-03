@@ -1,94 +1,50 @@
-import { useEffect, useState } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
-import fetcher from '../fetcher';
 import { capitalize } from '../utilities';
 
 import CourseInstructors from './CourseInstructors';
 import CourseStatusNotice from './CourseStatusNotice';
 import CourseForm from './CourseForm';
-import NavButton from './NavButton';
-import DeleteButton from './DeleteButton';
+import asResource from './higher-order/asResource';
 
-export default function Course() {
-  const courseData = useLocation()?.state?.courseData;
-  const { id } = useParams();
-  const [course, setCourse] = useState(courseData);
-  const [editOn, setEditOn] = useState(false);
-  const [error, setError] = useState(null);
-
-  // TO DO: Link to host
-  function handleErrors(data, status) {
-    if (data.error) return setError(data.error);
-    if (status === 401) {
-      let error = `This course is ${data.status}.`;
-      if (data.host)
-        error += ` For details, contact the course host, ${data.host.name}.`;
-      setError(error);
+function CourseBase({ resource, error, editButton, deleteButton }) {
+  if (error) {
+    // TO DO: Link to host
+    if (error.status === 401) {
+      let message = `This course is ${error.data.status}.`;
+      if (error.data.host)
+        message += ` For details, contact the course host, ${error.data.host.name}.`;
+      return <div className="error">{message}</div>;
     }
+    if (error.data?.error)
+      return <div className="error">{error.data.error}</div>;
+    if (typeof error === 'string') return <div className="error">{error}</div>;
   }
-
-  useEffect(() => {
-    if (courseData) return;
-
-    async function getCourse() {
-      const response = await fetcher(`courses/${id}`);
-      const data = await response.json();
-      if (response.status < 400) setCourse(data);
-      else handleErrors(data, response.status);
-    }
-    getCourse();
-  }, [courseData, id]);
-
-  function showEdit() {
-    setEditOn(true);
-  }
-
-  function hideEdit() {
-    setEditOn(false);
-  }
-
-  function finishEdit(data) {
-    setCourse(data);
-    hideEdit();
-  }
-
-  if (error) return <div className="error">{error}</div>;
-  if (!course) return 'Loading...';
-  if (editOn)
-    return (
-      <CourseForm
-        defaultValues={course}
-        action="update"
-        id={course.id}
-        completeAction={finishEdit}
-      />
-    );
 
   return (
     <div>
-      {<CourseStatusNotice status={course.status} />}
-      <h1>{course.title}</h1>
-      {course.authorized && (
+      {<CourseStatusNotice status={resource.status} />}
+      <h1>{resource.title}</h1>
+      {resource.authorized && (
         <div className="buttons">
-          <NavButton onClick={showEdit}>Edit Course</NavButton>
-          <DeleteButton
-            resource="course"
-            id={course.id}
-            completeAction={setError}
-          />
+          {editButton}
+          {deleteButton}
         </div>
       )}
-      {course.host && <div>Host: {course.host.name}</div>}
-      <CourseInstructors instructors={course.instructors} />
-      <div>Status: {capitalize(course.status)}</div>
-      <div>{course.description}</div>
+      {resource.host && <div>Host: {resource.host.name}</div>}
+      <CourseInstructors instructors={resource.instructors} />
+      <div>Status: {capitalize(resource.status)}</div>
+      <div>{resource.description}</div>
       <div>
         <h2>Lessons</h2>
-        {course.lessons.length
-          ? course.lessons.map(({ title }) => title)
+        {resource.lessons.length
+          ? resource.lessons.map(({ title }) => title)
           : 'No lessons yet!'}
       </div>
-      {course.authorized && <button>Add a Lesson</button>}
+      {resource.authorized && <button>Add a Lesson</button>}
     </div>
   );
 }
+
+const Course = asResource(CourseBase, CourseForm, 'course', {
+  catchError: false,
+});
+export default Course;

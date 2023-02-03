@@ -12,12 +12,13 @@ export default function Course() {
   const [course, setCourse] = useState(courseData);
   const [error, setError] = useState(null);
 
-  // TO DO: Link to creator
+  // TO DO: Link to host
   function handleErrors(data, status) {
     if (!(status === 401)) return;
-    setError(
-      `This course is ${data.status}. For details, contact the course creator, ${data.creator.name}.`
-    );
+    let error = `This course is ${data.status}.`;
+    if (data.host)
+      error += ` For details, contact the course host, ${data.host.name}.`;
+    setError(error);
   }
 
   useEffect(() => {
@@ -39,7 +40,7 @@ export default function Course() {
     <div>
       {<CourseStatusNotice status={course.status} />}
       <h1>{course.title}</h1>
-      <div>Creator: {course.creator.name}</div>
+      {course.host && <div>Host: {course.host.name}</div>}
       <CourseInstructors instructors={course.instructors} />
       <div>Status: {capitalize(course.status)}</div>
       <div>{course.description}</div>

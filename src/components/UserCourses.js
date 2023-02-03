@@ -25,9 +25,9 @@ export default function UserCourses() {
   return (
     <div>
       <h1>{name}'s Courses</h1>
-      <div className="created">
-        <h2>Created Courses</h2>
-        {courses.created.map((course) => (
+      <div className="hosted">
+        <h2>Hosted Courses</h2>
+        {courses.hosted.map((course) => (
           <CourseItem key={course.id} course={course} />
         ))}
       </div>

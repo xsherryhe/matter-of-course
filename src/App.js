@@ -10,9 +10,9 @@ import Home from './components/Home';
 import SignUp from './components/SignUp';
 import LogIn from './components/LogIn';
 import Courses from './components/Courses';
-import NewCourse from './components/NewCourse';
 import Course from './components/Course';
 import UserCourses from './components/UserCourses';
+import CourseForm from './components/CourseForm';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -44,7 +44,10 @@ function App() {
                 <Route path="/log-in" element={<LogIn />} />
                 <Route path="/courses" element={<Courses />} />
                 <Route path="/my-courses" element={<UserCourses />} />
-                <Route path="/new-course" element={<NewCourse />} />
+                <Route
+                  path="/new-course"
+                  element={<CourseForm action="create" />}
+                />
                 <Route path="/course/:id" element={<Course />} />
               </Routes>
             </main>

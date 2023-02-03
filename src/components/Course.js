@@ -5,16 +5,20 @@ import { capitalize } from '../utilities';
 
 import CourseInstructors from './CourseInstructors';
 import CourseStatusNotice from './CourseStatusNotice';
+import CourseForm from './CourseForm';
+import NavButton from './NavButton';
 
 export default function Course() {
   const courseData = useLocation()?.state?.courseData;
   const { id } = useParams();
   const [course, setCourse] = useState(courseData);
+  const [editOn, setEditOn] = useState(false);
   const [error, setError] = useState(null);
 
   // TO DO: Link to host
   function handleErrors(data, status) {
     if (!(status === 401)) return;
+
     let error = `This course is ${data.status}.`;
     if (data.host)
       error += ` For details, contact the course host, ${data.host.name}.`;
@@ -33,13 +37,38 @@ export default function Course() {
     getCourse();
   }, [courseData, id]);
 
+  function showEdit() {
+    setEditOn(true);
+  }
+
+  function hideEdit() {
+    setEditOn(false);
+  }
+
+  function finishEdit(data) {
+    setCourse(data);
+    hideEdit();
+  }
+
   if (error) return <div className="error">{error}</div>;
   if (!course) return 'Loading...';
+  if (editOn)
+    return (
+      <CourseForm
+        defaultValues={course}
+        action="update"
+        id={course.id}
+        completeAction={finishEdit}
+      />
+    );
 
   return (
     <div>
       {<CourseStatusNotice status={course.status} />}
       <h1>{course.title}</h1>
+      {course.authorized && (
+        <NavButton onClick={showEdit}>Edit Course</NavButton>
+      )}
       {course.host && <div>Host: {course.host.name}</div>}
       <CourseInstructors instructors={course.instructors} />
       <div>Status: {capitalize(course.status)}</div>

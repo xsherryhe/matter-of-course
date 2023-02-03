@@ -7,6 +7,7 @@ export default function Field({
   type = 'text',
   labelText,
   attributeText,
+  defaultValue = '',
   errors = {},
   toValidate,
   required,
@@ -52,10 +53,25 @@ export default function Field({
       .join('');
   const label = <label htmlFor={id}>{labelText || attributeName}</label>;
   let input = (
-    <input type={type} name={name} id={id} required={required} ref={inputRef} />
+    <input
+      defaultValue={defaultValue}
+      type={type}
+      name={name}
+      id={id}
+      required={required}
+      ref={inputRef}
+    />
   );
   if (type === 'textarea')
-    input = <textarea name={name} id={id} required={required} ref={inputRef} />;
+    input = (
+      <textarea
+        defaultValue={defaultValue}
+        name={name}
+        id={id}
+        required={required}
+        ref={inputRef}
+      />
+    );
 
   return (
     <div className="field">

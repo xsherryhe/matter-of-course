@@ -2,7 +2,8 @@ import server from './server';
 
 const errorMessage = 'Sorry, something went wrong.';
 const statusErrorMessages = {
-  422: 'Please make sure cookies are enabled.',
+  401: 'You are unauthorized to do that action.',
+  422: 'Sorry, something went wrong. Please sign in again and make sure cookies are enabled.',
 };
 const headerData = { csrf: null };
 
@@ -38,10 +39,13 @@ export default async function fetcher(
 
   if (
     response.status >= 400 &&
-    (!response.body || ![401, 422].includes(response.status))
+    !(
+      response.headers.get('content-type').includes('application/json') &&
+      [401, 422].includes(response.status)
+    )
   ) {
     const statusErrorMessage = statusErrorMessages[response.status] || '';
-    throw new Error([errorMessage, statusErrorMessage].join(' '));
+    throw new Error(statusErrorMessage);
   }
 
   headerData.csrf = response.headers.get('CSRF-TOKEN') || headerData.csrf;

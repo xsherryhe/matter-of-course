@@ -6,9 +6,10 @@ import MessageContext from './contexts/MessageContext';
 import UserContext from './contexts/UserContext';
 import Field from './Field';
 import PasswordCreationFields from './PasswordCreationFields';
+import withLogInCheck from './higher-order/withLogInCheck';
 import withFormValidation from './higher-order/withFormValidation';
 
-function SignUpBase({ validate, toValidate, errors, handleErrors }) {
+function SignUpBase({ loggedIn, validate, toValidate, errors, handleErrors }) {
   const [loading, setLoading] = useState(false);
   const [searchParams] = useSearchParams();
   const from = searchParams.get('from') || '';
@@ -28,6 +29,8 @@ function SignUpBase({ validate, toValidate, errors, handleErrors }) {
     if (!validate(e.target)) return;
 
     setLoading(true);
+    if (await loggedIn()) return setLoading(false);
+
     const response = await fetcher('users', {
       method: 'POST',
       body: new FormData(e.target),
@@ -96,5 +99,5 @@ function SignUpBase({ validate, toValidate, errors, handleErrors }) {
   );
 }
 
-const SignUp = withFormValidation(SignUpBase);
+const SignUp = withFormValidation(withLogInCheck(SignUpBase));
 export default SignUp;

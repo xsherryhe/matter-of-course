@@ -5,9 +5,10 @@ import fetcher from '../fetcher';
 import Field from './Field';
 import MessageContext from './contexts/MessageContext';
 import UserContext from './contexts/UserContext';
+import withLogInCheck from './higher-order/withLogInCheck';
 import withFormValidation from './higher-order/withFormValidation';
 
-function LogInBase({ validate, toValidate, errors, handleErrors }) {
+function LogInBase({ loggedIn, validate, toValidate, errors, handleErrors }) {
   const [loading, setLoading] = useState(false);
   const [searchParams] = useSearchParams();
   const from = searchParams.get('from') || '';
@@ -27,13 +28,15 @@ function LogInBase({ validate, toValidate, errors, handleErrors }) {
     if (!validate(e.target)) return;
 
     setLoading(true);
+    if (await loggedIn()) return setLoading(false);
+
     const response = await fetcher('users/sign_in', {
       method: 'POST',
       body: new FormData(e.target),
     });
     const data = await response.json();
     if (response.status < 400) completeLogIn(data);
-    else handleErrors(data, response.status);
+    else handleErrors(data);
     setLoading(false);
   }
 
@@ -77,5 +80,5 @@ function LogInBase({ validate, toValidate, errors, handleErrors }) {
   );
 }
 
-const LogIn = withFormValidation(LogInBase, { authenticated: true });
+const LogIn = withFormValidation(withLogInCheck(LogInBase));
 export default LogIn;

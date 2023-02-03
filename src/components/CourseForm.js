@@ -22,7 +22,6 @@ function CourseFormBase({
   const navigate = useNavigate();
   const setMessage = useContext(MessageContext).set;
 
-  // TO DO: Navigate to new course
   function completeCourseAction(data) {
     setMessage(`Successfully ${action}d course.`);
     if (completeAction) completeAction(data);
@@ -40,7 +39,7 @@ function CourseFormBase({
     });
     const data = await response.json();
     if (response.status < 400) completeCourseAction(data);
-    else handleErrors(data, response.status);
+    else handleErrors(data);
     setLoading(false);
   }
 

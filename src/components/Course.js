@@ -7,6 +7,7 @@ import CourseInstructors from './CourseInstructors';
 import CourseStatusNotice from './CourseStatusNotice';
 import CourseForm from './CourseForm';
 import NavButton from './NavButton';
+import DeleteButton from './DeleteButton';
 
 export default function Course() {
   const courseData = useLocation()?.state?.courseData;
@@ -17,12 +18,13 @@ export default function Course() {
 
   // TO DO: Link to host
   function handleErrors(data, status) {
-    if (!(status === 401)) return;
-
-    let error = `This course is ${data.status}.`;
-    if (data.host)
-      error += ` For details, contact the course host, ${data.host.name}.`;
-    setError(error);
+    if (data.error) return setError(data.error);
+    if (status === 401) {
+      let error = `This course is ${data.status}.`;
+      if (data.host)
+        error += ` For details, contact the course host, ${data.host.name}.`;
+      setError(error);
+    }
   }
 
   useEffect(() => {
@@ -67,7 +69,14 @@ export default function Course() {
       {<CourseStatusNotice status={course.status} />}
       <h1>{course.title}</h1>
       {course.authorized && (
-        <NavButton onClick={showEdit}>Edit Course</NavButton>
+        <div className="buttons">
+          <NavButton onClick={showEdit}>Edit Course</NavButton>
+          <DeleteButton
+            resource="course"
+            id={course.id}
+            completeAction={setError}
+          />
+        </div>
       )}
       {course.host && <div>Host: {course.host.name}</div>}
       <CourseInstructors instructors={course.instructors} />

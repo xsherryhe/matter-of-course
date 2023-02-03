@@ -18,7 +18,7 @@ export default function Courses() {
   if (!courses) return 'Loading...';
   return (
     <div>
-      <h1>All Courses</h1>
+      <h1>Open Courses</h1>
       {courses.map((course) => (
         <CourseItem key={course.id} course={course} />
       ))}

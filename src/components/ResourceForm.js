@@ -1,5 +1,6 @@
 import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import '../styles/ResourceForm.css';
 import fetcher from '../fetcher';
 import { capitalize } from '../utilities';
 
@@ -8,6 +9,7 @@ import Field from './Field';
 import withFormValidation from './higher-order/withFormValidation';
 
 function ResourceFormBase({
+  heading = true,
   resource,
   fields,
   defaultValues = {},
@@ -17,6 +19,7 @@ function ResourceFormBase({
   errors,
   handleErrors,
   id,
+  close,
   completeAction,
 }) {
   const preAction = { create: 'new', update: 'edit' }[action];
@@ -49,10 +52,15 @@ function ResourceFormBase({
   }
 
   return (
-    <form noValidate onSubmit={handleSubmit}>
-      <h1>
-        {capitalize(preAction)} {capitalize(resource)}
-      </h1>
+    <form className="resource" noValidate onSubmit={handleSubmit}>
+      <button className="close" onClick={close}>
+        X
+      </button>
+      {heading && (
+        <h1>
+          {capitalize(preAction)} {capitalize(resource)}
+        </h1>
+      )}
       {fields.map(({ attribute, type, labelText, attributeText, required }) => (
         <Field
           prefix={resource}

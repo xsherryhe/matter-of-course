@@ -54,20 +54,21 @@ export default function asResource(
     }
     if (!resource) return 'Loading...';
 
-    if (editOn)
-      return (
-        <Form
-          defaultValues={resource}
-          action="update"
-          id={resource.id}
-          completeAction={finishEdit}
-        />
-      );
-
     return (
       <Base
         resource={resource}
         error={error}
+        editForm={
+          editOn && (
+            <Form
+              defaultValues={resource}
+              action="update"
+              id={resource.id}
+              close={hideEdit}
+              completeAction={finishEdit}
+            />
+          )
+        }
         editButton={<NavButton onClick={showEdit}>Edit Course</NavButton>}
         deleteButton={
           <DeleteButton

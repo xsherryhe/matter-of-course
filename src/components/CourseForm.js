@@ -14,5 +14,12 @@ export default function CourseForm(props) {
     },
   ];
 
-  return <ResourceForm resource="course" fields={fields} {...props} />;
+  return (
+    <ResourceForm
+      resource="course"
+      fields={fields}
+      heading={false}
+      {...props}
+    />
+  );
 }

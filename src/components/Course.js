@@ -5,7 +5,7 @@ import CourseStatusNotice from './CourseStatusNotice';
 import CourseForm from './CourseForm';
 import asResource from './higher-order/asResource';
 
-function CourseBase({ resource, error, editButton, deleteButton }) {
+function CourseBase({ resource, error, editForm, editButton, deleteButton }) {
   if (error) {
     // TO DO: Link to host
     if (error.status === 401) {
@@ -19,10 +19,8 @@ function CourseBase({ resource, error, editButton, deleteButton }) {
     if (typeof error === 'string') return <div className="error">{error}</div>;
   }
 
-  return (
-    <div>
-      {<CourseStatusNotice status={resource.status} />}
-      <h1>{resource.title}</h1>
+  let main = (
+    <main>
       {resource.authorized && (
         <div className="buttons">
           {editButton}
@@ -33,6 +31,14 @@ function CourseBase({ resource, error, editButton, deleteButton }) {
       <CourseInstructors instructors={resource.instructors} />
       <div>Status: {capitalize(resource.status)}</div>
       <div>{resource.description}</div>
+    </main>
+  );
+
+  return (
+    <div>
+      {<CourseStatusNotice status={resource.status} />}
+      <h1>{resource.title}</h1>
+      {editForm || main}
       <div>
         <h2>Lessons</h2>
         {resource.lessons.length

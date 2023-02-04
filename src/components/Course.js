@@ -7,7 +7,6 @@ import asResource from './higher-order/asResource';
 import CourseInvitedInstructors from './CourseInvitedInstructors';
 
 function CourseBase({ resource, error, editForm, editButton, deleteButton }) {
-  console.log(resource);
   if (error) {
     // TO DO: Link to host
     if (error.status === 401) {

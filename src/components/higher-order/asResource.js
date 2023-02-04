@@ -9,7 +9,7 @@ export default function asResource(
   Base,
   Form,
   resourceName,
-  { catchError = true }
+  { formHeading = true, catchError = true }
 ) {
   return function Resource() {
     const data = useLocation()?.state?.[`${resourceName}Data`];
@@ -61,6 +61,7 @@ export default function asResource(
         editForm={
           editOn && (
             <Form
+              heading={formHeading}
               defaultValues={resource}
               action="update"
               id={resource.id}

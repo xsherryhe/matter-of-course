@@ -21,7 +21,6 @@ export default function UserCourses() {
   }, [id]);
 
   if (!courses) return 'Loading...';
-
   return (
     <div>
       <h1>{name}'s Courses</h1>

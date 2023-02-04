@@ -53,27 +53,47 @@ function ResourceFormBase({
 
   return (
     <form className="resource" noValidate onSubmit={handleSubmit}>
-      <button className="close" onClick={close}>
-        X
-      </button>
+      {close && (
+        <button className="close" onClick={close}>
+          X
+        </button>
+      )}
       {heading && (
         <h1>
           {capitalize(preAction)} {capitalize(resource)}
         </h1>
       )}
-      {fields.map(({ attribute, type, labelText, attributeText, required }) => (
-        <Field
-          prefix={resource}
-          attributes={[attribute]}
-          type={type}
-          labelText={labelText}
-          attributeText={attributeText}
-          defaultValue={defaultValues[attribute]}
-          errors={errors}
-          toValidate={toValidate}
-          required={required}
-        />
-      ))}
+      {fields.map(
+        ({
+          attribute,
+          type,
+          value,
+          defaultValue,
+          labelText,
+          attributeText,
+          required,
+          handleFieldErrors,
+        }) => (
+          <Field
+            key={attribute}
+            prefix={resource}
+            attributes={[attribute]}
+            type={type}
+            labelText={labelText}
+            attributeText={attributeText}
+            value={value ? value(defaultValues, errors) : null}
+            defaultValue={
+              defaultValue
+                ? defaultValue(defaultValues, errors)
+                : defaultValues[attribute]
+            }
+            errors={errors}
+            handleErrors={handleFieldErrors}
+            toValidate={toValidate}
+            required={required}
+          />
+        )
+      )}
       <button disabled={loading} type="submit">
         {capitalize(action)} {capitalize(resource)}
       </button>

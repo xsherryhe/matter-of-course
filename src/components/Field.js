@@ -7,8 +7,10 @@ export default function Field({
   type = 'text',
   labelText,
   attributeText,
+  value,
   defaultValue = '',
   errors = {},
+  handleErrors,
   toValidate,
   required,
   match,
@@ -16,17 +18,20 @@ export default function Field({
 }) {
   const attributeName =
     attributeText || humanName(attributes[attributes.length - 1]);
+  const [fieldValue, setFieldValue] = useState(value);
   const [error, setError] = useState(null);
   const errorAttributes = attributes
     .map((attribute) => attribute.split('_attributes')[0])
     .join('.');
-  const displayError =
-    error ||
-    errors[errorAttributes]?.map((error, i) => (
-      <div key={i}>
-        {attributeName} {error}
-      </div>
-    ));
+  const displayErrorFn =
+    handleErrors ||
+    ((errors) =>
+      errors[errorAttributes]?.map((error, i) => (
+        <div key={i}>
+          {attributeName} {error}
+        </div>
+      )));
+  const displayError = error || displayErrorFn(errors);
   const fieldInputRef = useRef();
   const inputRef = parentInputRef || fieldInputRef;
 
@@ -44,6 +49,14 @@ export default function Field({
     validate();
   }, [toValidate, inputRef, match, attributeName]);
 
+  useEffect(() => {
+    setFieldValue(value);
+  }, [value, errors]);
+
+  function handleChange(e) {
+    setFieldValue(e.target.value);
+  }
+
   const id = `${prefix || ''}_${attributes.join('_')}`;
   const name =
     (prefix || attributes[0]) +
@@ -52,9 +65,12 @@ export default function Field({
       .map((attribute) => `[${attribute}]`)
       .join('');
   const label = <label htmlFor={id}>{labelText || attributeName}</label>;
+  const hasValue = value !== null && value !== undefined;
   let input = (
     <input
-      defaultValue={defaultValue}
+      value={hasValue ? fieldValue : undefined}
+      onChange={hasValue ? handleChange : undefined}
+      defaultValue={hasValue ? undefined : defaultValue}
       type={type}
       name={name}
       id={id}
@@ -65,7 +81,9 @@ export default function Field({
   if (type === 'textarea')
     input = (
       <textarea
-        defaultValue={defaultValue}
+        value={hasValue ? fieldValue : undefined}
+        onChange={hasValue ? handleChange : undefined}
+        defaultValue={hasValue ? undefined : defaultValue}
         name={name}
         id={id}
         required={required}

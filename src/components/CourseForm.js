@@ -6,20 +6,21 @@ export default function CourseForm(props) {
     { attribute: 'description', type: 'textarea', required: true },
     {
       attribute: 'instructor_logins',
-      defaultValue: (defaultValues) =>
-        defaultValues.instructors?.map(({ username }) => username)?.join(', '),
+      value: (_, errors) => (errors?.instructor_logins?.valid || []).join(', '),
       type: 'textarea',
-      labelText: 'Instructors (username or email, comma-separated)',
+      labelText: 'Invite Instructors (username or email, comma-separated)',
       attributeText: 'Instructors',
+      handleFieldErrors: (errors) =>
+        errors.instructor_logins && (
+          <div>
+            The following instructors were removed:
+            {Object.entries(errors.instructor_logins.invalid).map((login) => (
+              <div key={login[0]}>{login.join(' ')}</div>
+            ))}
+          </div>
+        ),
     },
   ];
 
-  return (
-    <ResourceForm
-      resource="course"
-      fields={fields}
-      heading={false}
-      {...props}
-    />
-  );
+  return <ResourceForm resource="course" fields={fields} {...props} />;
 }

@@ -4,8 +4,10 @@ import CourseInstructors from './CourseInstructors';
 import CourseStatusNotice from './CourseStatusNotice';
 import CourseForm from './CourseForm';
 import asResource from './higher-order/asResource';
+import CourseInvitedInstructors from './CourseInvitedInstructors';
 
 function CourseBase({ resource, error, editForm, editButton, deleteButton }) {
+  console.log(resource);
   if (error) {
     // TO DO: Link to host
     if (error.status === 401) {
@@ -29,6 +31,11 @@ function CourseBase({ resource, error, editForm, editButton, deleteButton }) {
       )}
       {resource.host && <div>Host: {resource.host.name}</div>}
       <CourseInstructors instructors={resource.instructors} />
+      {resource.authorized && (
+        <CourseInvitedInstructors
+          invitations={resource.instruction_invitations}
+        />
+      )}
       <div>Status: {capitalize(resource.status)}</div>
       <div>{resource.description}</div>
     </main>
@@ -51,6 +58,7 @@ function CourseBase({ resource, error, editForm, editButton, deleteButton }) {
 }
 
 const Course = asResource(CourseBase, CourseForm, 'course', {
+  formHeading: false,
   catchError: false,
 });
 export default Course;

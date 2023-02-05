@@ -24,6 +24,10 @@ export default function asResource(
       else setError({ data, status });
     }
 
+    function handleDelete() {
+      setError(`This ${resourceName} no longer exists.`);
+    }
+
     useEffect(() => {
       if (data) return;
 
@@ -58,7 +62,9 @@ export default function asResource(
     return (
       <Base
         resource={resource}
+        setResource={setResource}
         error={error}
+        setError={setError}
         editForm={
           editOn && (
             <Form
@@ -80,7 +86,7 @@ export default function asResource(
           <DeleteButton
             resource={resourceName}
             id={resource.id}
-            completeAction={setError}
+            completeAction={handleDelete}
           />
         }
       />

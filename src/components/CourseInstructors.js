@@ -1,16 +1,16 @@
 import { useState } from 'react';
 import '../styles/CourseInstructors.css';
-import fetcher from '../fetcher';
 import { list } from '../utilities';
 
 import ResourceForm from './ResourceForm';
 import { instructorLoginsField } from './CourseForm';
+import DeleteButton from './DeleteButton';
 
 export default function CourseInstructors({
   course: { id, instructors, hosted, authorized },
-  edit = false,
+  setCourse,
+  editable = false,
 }) {
-  const [loading, setLoading] = useState(false);
   const [editOn, setEditOn] = useState(false);
   const [messages, setMessages] = useState({});
   const [errors, setErrors] = useState({});
@@ -24,14 +24,16 @@ export default function CourseInstructors({
     setEditOn(false);
   }
 
-  async function handleErrors(response, instructorId) {
-    const data = await response.json();
-    if (data.error)
-      setErrors((errors) => ({ ...errors, [instructorId]: data.error }));
+  function handleErrors(instructorId) {
+    return async function (response) {
+      const data = await response.json();
+      if (data.error)
+        setErrors((errors) => ({ ...errors, [instructorId]: data.error }));
+    };
   }
 
   function completeInvite(data) {
-    edit.invitations(data.instruction_invitations);
+    setCourse(data);
     setMessages((messages) => ({ ...messages, invite: 'Invited!' }));
     setTimeout(
       () => setMessages((messages) => ({ ...messages, invite: null })),
@@ -40,23 +42,12 @@ export default function CourseInstructors({
   }
 
   function completeRemove(instructorId) {
-    setMessages((messages) => ({
-      ...messages,
-      [instructorId]: 'Instructor has been removed.',
-    }));
-    setRemoved((removed) => [...removed, instructorId]);
-  }
-
-  function handleRemove(instructorId) {
-    return async function () {
-      setLoading(true);
-      const response = await fetcher(
-        `courses/${id}/instructors/${instructorId}`,
-        { method: 'DELETE' }
-      );
-      if (response.status < 400) completeRemove(instructorId);
-      else handleErrors(response, instructorId);
-      setLoading(false);
+    return function () {
+      setMessages((messages) => ({
+        ...messages,
+        [instructorId]: 'Instructor has been removed.',
+      }));
+      setRemoved((removed) => [...removed, instructorId]);
     };
   }
 
@@ -68,17 +59,25 @@ export default function CourseInstructors({
         </button>
         <h2>Instructors</h2>
         <ul>
-          {instructors.map(({ id, name }) => (
-            <li key={id}>
-              {messages[id] || (
+          {instructors.map(({ id: instructorId, name }) => (
+            <li key={instructorId}>
+              {messages[instructorId] || (
                 <span>
                   {name}
                   {hosted && (
-                    <button disabled={loading} onClick={handleRemove(id)}>
-                      Remove
-                    </button>
+                    <DeleteButton
+                      route={`courses/${id}/instructors/${instructorId}`}
+                      resource="instructor"
+                      id={instructorId}
+                      buttonText="Remove"
+                      action="remove"
+                      completeAction={completeRemove(instructorId)}
+                      handleErrors={handleErrors(instructorId)}
+                    />
                   )}
-                  {errors[id] && <div className="error">{errors[id]}</div>}
+                  {errors[instructorId] && (
+                    <div className="error">{errors[instructorId]}</div>
+                  )}
                 </span>
               )}
             </li>
@@ -106,7 +105,7 @@ export default function CourseInstructors({
           .filter(({ id }) => !removed.includes(id))
           .map(({ name }) => name)
       )}
-      {authorized && edit && <button onClick={showEdit}>Edit</button>}
+      {authorized && editable && <button onClick={showEdit}>Edit</button>}
     </div>
   );
 }

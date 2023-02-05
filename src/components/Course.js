@@ -3,9 +3,19 @@ import { capitalize } from '../utilities';
 import CourseStatusNotice from './CourseStatusNotice';
 import CourseForm from './CourseForm';
 import asResource from './higher-order/asResource';
-import CourseInstructorsAndInvitations from './CourseInstructorsAndInvitations';
+import CourseInstructors from './CourseInstructors';
+import CourseInvitedInstructors from './CourseInvitedInstructors';
+import LeaveInstructorButton from './LeaveInstructorButton';
 
-function CourseBase({ resource, error, editForm, editButton, deleteButton }) {
+function CourseBase({
+  resource,
+  setResource,
+  error,
+  setError,
+  editForm,
+  editButton,
+  deleteButton,
+}) {
   if (error) {
     // TO DO: Link to host
     if (error.status === 401) {
@@ -24,11 +34,27 @@ function CourseBase({ resource, error, editForm, editButton, deleteButton }) {
       {resource.authorized && (
         <div className="buttons">
           {editButton}
+          {
+            <LeaveInstructorButton
+              course={resource}
+              setCourse={setResource}
+              setCourseError={setError}
+            />
+          }
           {deleteButton}
         </div>
       )}
       {resource.host && <div>Host: {resource.host.name}</div>}
-      <CourseInstructorsAndInvitations course={resource} />
+      <CourseInstructors
+        course={resource}
+        setCourse={setResource}
+        editable={true}
+      />
+      {resource.authorized && (
+        <CourseInvitedInstructors
+          invitations={resource.instruction_invitations}
+        />
+      )}
       <div>Status: {capitalize(resource.status)}</div>
       <div>{resource.description}</div>
     </main>

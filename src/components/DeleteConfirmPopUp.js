@@ -5,21 +5,27 @@ import PopUpContext from './contexts/PopUpContext';
 import NavButton from './NavButton';
 import PopUp from './PopUp';
 
-export default function DeleteConfirmPopUp({ resource, id, completeAction }) {
+export default function DeleteConfirmPopUp({
+  route,
+  resource,
+  id,
+  action,
+  confirmText,
+  completeAction,
+  handleErrors,
+}) {
   const [loading, setLoading] = useState(false);
   const setPopUp = useContext(PopUpContext).set;
 
-  function completeDelete(data) {
-    completeAction(data.message);
-    setPopUp(null);
-  }
-
   async function handleYes() {
     setLoading(true);
-    const response = await fetcher(`${resource}s/${id}`, { method: 'DELETE' });
-    const data = await response.json();
-    if (response.status < 400) completeDelete(data);
+    const response = await fetcher(route || `${resource}s/${id}`, {
+      method: 'DELETE',
+    });
+    if (response.status < 400) completeAction();
+    else if (handleErrors) handleErrors(response);
     setLoading(false);
+    setPopUp(null);
   }
 
   function handleNo() {
@@ -28,7 +34,9 @@ export default function DeleteConfirmPopUp({ resource, id, completeAction }) {
 
   return (
     <PopUp>
-      <div>Are you sure you wish to delete this {resource}?</div>
+      <div>
+        {confirmText || `Are you sure you wish to ${action} this ${resource}?`}
+      </div>
       <div className="buttons">
         <NavButton disabled={loading} onClick={handleYes}>
           Yes

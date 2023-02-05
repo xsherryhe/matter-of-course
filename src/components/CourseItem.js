@@ -8,7 +8,7 @@ export default function CourseItem({ course }) {
       <div>{course.title}</div>
       <div>{course.description}</div>
       <div>{course.status}</div>
-      <CourseInstructors instructors={course.instructors} />
+      <CourseInstructors course={course} />
     </Link>
   );
 }

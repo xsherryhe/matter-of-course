@@ -13,6 +13,7 @@ export default function Field({
   handleErrors,
   toValidate,
   required,
+  completed,
   match,
   parentInputRef,
 }) {
@@ -51,7 +52,7 @@ export default function Field({
 
   useEffect(() => {
     setFieldValue(value);
-  }, [value, errors]);
+  }, [value, errors, completed]);
 
   function handleChange(e) {
     setFieldValue(e.target.value);

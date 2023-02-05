@@ -4,6 +4,7 @@ import fetcher from '../../fetcher';
 
 import NavButton from '../NavButton';
 import DeleteButton from '../DeleteButton';
+import { capitalize } from '../../utilities';
 
 export default function asResource(
   Base,
@@ -70,7 +71,11 @@ export default function asResource(
             />
           )
         }
-        editButton={<NavButton onClick={showEdit}>Edit Course</NavButton>}
+        editButton={
+          <NavButton onClick={showEdit}>
+            Edit {capitalize(resourceName)}
+          </NavButton>
+        }
         deleteButton={
           <DeleteButton
             resource={resourceName}

@@ -21,14 +21,18 @@ function ResourceFormBase({
   id,
   close,
   completeAction,
+  submitText,
+  flash = true,
 }) {
   const preAction = { create: 'new', update: 'edit' }[action];
   const [loading, setLoading] = useState(false);
+  const [completed, setCompleted] = useState(false);
   const navigate = useNavigate();
   const setMessage = useContext(MessageContext).set;
 
   function completeFormAction(data) {
-    setMessage(`Successfully ${action}d ${resource}.`);
+    setCompleted((completed) => (completed === 'true' ? true : 'true'));
+    if (flash) setMessage(`Successfully ${action}d ${resource}.`);
     if (completeAction) completeAction(data);
     else
       navigate(`/${resource}/${id || data.id}`, {
@@ -91,11 +95,12 @@ function ResourceFormBase({
             handleErrors={handleFieldErrors}
             toValidate={toValidate}
             required={required}
+            completed={completed}
           />
         )
       )}
       <button disabled={loading} type="submit">
-        {capitalize(action)} {capitalize(resource)}
+        {submitText || `${capitalize(action)} ${capitalize(resource)}`}
       </button>
     </form>
   );

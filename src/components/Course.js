@@ -1,10 +1,9 @@
 import { capitalize } from '../utilities';
 
-import CourseInstructors from './CourseInstructors';
 import CourseStatusNotice from './CourseStatusNotice';
 import CourseForm from './CourseForm';
 import asResource from './higher-order/asResource';
-import CourseInvitedInstructors from './CourseInvitedInstructors';
+import CourseInstructorsAndInvitations from './CourseInstructorsAndInvitations';
 
 function CourseBase({ resource, error, editForm, editButton, deleteButton }) {
   if (error) {
@@ -29,12 +28,7 @@ function CourseBase({ resource, error, editForm, editButton, deleteButton }) {
         </div>
       )}
       {resource.host && <div>Host: {resource.host.name}</div>}
-      <CourseInstructors instructors={resource.instructors} />
-      {resource.authorized && (
-        <CourseInvitedInstructors
-          invitations={resource.instruction_invitations}
-        />
-      )}
+      <CourseInstructorsAndInvitations course={resource} />
       <div>Status: {capitalize(resource.status)}</div>
       <div>{resource.description}</div>
     </main>

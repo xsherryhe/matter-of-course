@@ -6,7 +6,7 @@ import Field from './Field';
 
 export default function NestedFieldSet({
   parentResource,
-  nested: { resource, resourceText, multiple, fields },
+  nested: { resource, resourceText, resourceTitleAttribute, multiple, fields },
   defaultValue,
   errors,
   toValidate,
@@ -69,11 +69,19 @@ export default function NestedFieldSet({
         const instanceIndex = instances.findIndex(({ id, tempId }) =>
           [id, tempId].includes(instanceId)
         );
-        return defineOrder([
-          { ...instances[instanceIndex], order: e.target.value },
+        const newOrder = Number(e.target.value);
+        const newInstance = {
+          ...instances[instanceIndex],
+          order: newOrder,
+        };
+        const newInstances = [
           ...instances.slice(0, instanceIndex),
           ...instances.slice(instanceIndex + 1),
-        ]);
+        ];
+        newOrder < instances[instanceIndex].order
+          ? newInstances.unshift(newInstance)
+          : newInstances.push(newInstance);
+        return defineOrder(newInstances);
       });
     };
   }
@@ -83,18 +91,26 @@ export default function NestedFieldSet({
       {instances.map((instance, i) => (
         <div key={instance.id || instance.tempId}>
           <h2>
-            {resourceText || capitalize(resource)} {i + 1}
+            {(resourceTitleAttribute && instance[resourceTitleAttribute]) ||
+              `${resourceText || capitalize(resource)} ${i + 1}`}
           </h2>
-          {instance.id && (
+          {
             <Field
-              attributes={[`${resource}_attributes`, String(instance.id), 'id']}
+              prefix={parentResource}
+              attributes={[
+                `${resource}_attributes`,
+                String(i),
+                instance.id ? 'id' : 'temp_id',
+              ]}
               type="hidden"
-              defaultValue={instance.id}
+              defaultValue={instance.id || instance.tempId}
             />
+          }
+          {instances.length > 1 && (
+            <button onClick={destroy(instance.id || instance.tempId)}>
+              Delete
+            </button>
           )}
-          <button onClick={destroy(instance.id || instance.tempId)}>
-            Delete
-          </button>
           {fields.map(
             ({
               attribute,
@@ -111,8 +127,9 @@ export default function NestedFieldSet({
               <Field
                 key={attribute}
                 prefix={parentResource}
-                attributes={[
-                  `${resource}_attributes`,
+                attributes={[`${resource}_attributes`, String(i), attribute]}
+                errorAttributes={[
+                  `${resource}_errors`,
                   String(instance.id || instance.tempId),
                   attribute,
                 ]}
@@ -146,20 +163,27 @@ export default function NestedFieldSet({
           )}
         </div>
       ))}
-      {instancesToDestroy.map((instanceToDestroy) => (
+      {instancesToDestroy.map((instanceToDestroy, i) => (
         <div key={instanceToDestroy.id}>
           <Field
+            prefix={parentResource}
             attributes={[
               `${resource}_attributes`,
-              String(instanceToDestroy.id),
+              String(i + instances.length),
               'id',
             ]}
             type="hidden"
             defaultValue={instanceToDestroy.id}
           />
           <Field
+            prefix={parentResource}
             attributes={[
               `${resource}_attributes`,
+              String(i + instances.length),
+              '_destroy',
+            ]}
+            errorAttributes={[
+              `${resource}_errors`,
               String(instanceToDestroy.id),
               '_destroy',
             ]}

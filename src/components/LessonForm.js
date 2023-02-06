@@ -4,8 +4,8 @@ import fetcher from '../fetcher';
 import ResourceForm from './ResourceForm';
 
 export default function LessonForm(props) {
-  const { course: initialCourse } = useLocation()?.state;
-  const { id } = useParams();
+  const initialCourse = useLocation()?.state?.course;
+  const { courseId } = useParams();
   const [course, setCourse] = useState(initialCourse);
   const [error, setError] = useState(null);
 
@@ -18,39 +18,47 @@ export default function LessonForm(props) {
   useEffect(() => {
     if (initialCourse) return;
 
-    async function getCourseTitle() {
-      const response = await fetcher(`courses/${id}`);
+    async function getCourse() {
+      const response = await fetcher(`courses/${courseId}`);
       const data = await response.json();
       if (response.status < 400) setCourse(data);
       else handleErrors(data, response.status);
     }
-    getCourseTitle();
-  }, [initialCourse, id]);
+    getCourse();
+  }, [initialCourse, courseId]);
 
   if (error) return <div className="error">{error}</div>;
   if (!course) return 'Loading...';
 
   const fields = [
+    { attribute: 'title', attributeText: 'Lesson Title', required: true },
     {
       attribute: 'course',
       type: 'immutable',
       defaultValue: () => course.title,
     },
-    { attribute: 'title', attributeText: 'Lesson Title', required: true },
+    {
+      attribute: 'order',
+      type: 'hidden',
+      defaultValue: (defaultValues) =>
+        defaultValues.order || course.lessons.length + 1,
+    },
     {
       nested: {
         resource: 'lesson_sections',
         resourceText: 'Section',
+        resourceTitleAttribute: 'title',
         multiple: true,
         fields: [
           {
             attribute: 'order',
             type: 'select',
             order: true,
-            labelText: 'Section #',
+            attributeText: 'Section #',
           },
           {
             attribute: 'title',
+            attributeText: 'Section Title',
             required: true,
           },
           {
@@ -69,6 +77,7 @@ export default function LessonForm(props) {
       resource="lesson"
       fields={fields}
       heading={`Lesson for ${course.title}`}
+      navPrefix={`/course/${course.id}`}
       routePrefix={`courses/${course.id}/`}
       {...props}
     />

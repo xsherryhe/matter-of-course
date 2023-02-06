@@ -9,8 +9,8 @@ import LeaveInstructorButton from './LeaveInstructorButton';
 import { Link } from 'react-router-dom';
 
 function CourseBase({
-  resource,
-  setResource,
+  resource: course,
+  setResource: setCourse,
   error,
   setError,
   editForm,
@@ -32,48 +32,52 @@ function CourseBase({
 
   let main = (
     <main>
-      {resource.authorized && (
+      {course.authorized && (
         <div className="buttons">
           {editButton}
           {
             <LeaveInstructorButton
-              course={resource}
-              setCourse={setResource}
+              course={course}
+              setCourse={setCourse}
               setCourseError={setError}
             />
           }
           {deleteButton}
         </div>
       )}
-      {resource.host && <div>Host: {resource.host.name}</div>}
+      {course.host && <div>Host: {course.host.name}</div>}
       <CourseInstructors
-        course={resource}
-        setCourse={setResource}
+        course={course}
+        setCourse={setCourse}
         editable={true}
       />
-      {resource.authorized && (
+      {course.authorized && (
         <CourseInvitedInstructors
-          invitations={resource.instruction_invitations}
+          invitations={course.instruction_invitations}
         />
       )}
-      <div>Status: {capitalize(resource.status)}</div>
-      <div>{resource.description}</div>
+      <div>Status: {capitalize(course.status)}</div>
+      <div>{course.description}</div>
     </main>
   );
 
   return (
     <div>
-      {<CourseStatusNotice status={resource.status} />}
-      <h1>{resource.title}</h1>
+      {<CourseStatusNotice status={course.status} />}
+      <h1>{course.title}</h1>
       {editForm || main}
       <div>
         <h2>Lessons</h2>
-        {resource.lessons.length
-          ? resource.lessons.map(({ title }) => title)
+        {course.lessons.length
+          ? course.lessons.map(({ id, title }) => (
+              <div>
+                <Link to={`/course/${course.id}/lesson/${id}`}>{title}</Link>
+              </div>
+            ))
           : 'No lessons yet!'}
       </div>
-      {resource.authorized && (
-        <Link to="new-lesson" state={{ course: resource }}>
+      {course.authorized && (
+        <Link to="new-lesson" state={{ course }}>
           <button>Add a Lesson</button>
         </Link>
       )}

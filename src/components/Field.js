@@ -4,6 +4,7 @@ import { humanName } from '../utilities';
 export default function Field({
   prefix,
   attributes = [],
+  errorAttributes: parentErrorAttributes,
   type = 'text',
   labelText,
   attributeText,
@@ -23,17 +24,22 @@ export default function Field({
     attributeText || humanName(attributes[attributes.length - 1]);
   const [fieldValue, setFieldValue] = useState(value);
   const [error, setError] = useState(null);
-  const errorAttributes = attributes
-    .map((attribute) => attribute.split('_attributes')[0])
-    .join('.');
+  const errorAttributes = parentErrorAttributes || [
+    attributes.map((attribute) => attribute.split('_attributes')[0]).join('.'),
+  ];
   const displayErrorFn =
     handleErrors ||
     ((errors) =>
-      errors[errorAttributes]?.map((error, i) => (
-        <div key={i}>
-          {attributeName} {error}
-        </div>
-      )));
+      errorAttributes
+        .reduce(
+          (attributeErrors, attribute) => attributeErrors?.[attribute],
+          errors
+        )
+        ?.map((error, i) => (
+          <div key={i}>
+            {attributeName} {error}
+          </div>
+        )));
   const displayError = error || displayErrorFn(errors);
   const fieldInputRef = useRef();
   const inputRef = parentInputRef || fieldInputRef;
@@ -68,7 +74,9 @@ export default function Field({
       .slice(prefix ? 0 : 1)
       .map((attribute) => `[${attribute}]`)
       .join('');
-  const label = <label htmlFor={id}>{labelText || attributeName}</label>;
+  const label = !(type === 'hidden') && (
+    <label htmlFor={id}>{labelText || attributeName}</label>
+  );
   const hasValue = value !== null && value !== undefined;
   let input = (
     <input

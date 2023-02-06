@@ -15,6 +15,7 @@ function ResourceFormBase({
   fields,
   defaultValues = {},
   action,
+  navPrefix = '',
   routePrefix = '',
   validate,
   toValidate,
@@ -37,7 +38,7 @@ function ResourceFormBase({
     if (flash) setMessage(`Successfully ${action}d ${resource}.`);
     if (completeAction) completeAction(data);
     else
-      navigate(`/${resource}/${id || data.id}`, {
+      navigate(`${navPrefix}/${resource}/${id || data.id}`, {
         state: { [`${resource}Data`]: data },
       });
   }

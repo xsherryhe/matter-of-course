@@ -6,6 +6,7 @@ import { capitalize } from '../utilities';
 
 import MessageContext from './contexts/MessageContext';
 import Field from './Field';
+import NestedFieldSet from './NestedFieldSet';
 import withFormValidation from './higher-order/withFormValidation';
 
 function ResourceFormBase({
@@ -14,6 +15,7 @@ function ResourceFormBase({
   fields,
   defaultValues = {},
   action,
+  routePrefix = '',
   validate,
   toValidate,
   errors,
@@ -45,10 +47,13 @@ function ResourceFormBase({
     if (!validate(e.target)) return;
 
     setLoading(true);
-    const response = await fetcher(`${resource}s${id ? `/${id}` : ''}`, {
-      method: { create: 'POST', update: 'PATCH' }[action],
-      body: new FormData(e.target),
-    });
+    const response = await fetcher(
+      `${routePrefix}${resource}s${id ? `/${id}` : ''}`,
+      {
+        method: { create: 'POST', update: 'PATCH' }[action],
+        body: new FormData(e.target),
+      }
+    );
     const data = await response.json();
     if (response.status < 400) completeFormAction(data);
     else handleErrors(data);
@@ -64,7 +69,9 @@ function ResourceFormBase({
       )}
       {heading && (
         <h1>
-          {capitalize(preAction)} {capitalize(resource)}
+          {typeof heading === 'string'
+            ? heading
+            : `${capitalize(preAction)} ${capitalize(resource)}`}
         </h1>
       )}
       {fields.map(
@@ -73,31 +80,51 @@ function ResourceFormBase({
           type,
           value,
           defaultValue,
+          valueOptions,
+          onChange,
           labelText,
           attributeText,
           required,
           handleFieldErrors,
-        }) => (
-          <Field
-            key={attribute}
-            prefix={resource}
-            attributes={[attribute]}
-            type={type}
-            labelText={labelText}
-            attributeText={attributeText}
-            value={value ? value(defaultValues, errors) : null}
-            defaultValue={
-              defaultValue
-                ? defaultValue(defaultValues, errors)
-                : defaultValues[attribute]
-            }
-            errors={errors}
-            handleErrors={handleFieldErrors}
-            toValidate={toValidate}
-            required={required}
-            completed={completed}
-          />
-        )
+          nested,
+        }) => {
+          if (nested)
+            return (
+              <NestedFieldSet
+                key={nested.resource}
+                parentResource={resource}
+                nested={nested}
+                defaultValue={defaultValues[nested.resource]}
+                errors={errors}
+                toValidate={toValidate}
+                completed={completed}
+              />
+            );
+          else
+            return (
+              <Field
+                key={attribute}
+                prefix={resource}
+                attributes={[attribute]}
+                type={type}
+                labelText={labelText}
+                attributeText={attributeText}
+                value={value ? value(defaultValues, errors) : null}
+                defaultValue={
+                  defaultValue
+                    ? defaultValue(defaultValues, errors)
+                    : defaultValues[attribute]
+                }
+                valueOptions={valueOptions}
+                onChange={onChange}
+                errors={errors}
+                handleErrors={handleFieldErrors}
+                toValidate={toValidate}
+                required={required}
+                completed={completed}
+              />
+            );
+        }
       )}
       <button disabled={loading} type="submit">
         {submitText || `${capitalize(action)} ${capitalize(resource)}`}

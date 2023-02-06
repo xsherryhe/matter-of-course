@@ -15,6 +15,7 @@ import UserCourses from './components/UserCourses';
 import CourseForm from './components/CourseForm';
 import PopUpContext from './components/contexts/PopUpContext';
 import Invitations from './components/Invitations';
+import LessonForm from './components/LessonForm';
 
 function App() {
   const [popUp, setPopUp] = useState(null);
@@ -53,6 +54,10 @@ function App() {
                     element={<CourseForm action="create" />}
                   />
                   <Route path="/course/:id" element={<Course />} />
+                  <Route
+                    path="/course/:id/new-lesson"
+                    element={<LessonForm action="create" />}
+                  />
                   <Route path="/my-invitations" element={<Invitations />} />
                 </Routes>
               </main>

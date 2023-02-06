@@ -8,8 +8,10 @@ export default function Field({
   labelText,
   attributeText,
   value,
+  valueOptions,
   defaultValue = '',
   errors = {},
+  onChange,
   handleErrors,
   toValidate,
   required,
@@ -40,12 +42,12 @@ export default function Field({
     function validate() {
       if (!toValidate) return;
 
-      inputRef.current.checkValidity();
-      if (match && inputRef.current.value !== match.ref.current.value)
+      inputRef.current?.checkValidity();
+      if (match && inputRef.current?.value !== match.ref.current?.value)
         inputRef.current.setCustomValidity(
           `${attributeName} must match ${match.name}.`
         );
-      setError(inputRef.current.validationMessage);
+      setError(inputRef.current?.validationMessage);
     }
     validate();
   }, [toValidate, inputRef, match, attributeName]);
@@ -55,6 +57,7 @@ export default function Field({
   }, [value, errors, completed]);
 
   function handleChange(e) {
+    if (onChange) onChange(e);
     setFieldValue(e.target.value);
   }
 
@@ -70,8 +73,8 @@ export default function Field({
   let input = (
     <input
       value={hasValue ? fieldValue : undefined}
-      onChange={hasValue ? handleChange : undefined}
       defaultValue={hasValue ? undefined : defaultValue}
+      onChange={hasValue ? handleChange : onChange}
       type={type}
       name={name}
       id={id}
@@ -83,14 +86,33 @@ export default function Field({
     input = (
       <textarea
         value={hasValue ? fieldValue : undefined}
-        onChange={hasValue ? handleChange : undefined}
         defaultValue={hasValue ? undefined : defaultValue}
+        onChange={hasValue ? handleChange : onChange}
         name={name}
         id={id}
         required={required}
         ref={inputRef}
       />
     );
+  if (type === 'select')
+    input = (
+      <select
+        value={hasValue ? fieldValue : undefined}
+        defaultValue={hasValue ? undefined : defaultValue}
+        onChange={hasValue ? handleChange : onChange}
+        name={name}
+        id={id}
+        required={required}
+        ref={inputRef}
+      >
+        {valueOptions.map(({ name, value }) => (
+          <option key={value} value={value}>
+            {name}
+          </option>
+        ))}
+      </select>
+    );
+  if (type === 'immutable') input = `: ${defaultValue}`;
 
   return (
     <div className="field">

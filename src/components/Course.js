@@ -6,6 +6,7 @@ import asResource from './higher-order/asResource';
 import CourseInstructors from './CourseInstructors';
 import CourseInvitedInstructors from './CourseInvitedInstructors';
 import LeaveInstructorButton from './LeaveInstructorButton';
+import { Link } from 'react-router-dom';
 
 function CourseBase({
   resource,
@@ -71,7 +72,11 @@ function CourseBase({
           ? resource.lessons.map(({ title }) => title)
           : 'No lessons yet!'}
       </div>
-      {resource.authorized && <button>Add a Lesson</button>}
+      {resource.authorized && (
+        <Link to="new-lesson" state={{ course: resource }}>
+          <button>Add a Lesson</button>
+        </Link>
+      )}
     </div>
   );
 }

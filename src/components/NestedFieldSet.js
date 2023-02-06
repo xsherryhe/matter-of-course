@@ -3,11 +3,15 @@ import { capitalize } from '../utilities';
 import uniqid from 'uniqid';
 
 import Field from './Field';
+import withOrderAndDestroy from './higher-order/withOrderAndDestroy';
 
-export default function NestedFieldSet({
+function NestedFieldSetBase({
   parentResource,
   nested: { resource, resourceText, resourceTitleAttribute, multiple, fields },
   defaultValue,
+  reOrder,
+  destroy,
+  instancesToDestroy,
   errors,
   toValidate,
   completed,
@@ -21,15 +25,6 @@ export default function NestedFieldSet({
           order: 1,
         }))
   );
-  const [instancesToDestroy, setInstancesToDestroy] = useState([]);
-
-  function defineOrder(instances) {
-    if (!instances?.[0]?.order) return instances;
-
-    return instances
-      .sort((a, b) => a.order - b.order)
-      .map((instance, i) => ({ ...instance, order: i + 1 }));
-  }
 
   function add(e) {
     e.preventDefault();
@@ -39,50 +34,18 @@ export default function NestedFieldSet({
     ]);
   }
 
-  function destroy(instanceId) {
+  function handleDestroy(instanceId) {
     return function (e) {
       e.preventDefault();
-      let toDestroy;
-      setInstances((instances) => {
-        const instanceIndex = instances.findIndex(({ id, tempId }) =>
-          [id, tempId].includes(instanceId)
-        );
-        if (instanceId === instances[instanceIndex].id)
-          toDestroy = instances[instanceIndex];
-        return defineOrder([
-          ...instances.slice(0, instanceIndex),
-          ...instances.slice(instanceIndex + 1),
-        ]);
-      });
-
-      if (toDestroy)
-        setInstancesToDestroy((instancesToDestroy) => [
-          ...instancesToDestroy,
-          toDestroy,
-        ]);
+      setInstances((instances) => destroy(instanceId, instances));
     };
   }
 
-  function reOrder(instanceId) {
+  function handleReOrder(instanceId) {
     return function (e) {
-      setInstances((instances) => {
-        const instanceIndex = instances.findIndex(({ id, tempId }) =>
-          [id, tempId].includes(instanceId)
-        );
-        const newOrder = Number(e.target.value);
-        const newInstance = {
-          ...instances[instanceIndex],
-          order: newOrder,
-        };
-        const newInstances = [
-          ...instances.slice(0, instanceIndex),
-          ...instances.slice(instanceIndex + 1),
-        ];
-        newOrder < instances[instanceIndex].order
-          ? newInstances.unshift(newInstance)
-          : newInstances.push(newInstance);
-        return defineOrder(newInstances);
-      });
+      setInstances((instances) =>
+        reOrder(instanceId, instances, Number(e.target.value))
+      );
     };
   }
 
@@ -107,7 +70,7 @@ export default function NestedFieldSet({
             />
           }
           {instances.length > 1 && (
-            <button onClick={destroy(instance.id || instance.tempId)}>
+            <button onClick={handleDestroy(instance.id || instance.tempId)}>
               Delete
             </button>
           )}
@@ -134,7 +97,9 @@ export default function NestedFieldSet({
                   attribute,
                 ]}
                 type={type}
-                onChange={order && reOrder(instance.id || instance.tempId)}
+                onChange={
+                  order && handleReOrder(instance.id || instance.tempId)
+                }
                 labelText={labelText}
                 attributeText={attributeText}
                 value={
@@ -196,3 +161,8 @@ export default function NestedFieldSet({
     </div>
   );
 }
+
+const NestedFieldSet = withOrderAndDestroy(NestedFieldSetBase, {
+  withDestroyFields: false,
+});
+export default NestedFieldSet;

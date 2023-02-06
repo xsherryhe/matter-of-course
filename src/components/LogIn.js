@@ -20,7 +20,7 @@ function LogInBase({ loggedIn, validate, toValidate, errors, handleErrors }) {
   function completeLogIn(data) {
     setMessage(data.message);
     setUser(data.user);
-    navigate('/' + from);
+    navigate('/' + from.replace(/-/g, '/'));
   }
 
   async function handleSubmit(e) {

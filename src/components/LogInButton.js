@@ -8,7 +8,11 @@ export default function LogInButton() {
   const from = searchParams.get('from');
 
   return (
-    <NavLink to={`log-in?from=${from || location.pathname.slice(1) || 'home'}`}>
+    <NavLink
+      to={`log-in?from=${
+        from || location.pathname.slice(1).replace(/\//g, '-') || 'home'
+      }`}
+    >
       <button>Log In</button>
     </NavLink>
   );

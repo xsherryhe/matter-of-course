@@ -7,6 +7,7 @@ import CourseInstructors from './CourseInstructors';
 import CourseInvitedInstructors from './CourseInvitedInstructors';
 import LeaveInstructorButton from './LeaveInstructorButton';
 import CourseLessons from './CourseLessons';
+import CourseStatusButton from './CourseStatusButton';
 
 function CourseBase({
   resource: course,
@@ -35,17 +36,16 @@ function CourseBase({
       {course.authorized && (
         <div className="buttons">
           {editButton}
-          {
-            <LeaveInstructorButton
-              course={course}
-              setCourse={setCourse}
-              setCourseError={setError}
-            />
-          }
+          <CourseStatusButton course={course} setCourse={setCourse} />
+          <LeaveInstructorButton
+            course={course}
+            setCourse={setCourse}
+            setCourseError={setError}
+          />
           {deleteButton}
         </div>
       )}
-      {course.host && <div>Host: {course.host.name}</div>}
+      <div>Host: {course.host.name}</div>
       <CourseInstructors
         course={course}
         setCourse={setCourse}

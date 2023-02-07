@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import CourseLessonsEdit from './CourseLessonsEdit';
 
 export default function CourseLessons({ course, setCourse }) {
-  const { id, lessons, authorized } = course;
+  const { id, lessons, authorized, enrolled } = course;
   const [editOn, setEditOn] = useState(false);
 
   function showEdit() {
@@ -26,14 +26,14 @@ export default function CourseLessons({ course, setCourse }) {
     <main>
       {authorized && <button onClick={showEdit}>Edit Lesson Structure</button>}
       {lessons.map(({ id: lessonId, title }) => (
-        <div>
-          <Link
-            key={lessonId}
-            to={`/course/${id}/lesson/${lessonId}`}
-            state={{ course }}
-          >
-            {title}
-          </Link>
+        <div key={lessonId}>
+          {authorized || enrolled ? (
+            <Link to={`/course/${id}/lesson/${lessonId}`} state={{ course }}>
+              {title}
+            </Link>
+          ) : (
+            title
+          )}
         </div>
       ))}
     </main>

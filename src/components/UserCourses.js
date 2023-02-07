@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import fetcher from '../fetcher';
+import { capitalize } from '../utilities';
 import CourseItem from './CourseItem';
 
 export default function UserCourses() {
@@ -24,18 +25,14 @@ export default function UserCourses() {
   return (
     <div>
       <h1>{name}'s Courses</h1>
-      <div className="hosted">
-        <h2>Hosted Courses</h2>
-        {courses.hosted.map((course) => (
-          <CourseItem key={course.id} course={course} />
-        ))}
-      </div>
-      <div className="instructed">
-        <h2>Instructed Courses</h2>
-        {courses.instructed.map((course) => (
-          <CourseItem key={course.id} course={course} />
-        ))}
-      </div>
+      {['hosted', 'instructed', 'enrolled'].map((type) => (
+        <div key={type} className={type}>
+          <h2>{capitalize(type)} Courses</h2>
+          {courses[type].map((course) => (
+            <CourseItem key={course.id} course={course} />
+          ))}
+        </div>
+      ))}
     </div>
   );
 }

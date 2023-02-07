@@ -75,7 +75,7 @@ export default function Field({
       .map((attribute) => `[${attribute}]`)
       .join('');
   const label = !(type === 'hidden') && (
-    <label htmlFor={id}>{labelText || attributeName}</label>
+    <label htmlFor={id}>{labelText ?? attributeName}</label>
   );
   const hasValue = value !== null && value !== undefined;
   let input = (

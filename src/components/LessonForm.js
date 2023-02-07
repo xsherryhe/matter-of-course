@@ -55,6 +55,7 @@ export default function LessonForm(props) {
             type: 'select',
             order: true,
             attributeText: 'Section #',
+            required: true,
           },
           {
             attribute: 'title',

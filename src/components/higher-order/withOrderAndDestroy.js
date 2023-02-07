@@ -1,18 +1,17 @@
 import { useState } from 'react';
 
-import Field from '../Field';
+import DestroyFields from '../DestroyFields';
 
 export default function withOrderAndDestroy(
   Component,
-  { withDestroyFields = true } = {}
+  { withDestroyFields = false } = {}
 ) {
   return function OrderAndDestroyComponent({
     parentResource,
-    resource: resourceProp,
+    resource,
     nested,
     ...props
   }) {
-    const resource = resourceProp || nested?.resource;
     const [instancesToDestroy, setInstancesToDestroy] = useState([]);
 
     function defineOrder(instances) {
@@ -60,7 +59,7 @@ export default function withOrderAndDestroy(
       <div>
         <Component
           parentResource={parentResource}
-          resource={resourceProp}
+          resource={resource}
           nested={nested}
           reOrder={reOrder}
           destroy={destroy}
@@ -68,34 +67,13 @@ export default function withOrderAndDestroy(
           {...props}
         />
         {withDestroyFields &&
-          instancesToDestroy.map((instanceToDestroy, i) => (
-            <div key={instanceToDestroy.id}>
-              <Field
-                prefix={parentResource}
-                attributes={[
-                  `${resource}_attributes`,
-                  String(instanceToDestroy.id),
-                  'id',
-                ]}
-                type="hidden"
-                defaultValue={instanceToDestroy.id}
-              />
-              <Field
-                prefix={parentResource}
-                attributes={[
-                  `${resource}_attributes`,
-                  String(instanceToDestroy.id),
-                  '_destroy',
-                ]}
-                errorAttributes={[
-                  `${resource}_errors`,
-                  String(instanceToDestroy.id),
-                  '_destroy',
-                ]}
-                type="hidden"
-                defaultValue={true}
-              />
-            </div>
+          instancesToDestroy.map((instanceToDestroy) => (
+            <DestroyFields
+              key={instanceToDestroy.id}
+              parentResource={parentResource}
+              resource={resource || nested?.resource}
+              instance={instanceToDestroy}
+            />
           ))}
       </div>
     );

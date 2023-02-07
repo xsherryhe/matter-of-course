@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { capitalize } from '../utilities';
 import uniqid from 'uniqid';
 
-import Field from './Field';
 import withOrderAndDestroy from './higher-order/withOrderAndDestroy';
+import Field from './Field';
+import DestroyFields from './DestroyFields';
 
 function NestedFieldSetBase({
   parentResource,
@@ -129,40 +130,18 @@ function NestedFieldSetBase({
         </div>
       ))}
       {instancesToDestroy.map((instanceToDestroy, i) => (
-        <div key={instanceToDestroy.id}>
-          <Field
-            prefix={parentResource}
-            attributes={[
-              `${resource}_attributes`,
-              String(i + instances.length),
-              'id',
-            ]}
-            type="hidden"
-            defaultValue={instanceToDestroy.id}
-          />
-          <Field
-            prefix={parentResource}
-            attributes={[
-              `${resource}_attributes`,
-              String(i + instances.length),
-              '_destroy',
-            ]}
-            errorAttributes={[
-              `${resource}_errors`,
-              String(instanceToDestroy.id),
-              '_destroy',
-            ]}
-            type="hidden"
-            defaultValue={true}
-          />
-        </div>
+        <DestroyFields
+          key={instanceToDestroy.id}
+          parentResource={parentResource}
+          resource={resource}
+          instance={instanceToDestroy}
+          formIndex={i + instances.length}
+        />
       ))}
       <button onClick={add}>Add {resourceText || capitalize(resource)}</button>
     </div>
   );
 }
 
-const NestedFieldSet = withOrderAndDestroy(NestedFieldSetBase, {
-  withDestroyFields: false,
-});
+const NestedFieldSet = withOrderAndDestroy(NestedFieldSetBase);
 export default NestedFieldSet;

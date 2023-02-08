@@ -29,7 +29,7 @@ export default function CourseStatusConfirmPopUp({
     return true;
   }
 
-  function handleErrors(data) {
+  function handleErrors({ data }) {
     const error = data.error || data.base?.[0];
     if (error) setMessage(<span className="error">{error}</span>);
   }
@@ -48,9 +48,8 @@ export default function CourseStatusConfirmPopUp({
       method: 'PATCH',
       body: JSON.stringify({ course: { status: newStatus } }),
     });
-    const data = await response.json();
-    if (response.status < 400) completeStatusChange(data);
-    else handleErrors(data);
+    if (response.status < 400) completeStatusChange(response.data);
+    else handleErrors(response);
     setLoading(false);
     setPopUp(null);
   }

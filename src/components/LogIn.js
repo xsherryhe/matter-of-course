@@ -34,9 +34,8 @@ function LogInBase({ loggedIn, validate, toValidate, errors, handleErrors }) {
       method: 'POST',
       body: new FormData(e.target),
     });
-    const data = await response.json();
-    if (response.status < 400) completeLogIn(data);
-    else handleErrors(data);
+    if (response.status < 400) completeLogIn(response.data);
+    else handleErrors(response);
     setLoading(false);
   }
 

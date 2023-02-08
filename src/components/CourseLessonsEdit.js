@@ -46,9 +46,8 @@ function CourseLessonsEditBase({
       method: 'PATCH',
       body: new FormData(e.target),
     });
-    const data = await response.json();
-    if (response.status < 400) finishEdit(data);
-    else handleErrors(data);
+    if (response.status < 400) finishEdit(response.data);
+    else handleErrors(response);
     setLoading(false);
   }
 

@@ -10,8 +10,7 @@ export default function Invitation({
 }) {
   const [message, setMessage] = useState(null);
 
-  async function handleErrors(response) {
-    const data = await response.json();
+  async function handleErrors({ data }) {
     if (data.error) setMessage(<span className="error">{data.error}</span>);
   }
 

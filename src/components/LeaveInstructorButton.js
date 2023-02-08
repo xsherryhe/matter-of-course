@@ -24,8 +24,7 @@ export default function LeaveInstructorButton({
     } else setCourseError(message);
   }
 
-  async function handleErrors(response) {
-    const data = await response.json();
+  async function handleErrors({ data }) {
     if (data.error) setError(data.error);
   }
 

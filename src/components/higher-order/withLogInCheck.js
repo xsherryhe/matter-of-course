@@ -9,9 +9,8 @@ export default function withLogInCheck(ComponentBase) {
 
     async function loggedIn() {
       const response = await fetcher('current_user');
-      const data = await response.json();
-      if (data) setUser(data);
-      return Boolean(data);
+      if (response.data) setUser(response.data);
+      return Boolean(response.data);
     }
 
     return <ComponentBase loggedIn={loggedIn} {...props} />;

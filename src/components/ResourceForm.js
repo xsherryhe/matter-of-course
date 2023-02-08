@@ -55,9 +55,8 @@ function ResourceFormBase({
         body: new FormData(e.target),
       }
     );
-    const data = await response.json();
-    if (response.status < 400) completeFormAction(data);
-    else handleErrors(data);
+    if (response.status < 400) completeFormAction(response.data);
+    else handleErrors(response);
     setLoading(false);
   }
 

@@ -1,10 +1,11 @@
 import server from './server';
 
 const errorMessage = 'Sorry, something went wrong.';
-const statusErrorMessages = {
-  401: 'You are unauthorized to do that action.',
-  422: 'Sorry, something went wrong. Please sign in again and make sure cookies are enabled.',
-};
+const statusErrorMessage = (status) =>
+  ({
+    401: 'You are unauthorized to view this page.',
+    422: 'Sorry, something went wrong. Please sign in again and make sure cookies are enabled.',
+  }[status] || 'Sorry, something went wrong.');
 const headerData = { csrf: null };
 
 function duration(milliseconds, promise) {
@@ -37,17 +38,18 @@ export default async function fetcher(
     throw new Error(errorMessage);
   }
 
-  if (
-    response.status >= 400 &&
-    !(
-      response.headers.get('content-type').includes('application/json') &&
-      [401, 422].includes(response.status)
-    )
-  ) {
-    const statusErrorMessage = statusErrorMessages[response.status] || '';
-    throw new Error(statusErrorMessage);
+  const status = response.status;
+  let data;
+  try {
+    data = await response.json();
+  } catch {
+    if (status >= 400) throw new Error(statusErrorMessage(status));
+  }
+
+  if (status >= 400 && ![401, 422].includes(status)) {
+    throw new Error(statusErrorMessage(status));
   }
 
   headerData.csrf = response.headers.get('CSRF-TOKEN') || headerData.csrf;
-  return response;
+  return { status, data };
 }

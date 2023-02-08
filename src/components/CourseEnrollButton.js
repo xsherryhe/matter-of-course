@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import fetcher from '../fetcher';
+import UserContext from './contexts/UserContext';
 
 export default function CourseEnrollButton({
   course: { id, authorized, enrolled },
@@ -9,6 +10,8 @@ export default function CourseEnrollButton({
   const [message, setMessage] = useState(null);
   const [error, setError] = useState(null);
 
+  const { user } = useContext(UserContext);
+
   function validate() {
     if (enrolled) {
       setMessage(<span className="error">You are already enrolled!</span>);
@@ -17,8 +20,7 @@ export default function CourseEnrollButton({
     return true;
   }
 
-  async function handleErrors(response) {
-    const data = await response.json();
+  async function handleErrors({ data }) {
     if (data.student?.includes('is not unique'))
       setMessage(<span className="error">You are already enrolled!</span>);
     else if (data.error) setError(data.error);
@@ -42,7 +44,7 @@ export default function CourseEnrollButton({
   }
 
   if (message) return <div>{message}</div>;
-  if (authorized || enrolled) return null;
+  if (!user || authorized || enrolled) return null;
 
   return (
     <div>

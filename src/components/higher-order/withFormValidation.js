@@ -9,7 +9,7 @@ export default function withFormValidation(FormBase) {
 
     const setMessage = useContext(MessageContext).set;
 
-    function handleErrors(data) {
+    function handleErrors({ data }) {
       if (data.error) setMessage(<span className="error">{data.error}</span>);
       else setErrors(data);
     }

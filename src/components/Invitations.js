@@ -8,8 +8,7 @@ export default function Invitations() {
   useEffect(() => {
     async function getInvitations() {
       const response = await fetcher('instruction_invitations');
-      const data = await response.json();
-      setInvitations(data);
+      setInvitations(response.data);
     }
     getInvitations();
   }, []);

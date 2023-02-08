@@ -14,9 +14,8 @@ export default function UserCourses() {
       const response = await fetcher(id ? `users/${id}` : 'current_user', {
         query: 'with=all_courses',
       });
-      const data = await response.json();
-      setName(data.name);
-      setCourses(data.all_courses);
+      setName(response.data.name);
+      setCourses(response.data.all_courses);
     }
     getCourses();
   }, [id]);

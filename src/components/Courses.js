@@ -9,8 +9,7 @@ export default function Courses() {
   useEffect(() => {
     async function getCourses() {
       const response = await fetcher('courses');
-      const data = await response.json();
-      setCourses(data);
+      setCourses(response.data);
     }
     getCourses();
   }, []);

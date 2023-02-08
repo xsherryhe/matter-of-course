@@ -19,7 +19,7 @@ export default function asResource(
     const [editOn, setEditOn] = useState(false);
     const [error, setError] = useState(null);
 
-    function handleErrors(data, status) {
+    function handleErrors({ status, data }) {
       if (catchError && data.error) return setError(data.error);
       else setError({ data, status });
     }
@@ -33,9 +33,8 @@ export default function asResource(
 
       async function getResource() {
         const response = await fetcher(`${resourceName}s/${id}`);
-        const data = await response.json();
-        if (response.status < 400) setResource(data);
-        else handleErrors(data, response.status);
+        if (response.status < 400) setResource(response.data);
+        else handleErrors(response);
       }
       getResource();
     }, [data, id]);

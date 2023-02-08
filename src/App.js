@@ -26,8 +26,7 @@ function App() {
   useEffect(() => {
     async function getUser() {
       const response = await fetcher('current_user');
-      const data = await response.json();
-      setUser(data);
+      setUser(response.data);
     }
     getUser();
   }, []);

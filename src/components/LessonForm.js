@@ -9,7 +9,7 @@ export default function LessonForm(props) {
   const [course, setCourse] = useState(initialCourse);
   const [error, setError] = useState(null);
 
-  function handleErrors(data, status) {
+  function handleErrors({ status, data }) {
     if (status === 401)
       setError('You are unauthorized to create a lesson for this course.');
     else if (data.error) setError(data.error);
@@ -20,9 +20,8 @@ export default function LessonForm(props) {
 
     async function getCourse() {
       const response = await fetcher(`courses/${courseId}`);
-      const data = await response.json();
-      if (response.status < 400) setCourse(data);
-      else handleErrors(data, response.status);
+      if (response.status < 400) setCourse(response.data);
+      else handleErrors(response);
     }
     getCourse();
   }, [initialCourse, courseId]);

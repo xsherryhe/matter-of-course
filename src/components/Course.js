@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { capitalize } from '../utilities';
 
 import CourseStatusNotice from './CourseStatusNotice';
@@ -9,6 +10,8 @@ import LeaveInstructorButton from './LeaveInstructorButton';
 import CourseLessons from './CourseLessons';
 import CourseStatusButton from './CourseStatusButton';
 import CourseEnrollButton from './CourseEnrollButton';
+import CourseRoster from './CourseRoster';
+import NavButton from './NavButton';
 
 function CourseBase({
   resource: course,
@@ -19,6 +22,16 @@ function CourseBase({
   editButton,
   deleteButton,
 }) {
+  const [rosterOn, setRosterOn] = useState(false);
+
+  function showRoster() {
+    setRosterOn(true);
+  }
+
+  function hideRoster() {
+    setRosterOn(false);
+  }
+
   if (error) {
     // TO DO: Link to host
     if (error.status === 401) {
@@ -36,6 +49,7 @@ function CourseBase({
     <main>
       {course.authorized && (
         <div className="buttons">
+          <NavButton onClick={showRoster}>View Roster</NavButton>
           {editButton}
           <CourseStatusButton course={course} setCourse={setCourse} />
           <LeaveInstructorButton
@@ -60,15 +74,16 @@ function CourseBase({
       )}
       <div>Status: {capitalize(course.status)}</div>
       <div>{course.description}</div>
+      <CourseLessons course={course} setCourse={setCourse} />
     </main>
   );
+  if (rosterOn) main = <CourseRoster course={course} hide={hideRoster} />;
 
   return (
     <div>
       {<CourseStatusNotice status={course.status} />}
       <h1>{course.title}</h1>
       {editForm || main}
-      <CourseLessons course={course} setCourse={setCourse} />
     </div>
   );
 }

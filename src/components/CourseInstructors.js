@@ -25,7 +25,7 @@ export default function CourseInstructors({
   }
 
   function handleErrors(instructorId) {
-    return async function ({ data }) {
+    return function ({ data }) {
       if (data.error)
         setErrors((errors) => ({ ...errors, [instructorId]: data.error }));
     };

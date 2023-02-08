@@ -3,7 +3,7 @@ import server from './server';
 const errorMessage = 'Sorry, something went wrong.';
 const statusErrorMessage = (status) =>
   ({
-    401: 'You are unauthorized to view this page.',
+    401: 'Please sign in again before proceeding.',
     422: 'Sorry, something went wrong. Please sign in again and make sure cookies are enabled.',
   }[status] || 'Sorry, something went wrong.');
 const headerData = { csrf: null };

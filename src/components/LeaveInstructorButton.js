@@ -24,7 +24,7 @@ export default function LeaveInstructorButton({
     } else setCourseError(message);
   }
 
-  async function handleErrors({ data }) {
+  function handleErrors({ data }) {
     if (data.error) setError(data.error);
   }
 

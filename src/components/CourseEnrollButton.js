@@ -8,22 +8,41 @@ export default function CourseEnrollButton({
 }) {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState(null);
-  const [error, setError] = useState(null);
 
   const { user } = useContext(UserContext);
 
-  function validate() {
-    if (enrolled) {
+  function handleErrors({ data }) {
+    if (data.student?.includes('is not unique'))
       setMessage(<span className="error">You are already enrolled!</span>);
+    else if (data.error === 'This enrollment no longer exists.')
+      setMessage(<span className="error">You are not enrolled yet.</span>);
+    else if (data.error)
+      setMessage(<span className="error">{data.error}</span>);
+  }
+
+  function validate() {
+    if (!user) {
+      setMessage(<span className="error">Please sign in first.</span>);
       return false;
     }
     return true;
   }
 
-  async function handleErrors({ data }) {
-    if (data.student?.includes('is not unique'))
+  function validateEnroll() {
+    if (!validate()) return false;
+    if (enrolled) {
       setMessage(<span className="error">You are already enrolled!</span>);
-    else if (data.error) setError(data.error);
+      return false;
+    }
+    if (authorized) {
+      setMessage(
+        <span className="error">
+          You are already an instructor or a host for this course.
+        </span>
+      );
+      return false;
+    }
+    return true;
   }
 
   function completeEnroll() {
@@ -32,7 +51,7 @@ export default function CourseEnrollButton({
   }
 
   async function enroll() {
-    if (!validate()) return;
+    if (!validateEnroll()) return;
 
     setLoading(true);
     const response = await fetcher(`courses/${id}/enrollments`, {
@@ -43,15 +62,40 @@ export default function CourseEnrollButton({
     setLoading(false);
   }
 
-  if (message) return <div>{message}</div>;
-  if (!user || authorized || enrolled) return null;
+  function validateUnenroll() {
+    if (!validate()) return false;
+    if (!enrolled) {
+      setMessage(<span className="error">You are not enrolled yet.</span>);
+      return false;
+    }
+    return true;
+  }
+
+  function completeUnenroll() {
+    setMessage('Successfully unenrolled!');
+    setCourse((course) => ({ ...course, enrolled: false }));
+  }
+
+  async function unenroll() {
+    if (!validateUnenroll()) return;
+
+    setLoading(true);
+    const response = await fetcher(`courses/${id}/enrollments/${user.id}`, {
+      method: 'DELETE',
+    });
+    if (response.status < 400) completeUnenroll();
+    else handleErrors(response);
+    setLoading(false);
+  }
+
+  if (!user || authorized) return null;
 
   return (
     <div>
-      <button onClick={enroll} disabled={loading}>
-        Enroll in Course
+      <button onClick={enrolled ? unenroll : enroll} disabled={loading}>
+        {enrolled ? 'Unenroll from' : 'Enroll in'} Course
       </button>
-      {error && <div className="error">{error}</div>}
+      {message && <div>{message}</div>}
     </div>
   );
 }

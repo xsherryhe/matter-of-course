@@ -8,6 +8,7 @@ import MessageContext from './contexts/MessageContext';
 import Field from './Field';
 import NestedFieldSet from './NestedFieldSet';
 import withFormValidation from './higher-order/withFormValidation';
+import NavLink from './NavLink';
 
 function ResourceFormBase({
   heading = true,
@@ -22,6 +23,7 @@ function ResourceFormBase({
   errors,
   handleErrors,
   id,
+  back,
   close,
   completeAction,
   submitText,
@@ -67,6 +69,7 @@ function ResourceFormBase({
           X
         </button>
       )}
+      {back && <NavLink to={back.route}>Back to {back.location}</NavLink>}
       {heading && (
         <h1>
           {typeof heading === 'string'

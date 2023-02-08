@@ -8,7 +8,15 @@ import DestroyFields from './DestroyFields';
 
 function NestedFieldSetBase({
   parentResource,
-  nested: { resource, resourceText, resourceTitleAttribute, multiple, fields },
+  nested: {
+    resource,
+    resourceText,
+    resourceTitleAttribute,
+    heading,
+    multiple,
+    initialInstanceCount,
+    fields,
+  },
   defaultValue,
   reOrder,
   destroy,
@@ -18,10 +26,11 @@ function NestedFieldSetBase({
   completed,
 }) {
   const defaultInstances = multiple ? defaultValue : [defaultValue];
+  const minimumInstances = initialInstanceCount ?? 1;
   const [instances, setInstances] = useState(
     defaultInstances?.[0]
       ? defaultInstances
-      : [...new Array(1)].map(() => ({
+      : [...new Array(minimumInstances)].map(() => ({
           tempId: uniqid(),
           order: 1,
         }))
@@ -52,12 +61,13 @@ function NestedFieldSetBase({
 
   return (
     <div>
+      {heading && <h2>{heading}</h2>}
       {instances.map((instance, i) => (
         <div key={instance.id || instance.tempId}>
-          <h2>
+          <h3>
             {(resourceTitleAttribute && instance[resourceTitleAttribute]) ||
               `${resourceText || capitalize(resource)} ${i + 1}`}
-          </h2>
+          </h3>
           {
             <Field
               prefix={parentResource}
@@ -70,7 +80,7 @@ function NestedFieldSetBase({
               defaultValue={instance.id || instance.tempId}
             />
           }
-          {instances.length > 1 && (
+          {instances.length > minimumInstances && (
             <button onClick={handleDestroy(instance.id || instance.tempId)}>
               Delete
             </button>
@@ -138,7 +148,11 @@ function NestedFieldSetBase({
           formIndex={i + instances.length}
         />
       ))}
-      <button onClick={add}>Add {resourceText || capitalize(resource)}</button>
+      {multiple && (
+        <button onClick={add}>
+          Add {resourceText || capitalize(resource)}
+        </button>
+      )}
     </div>
   );
 }

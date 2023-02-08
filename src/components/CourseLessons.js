@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
 
+import NavLink from './NavLink';
 import CourseLessonsEdit from './CourseLessonsEdit';
 
 export default function CourseLessons({ course, setCourse }) {
@@ -28,9 +28,9 @@ export default function CourseLessons({ course, setCourse }) {
       {lessons.map(({ id: lessonId, title }) => (
         <div key={lessonId}>
           {authorized || enrolled ? (
-            <Link to={`/course/${id}/lesson/${lessonId}`} state={{ course }}>
+            <NavLink to={`/course/${id}/lesson/${lessonId}`} state={{ course }}>
               {title}
-            </Link>
+            </NavLink>
           ) : (
             title
           )}
@@ -52,9 +52,9 @@ export default function CourseLessons({ course, setCourse }) {
       <h2>Lessons</h2>
       {main}
       {authorized && (
-        <Link to="new-lesson" state={{ course }}>
+        <NavLink to="new-lesson" state={{ course }}>
           <button>Add a Lesson</button>
-        </Link>
+        </NavLink>
       )}
     </div>
   );

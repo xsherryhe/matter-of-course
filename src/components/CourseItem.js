@@ -1,14 +1,13 @@
-import { Link } from 'react-router-dom';
-
+import NavLink from './NavLink';
 import CourseInstructors from './CourseInstructors';
 
 export default function CourseItem({ course }) {
   return (
-    <Link to={`/course/${course.id}`}>
+    <NavLink to={`/course/${course.id}`}>
       <div>{course.title}</div>
       <div>{course.description}</div>
       <div>{course.status}</div>
       <CourseInstructors course={course} />
-    </Link>
+    </NavLink>
   );
 }

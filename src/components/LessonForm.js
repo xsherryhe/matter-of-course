@@ -26,9 +26,6 @@ export default function LessonForm(props) {
     getCourse();
   }, [initialCourse, courseId]);
 
-  if (error) return <div className="error">{error}</div>;
-  if (!course) return 'Loading...';
-
   const fields = [
     { attribute: 'title', attributeText: 'Lesson Title', required: true },
     {
@@ -47,6 +44,7 @@ export default function LessonForm(props) {
         resource: 'lesson_sections',
         resourceText: 'Section',
         resourceTitleAttribute: 'title',
+        heading: 'Lesson Content',
         multiple: true,
         fields: [
           {
@@ -70,7 +68,40 @@ export default function LessonForm(props) {
         ],
       },
     },
+    {
+      nested: {
+        resource: 'assignments',
+        resourceText: 'Assignment',
+        resourceTitleAttribute: 'title',
+        heading: 'Assignments',
+        multiple: true,
+        initialInstanceCount: 0,
+        fields: [
+          {
+            attribute: 'order',
+            type: 'select',
+            order: true,
+            attributeText: 'Assignment #',
+            required: true,
+          },
+          {
+            attribute: 'title',
+            attributeText: 'Assignment Title',
+            required: true,
+          },
+          {
+            attribute: 'body',
+            type: 'textarea',
+            attributeText: 'Instructions',
+            required: true,
+          },
+        ],
+      },
+    },
   ];
+
+  if (error) return <div className="error">{error}</div>;
+  if (!course) return 'Loading...';
 
   return (
     <ResourceForm
@@ -79,6 +110,7 @@ export default function LessonForm(props) {
       heading={`Lesson for ${course.title}`}
       navPrefix={`/course/${course.id}`}
       routePrefix={`courses/${course.id}/`}
+      back={{ location: 'Course', route: `/course/${courseId}` }}
       {...props}
     />
   );

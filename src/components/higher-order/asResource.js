@@ -71,6 +71,7 @@ export default function asResource(
               defaultValues={resource}
               action="update"
               id={resource.id}
+              back={false}
               close={hideEdit}
               completeAction={finishEdit}
             />

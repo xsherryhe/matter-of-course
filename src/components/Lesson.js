@@ -1,4 +1,6 @@
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+
+import NavLink from './NavLink';
 import asResource from './higher-order/asResource';
 import LessonForm from './LessonForm';
 
@@ -19,7 +21,7 @@ function LessonBase({
       displayError = <div className="error">{error}</div>;
     return (
       <div>
-        <Link to={`/course/${courseId}`}>Back to Course</Link>
+        <NavLink to={`/course/${courseId}`}>Back to Course</NavLink>
         {displayError}
       </div>
     );
@@ -39,11 +41,18 @@ function LessonBase({
           <div>{body}</div>
         </div>
       ))}
+      <h2>Assignments</h2>
+      {lesson.assignments.map(({ id, title, body }) => (
+        <div key={id} className="assignment">
+          <h3>Assignment: {title}</h3>
+          <div>{body}</div>
+        </div>
+      ))}
     </main>
   );
   return (
     <div>
-      <Link to={`/course/${courseId}`}>Back to Course</Link>
+      <NavLink to={`/course/${courseId}`}>Back to Course</NavLink>
       <h1>{lesson.title}</h1>
       {editForm || main}
     </div>

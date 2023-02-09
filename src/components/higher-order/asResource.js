@@ -10,10 +10,14 @@ export default function asResource(
   Base,
   Form,
   resourceName,
-  { formHeading = true, catchError = true }
+  {
+    route = (id) => `${resourceName}s/${id}`,
+    formHeading = true,
+    catchError = true,
+  }
 ) {
   return function Resource() {
-    const data = useLocation()?.state?.[`${resourceName}Data`];
+    const data = useLocation().state?.[`${resourceName}Data`];
     const { id } = useParams();
     const [resource, setResource] = useState(data);
     const [editOn, setEditOn] = useState(false);
@@ -32,7 +36,7 @@ export default function asResource(
       if (data) return;
 
       async function getResource() {
-        const response = await fetcher(`${resourceName}s/${id}`);
+        const response = await fetcher(route(id));
         if (response.status < 400) setResource(response.data);
         else handleErrors(response);
       }
@@ -70,7 +74,7 @@ export default function asResource(
               heading={formHeading}
               defaultValues={resource}
               action="update"
-              id={resource.id}
+              id={resource?.id}
               back={false}
               close={hideEdit}
               completeAction={finishEdit}
@@ -85,7 +89,8 @@ export default function asResource(
         deleteButton={
           <DeleteButton
             resource={resourceName}
-            id={resource.id}
+            id={resource?.id}
+            route={route(id)}
             completeAction={handleDelete}
           />
         }

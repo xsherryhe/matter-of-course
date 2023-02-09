@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 import MessageContext from './contexts/MessageContext';
 
-export default function NavLink({ to, className, children }) {
+export default function NavLink({ children, ...props }) {
   const setMessage = useContext(MessageContext).set;
 
   function clearMessage() {
@@ -11,7 +11,7 @@ export default function NavLink({ to, className, children }) {
   }
 
   return (
-    <Link to={to} className={className} onClick={clearMessage}>
+    <Link onClick={clearMessage} {...props}>
       {children}
     </Link>
   );

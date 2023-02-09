@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import fetcher from '../fetcher';
 
-export default function Assignment({ assignment: { id, title, body } }) {
+import NavLink from './NavLink';
+
+export default function Assignment({ assignment }) {
+  const { id, title, body } = assignment;
   const [expanded, setExpanded] = useState(false);
   const [submission, setSubmission] = useState(null);
   const [submissionError, setSubmissionError] = useState(null);
@@ -12,7 +15,7 @@ export default function Assignment({ assignment: { id, title, body } }) {
   }
 
   async function getSubmission() {
-    const response = await fetcher(`assignments/${id}/my-submission`);
+    const response = await fetcher(`assignments/${id}/current_submission`);
     if (response.status < 400) setSubmission(response.data);
     else {
       setSubmission(false);
@@ -77,9 +80,18 @@ export default function Assignment({ assignment: { id, title, body } }) {
             </span>
           )}
           {submission?.status !== 'complete' && (
-            <button>
-              {submission?.body ? 'Continue' : 'Start'} Assignment
-            </button>
+            <NavLink
+              to={
+                submission
+                  ? `assignment/${submission.id}`
+                  : `assignment/${id}/new`
+              }
+              state={{ assignment, submissionData: submission }}
+            >
+              <button>
+                {submission?.body ? 'Continue' : 'Start'} Assignment
+              </button>
+            </NavLink>
           )}
         </div>
         {submission?.status === 'complete' && <div>Completed!</div>}

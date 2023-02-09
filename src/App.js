@@ -17,6 +17,8 @@ import PopUpContext from './components/contexts/PopUpContext';
 import Invitations from './components/Invitations';
 import LessonForm from './components/LessonForm';
 import Lesson from './components/Lesson';
+import AssignmentSubmissionForm from './components/AssignmentSubmissionForm';
+import AssignmentSubmission from './components/AssignmentSubmission';
 
 function App() {
   const [popUp, setPopUp] = useState(null);
@@ -63,6 +65,14 @@ function App() {
                     element={<Lesson />}
                   />
                   <Route path="/my-invitations" element={<Invitations />} />
+                  <Route
+                    path="/assignment/:assignmentId/new"
+                    element={<AssignmentSubmissionForm action="create" />}
+                  />
+                  <Route
+                    path="/assignment/:id"
+                    element={<AssignmentSubmission />}
+                  />
                 </Routes>
               </main>
               {popUp}

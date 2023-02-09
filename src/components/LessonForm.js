@@ -4,7 +4,7 @@ import fetcher from '../fetcher';
 import ResourceForm from './ResourceForm';
 
 export default function LessonForm(props) {
-  const initialCourse = useLocation()?.state?.course;
+  const initialCourse = useLocation().state?.course;
   const { courseId } = useParams();
   const [course, setCourse] = useState(initialCourse);
   const [error, setError] = useState(null);

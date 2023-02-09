@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import NavLink from './NavLink';
 import asResource from './higher-order/asResource';
 import LessonForm from './LessonForm';
+import Assignment from './Assignment';
 
 function LessonBase({
   resource: lesson,
@@ -42,14 +43,12 @@ function LessonBase({
         </div>
       ))}
       <h2>Assignments</h2>
-      {lesson.assignments.map(({ id, title, body }) => (
-        <div key={id} className="assignment">
-          <h3>Assignment: {title}</h3>
-          <div>{body}</div>
-        </div>
+      {lesson.assignments.map((assignment) => (
+        <Assignment key={assignment.id} assignment={assignment} />
       ))}
     </main>
   );
+
   return (
     <div>
       <NavLink to={`/course/${courseId}`}>Back to Course</NavLink>

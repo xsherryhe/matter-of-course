@@ -12,12 +12,14 @@ export default function CourseEnrollButton({
   const { user } = useContext(UserContext);
 
   function handleErrors({ data }) {
+    let error;
     if (data.student?.includes('is not unique'))
-      setMessage(<span className="error">You are already enrolled!</span>);
+      error = 'You are already enrolled!';
     else if (data.error === 'This enrollment no longer exists.')
-      setMessage(<span className="error">You are not enrolled yet.</span>);
-    else if (data.error)
-      setMessage(<span className="error">{data.error}</span>);
+      error = 'You are not enrolled yet.';
+    else if (data.error) error = data.error;
+
+    setMessage(<span className="error">{error}</span>);
   }
 
   function validate() {

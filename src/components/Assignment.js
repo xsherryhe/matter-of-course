@@ -72,13 +72,9 @@ export default function Assignment({ assignment }) {
       <div>
         <div className="buttons">
           {!submission && (
-            <span>
-              <button onClick={addEmptySubmission}>
-                Add to My Assignments
-              </button>
-              {addMessage && <span>{addMessage}</span>}
-            </span>
+            <button onClick={addEmptySubmission}>Add to My Assignments</button>
           )}
+          {addMessage && <span>{addMessage}</span>}
           {submission?.completion_status !== 'complete' && (
             <NavLink
               to={

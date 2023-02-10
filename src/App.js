@@ -17,6 +17,7 @@ import PopUpContext from './components/contexts/PopUpContext';
 import Invitations from './components/Invitations';
 import LessonForm from './components/LessonForm';
 import Lesson from './components/Lesson';
+import UserAssignmentSubmissions from './components/UserAssignmentSubmissions';
 import AssignmentSubmissionForm from './components/AssignmentSubmissionForm';
 import AssignmentSubmission from './components/AssignmentSubmission';
 
@@ -65,6 +66,10 @@ function App() {
                     element={<Lesson />}
                   />
                   <Route path="/my-invitations" element={<Invitations />} />
+                  <Route
+                    path="/my-assignments"
+                    element={<UserAssignmentSubmissions />}
+                  />
                   <Route
                     path="/assignment/:assignmentId/new"
                     element={<AssignmentSubmissionForm action="create" />}

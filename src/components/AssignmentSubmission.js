@@ -4,17 +4,17 @@ import AssignmentSubmissionForm from './AssignmentSubmissionForm';
 function AssignmentSubmissionBase({
   resource: submission,
   setResource: setSubmission,
-  error,
   editForm,
   editButton,
   deleteButton,
 }) {
   let main;
-  if (submission.status === 'incomplete')
+  if (submission.completion_status === 'incomplete')
     main = (
       <AssignmentSubmissionForm
         heading={false}
         defaultValues={submission}
+        completeAction={setSubmission}
         id={submission.id}
         action="update"
       />
@@ -22,8 +22,11 @@ function AssignmentSubmissionBase({
   else
     main = (
       <main>
-        <h2>Your completed assignment:</h2>
-        {submission.assignment && editButton}
+        <h2>
+          {submission.authorized ? 'Your' : `${submission.student.name}'s`}{' '}
+          completed assignment:
+        </h2>
+        {submission.authorized && submission.assignment && editButton}
         <div>{submission.body}</div>
       </main>
     );
@@ -39,7 +42,7 @@ function AssignmentSubmissionBase({
       {!submission.assignment && (
         <div>
           This assignment no longer exists, but you can still read or delete
-          your submission.
+          this submission.
         </div>
       )}
       {editForm || main}

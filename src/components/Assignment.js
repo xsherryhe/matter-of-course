@@ -79,14 +79,14 @@ export default function Assignment({ assignment }) {
               {addMessage && <span>{addMessage}</span>}
             </span>
           )}
-          {submission?.status !== 'complete' && (
+          {submission?.completion_status !== 'complete' && (
             <NavLink
               to={
                 submission
-                  ? `assignment/${submission.id}`
-                  : `assignment/${id}/new`
+                  ? `/assignment/${submission.id}`
+                  : `/assignment/${id}/new`
               }
-              state={{ assignment, submissionData: submission }}
+              state={{ assignment }}
             >
               <button>
                 {submission?.body ? 'Continue' : 'Start'} Assignment
@@ -94,7 +94,7 @@ export default function Assignment({ assignment }) {
             </NavLink>
           )}
         </div>
-        {submission?.status === 'complete' && <div>Completed!</div>}
+        {submission?.completion_status === 'complete' && <div>Completed!</div>}
         <div className="body">{body}</div>
       </div>
     );

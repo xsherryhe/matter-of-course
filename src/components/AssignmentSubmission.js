@@ -1,5 +1,7 @@
 import asResource from './higher-order/asResource';
 import AssignmentSubmissionForm from './AssignmentSubmissionForm';
+import { useLocation } from 'react-router-dom';
+import NavLink from './NavLink';
 
 function AssignmentSubmissionBase({
   resource: submission,
@@ -8,6 +10,7 @@ function AssignmentSubmissionBase({
   editButton,
   deleteButton,
 }) {
+  const back = useLocation().state?.back;
   let main;
   if (submission.completion_status === 'incomplete')
     main = (
@@ -33,6 +36,7 @@ function AssignmentSubmissionBase({
 
   return (
     <div>
+      {back && <NavLink to={back.location}>Back to {back.name}</NavLink>}
       {submission.assignment && (
         <div>
           <h1>{submission.assignment.title}</h1>

@@ -1,10 +1,12 @@
 import { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import fetcher from '../fetcher';
 
 import NavLink from './NavLink';
 
 export default function Assignment({ assignment }) {
   const { id, title, body } = assignment;
+  const location = useLocation().pathname;
   const [expanded, setExpanded] = useState(false);
   const [submission, setSubmission] = useState(null);
   const [submissionError, setSubmissionError] = useState(null);
@@ -82,7 +84,7 @@ export default function Assignment({ assignment }) {
                   ? `/assignment/${submission.id}`
                   : `/assignment/${id}/new`
               }
-              state={{ assignment }}
+              state={{ back: { name: 'Lesson', location }, assignment }}
             >
               <button>
                 {submission?.body ? 'Continue' : 'Start'} Assignment

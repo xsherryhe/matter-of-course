@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import fetcher from '../fetcher';
 import NavLink from './NavLink';
 
 export default function UserAssignmentSubmissions() {
+  const location = useLocation().pathname;
   const [submissions, setSubmissions] = useState(null);
   useEffect(() => {
     async function getSubmissions() {
@@ -20,7 +22,11 @@ export default function UserAssignmentSubmissions() {
       <h1>My Assignments</h1>
       <h2>To Do</h2>
       {submissions.incomplete?.map(({ id, title, body }) => (
-        <NavLink to={`/assignment/${id}`} key={id}>
+        <NavLink
+          to={`/assignment/${id}`}
+          state={{ back: { name: 'My Assignments', location } }}
+          key={id}
+        >
           <div className="title">
             {title || 'Submission Draft for Deleted Assignment'}
           </div>
@@ -31,7 +37,11 @@ export default function UserAssignmentSubmissions() {
       ))}
       <h2>Completed</h2>
       {submissions.complete?.map(({ id, title, body }) => (
-        <NavLink to={`/assignment/${id}`} key={id}>
+        <NavLink
+          to={`/assignment/${id}`}
+          state={{ back: { name: 'My Assignments', location } }}
+          key={id}
+        >
           <div className="title">
             {title || 'Submission for Deleted Assignment'}
           </div>

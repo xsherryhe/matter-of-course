@@ -12,6 +12,7 @@ import CourseStatusButton from './CourseStatusButton';
 import CourseEnrollButton from './CourseEnrollButton';
 import CourseRoster from './CourseRoster';
 import NavButton from './NavButton';
+import CourseAssignments from './CourseAssignments';
 
 function CourseBase({
   resource: course,
@@ -75,6 +76,7 @@ function CourseBase({
       <div>Status: {capitalize(course.status)}</div>
       <div>{course.description}</div>
       <CourseLessons course={course} setCourse={setCourse} />
+      <CourseAssignments course={course} />
     </main>
   );
   if (rosterOn) main = <CourseRoster course={course} hide={hideRoster} />;

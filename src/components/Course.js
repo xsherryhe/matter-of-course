@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { capitalize } from '../utilities';
 
 import CourseStatusNotice from './CourseStatusNotice';
@@ -23,7 +24,9 @@ function CourseBase({
   editButton,
   deleteButton,
 }) {
-  const [rosterOn, setRosterOn] = useState(false);
+  const navigate = useNavigate();
+  const { state, pathname } = useLocation();
+  const [rosterOn, setRosterOn] = useState(state?.rosterOn || false);
 
   function showRoster() {
     setRosterOn(true);
@@ -31,6 +34,7 @@ function CourseBase({
 
   function hideRoster() {
     setRosterOn(false);
+    navigate(pathname, { replace: true });
   }
 
   if (error) {

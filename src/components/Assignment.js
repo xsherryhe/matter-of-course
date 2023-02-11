@@ -4,9 +4,9 @@ import fetcher from '../fetcher';
 
 import NavLink from './NavLink';
 
-export default function Assignment({ assignment }) {
+export default function Assignment({ assignment, parentIds, authorized }) {
   const { id, title, body } = assignment;
-  const location = useLocation().pathname;
+  const route = useLocation().pathname;
   const [expanded, setExpanded] = useState(false);
   const [submission, setSubmission] = useState(null);
   const [submissionError, setSubmissionError] = useState(null);
@@ -73,6 +73,19 @@ export default function Assignment({ assignment }) {
     details = (
       <div>
         <div className="buttons">
+          {authorized && (
+            <NavLink
+              to={`/assignment/${id}/submissions`}
+              state={{
+                back: {
+                  location: 'Lesson',
+                  route: `/course/${parentIds.course}/lesson/${parentIds.lesson}`,
+                },
+              }}
+            >
+              <button>View Student Submissions</button>
+            </NavLink>
+          )}
           {!submission && (
             <button onClick={addEmptySubmission}>Add to My Assignments</button>
           )}
@@ -84,7 +97,7 @@ export default function Assignment({ assignment }) {
                   ? `/assignment/${submission.id}`
                   : `/assignment/${id}/new`
               }
-              state={{ back: { name: 'Lesson', location }, assignment }}
+              state={{ back: { location: 'Lesson', route }, assignment }}
             >
               <button>
                 {submission?.body ? 'Continue' : 'Start'} Assignment

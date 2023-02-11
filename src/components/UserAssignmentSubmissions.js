@@ -4,7 +4,7 @@ import fetcher from '../fetcher';
 import NavLink from './NavLink';
 
 export default function UserAssignmentSubmissions() {
-  const location = useLocation().pathname;
+  const route = useLocation().pathname;
   const [submissions, setSubmissions] = useState(null);
   useEffect(() => {
     async function getSubmissions() {
@@ -24,7 +24,7 @@ export default function UserAssignmentSubmissions() {
       {submissions.incomplete?.map(({ id, title, body }) => (
         <NavLink
           to={`/assignment/${id}`}
-          state={{ back: { name: 'My Assignments', location } }}
+          state={{ back: { location: 'My Assignments', route } }}
           key={id}
         >
           <div className="title">
@@ -39,7 +39,7 @@ export default function UserAssignmentSubmissions() {
       {submissions.complete?.map(({ id, title, body }) => (
         <NavLink
           to={`/assignment/${id}`}
-          state={{ back: { name: 'My Assignments', location } }}
+          state={{ back: { location: 'My Assignments', route } }}
           key={id}
         >
           <div className="title">

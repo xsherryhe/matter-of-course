@@ -44,7 +44,12 @@ function LessonBase({
       ))}
       <h2>Assignments</h2>
       {lesson.assignments.map((assignment) => (
-        <Assignment key={assignment.id} assignment={assignment} />
+        <Assignment
+          key={assignment.id}
+          assignment={assignment}
+          parentIds={{ course: courseId, lesson: lesson.id }}
+          authorized={lesson.authorized}
+        />
       ))}
     </main>
   );

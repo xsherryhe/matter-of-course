@@ -1,0 +1,3 @@
+.course-roster .entry .submissions {
+  grid-column: 1 / span 4;
+}

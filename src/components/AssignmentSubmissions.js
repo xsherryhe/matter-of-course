@@ -42,14 +42,22 @@ export default function AssignmentSubmissions() {
     return (
       <div>
         <div className="error">{error}</div>
-        {back && <NavLink to={back.location}>Back to {back.name}</NavLink>}
+        {back && (
+          <NavLink to={back.route} state={back.state}>
+            Back to {back.location}
+          </NavLink>
+        )}
       </div>
     );
   if (!(assignment && submissions)) return 'Loading...';
 
   return (
     <div className="assignment-submissions">
-      {back && <NavLink to={back.location}>Back to {back.name}</NavLink>}
+      {back && (
+        <NavLink to={back.route} state={back.state}>
+          Back to {back.location}
+        </NavLink>
+      )}
       <h1 className="title">{assignment.title}</h1>
       <div className="lesson">Lesson: {assignment.lesson.title}</div>
       <div className="instructions">{assignment.body}</div>
@@ -71,7 +79,7 @@ export default function AssignmentSubmissions() {
                   <NavLink
                     to={`/assignment/${id}`}
                     state={{
-                      back: { name: 'Assignment', location: path },
+                      back: { location: 'Assignment', route: path },
                     }}
                   >
                     View Submission

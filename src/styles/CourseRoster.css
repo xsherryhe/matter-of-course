@@ -1,3 +1,16 @@
 .course-roster {
   margin: auto;
 }
+
+.course-roster tr {
+  display: grid;
+  grid-template-columns: repeat(3, 10rem) 15rem;
+}
+
+.course-roster th {
+  border-top: 1px solid black;
+}
+
+.course-roster th, .course-roster td {
+  border-bottom: 1px solid black;
+}

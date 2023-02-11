@@ -36,7 +36,11 @@ function AssignmentSubmissionBase({
 
   return (
     <div>
-      {back && <NavLink to={back.location}>Back to {back.name}</NavLink>}
+      {back && (
+        <NavLink to={back.route} state={back.state}>
+          Back to {back.location}
+        </NavLink>
+      )}
       {submission.assignment && (
         <div>
           <h1>{submission.assignment.title}</h1>

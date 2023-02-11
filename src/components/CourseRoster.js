@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import '../styles/CourseRoster.css';
 import fetcher from '../fetcher';
 
+import CourseRosterEntry from './CourseRosterEntry';
+
 export default function CourseRoster({ course: { id }, hide }) {
   const [roster, setRoster] = useState(null);
   const [error, setError] = useState(null);
@@ -33,17 +35,16 @@ export default function CourseRoster({ course: { id }, hide }) {
             <th>Name</th>
             <th>Username</th>
             <th></th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
-          {roster.map(({ student: { id, name, username } }) => (
-            <tr key={id}>
-              <td>{name}</td>
-              <td>{username}</td>
-              <td>
-                <button>Message</button>
-              </td>
-            </tr>
+          {roster.map(({ student }) => (
+            <CourseRosterEntry
+              key={student.id}
+              courseId={id}
+              student={student}
+            />
           ))}
         </tbody>
       </table>

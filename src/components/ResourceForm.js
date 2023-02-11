@@ -69,7 +69,11 @@ function ResourceFormBase({
           X
         </button>
       )}
-      {back && <NavLink to={back.route}>Back to {back.location}</NavLink>}
+      {back && (
+        <NavLink to={back.route} state={back.state}>
+          Back to {back.location}
+        </NavLink>
+      )}
       {heading && (
         <h1>
           {typeof heading === 'string'

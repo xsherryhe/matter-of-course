@@ -1,17 +1,22 @@
-import { useEffect, useState } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
+import { useContext, useEffect, useState } from 'react';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import '../styles/AssignmentSubmissions.css';
 import fetcher from '../fetcher';
 
 import NavLink from './NavLink';
+import DeleteButton from './DeleteButton';
+import MessageContext from './contexts/MessageContext';
 
 export default function AssignmentSubmissions() {
   const { pathname: path, state } = useLocation();
   const back = state?.back;
+  const navigate = useNavigate();
   const { assignmentId } = useParams();
   const [assignment, setAssignment] = useState(null);
   const [submissions, setSubmissions] = useState(null);
   const [error, setError] = useState(null);
+
+  const setMessage = useContext(MessageContext).set;
 
   function handleErrors({ data }) {
     if (data.error) setError(data.error);
@@ -38,6 +43,15 @@ export default function AssignmentSubmissions() {
     getAssignmentAndSubmissions();
   }, [assignmentId]);
 
+  function completeDelete() {
+    setMessage('Successfully deleted assignment.');
+    navigate(
+      back?.route ||
+        `/course/${assignment?.lesson?.course_id}/lesson/${assignment?.lesson?.id}`,
+      { state: back?.state }
+    );
+  }
+
   if (error)
     return (
       <div>
@@ -59,6 +73,12 @@ export default function AssignmentSubmissions() {
         </NavLink>
       )}
       <h1 className="title">{assignment.title}</h1>
+      <DeleteButton
+        resource="assignment"
+        id={assignment.id}
+        completeAction={completeDelete}
+        handleErrors={handleErrors}
+      />
       <div className="lesson">Lesson: {assignment.lesson.title}</div>
       <div className="instructions">{assignment.body}</div>
       <h2>Submissions</h2>

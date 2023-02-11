@@ -14,6 +14,7 @@ function AssignmentSubmissionFormBase({
   id,
   close,
   completeAction,
+  deleteButton,
   validate: validateForm,
   toValidate,
   errors,
@@ -134,6 +135,7 @@ function AssignmentSubmissionFormBase({
         toValidate={toValidate}
       />
       <div className="buttons">
+        {deleteButton}
         {!(defaultValues.completion_status === 'complete') && (
           <button
             onClick={handleSubmit(false)}

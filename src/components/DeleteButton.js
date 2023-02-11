@@ -15,7 +15,8 @@ export default function DeleteButton({
 }) {
   const setPopUp = useContext(PopUpContext).set;
 
-  function handleClick() {
+  function handleClick(e) {
+    e.preventDefault();
     setPopUp(
       <DeleteConfirmPopUp
         route={route}

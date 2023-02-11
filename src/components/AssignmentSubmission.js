@@ -20,6 +20,7 @@ function AssignmentSubmissionBase({
         completeAction={setSubmission}
         id={submission.id}
         action="update"
+        deleteButton={deleteButton}
       />
     );
   else
@@ -30,6 +31,7 @@ function AssignmentSubmissionBase({
           completed assignment:
         </h2>
         {submission.authorized && submission.assignment && editButton}
+        {submission.authorized && deleteButton}
         <div>{submission.body}</div>
       </main>
     );

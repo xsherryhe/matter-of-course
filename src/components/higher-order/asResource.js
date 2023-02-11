@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
+import { useContext, useEffect, useState } from 'react';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import fetcher from '../../fetcher';
 
 import NavButton from '../NavButton';
 import DeleteButton from '../DeleteButton';
 import { capitalize } from '../../utilities';
+import MessageContext from '../contexts/MessageContext';
 
 export default function asResource(
   Base,
@@ -12,16 +13,23 @@ export default function asResource(
   resourceName,
   {
     route = (id) => `${resourceName}s/${id}`,
+    redirect,
     formHeading = true,
     catchError = true,
   }
 ) {
   return function Resource() {
-    const data = useLocation().state?.[`${resourceName}Data`];
+    const state = useLocation().state;
+    const data = state?.[`${resourceName}Data`];
     const { id } = useParams();
+    const navigate = useNavigate();
+    const { route: redirectRoute, state: redirectState } =
+      redirect || state?.back || {};
     const [resource, setResource] = useState(data);
     const [editOn, setEditOn] = useState(false);
     const [error, setError] = useState(null);
+
+    const setMessage = useContext(MessageContext).set;
 
     function handleErrors({ status, data }) {
       if (catchError && data.error) return setError(data.error);
@@ -29,7 +37,10 @@ export default function asResource(
     }
 
     function handleDelete() {
-      setError(`This ${resourceName} no longer exists.`);
+      if (redirectRoute) {
+        setMessage(`Successfully deleted ${resourceName}.`);
+        navigate(redirectRoute, { state: redirectState });
+      } else setError(`This ${resourceName} no longer exists.`);
     }
 
     useEffect(() => {
@@ -92,6 +103,7 @@ export default function asResource(
             id={resource?.id}
             route={route(id)}
             completeAction={handleDelete}
+            handleErrors={handleErrors}
           />
         }
       />

@@ -2,10 +2,12 @@ import { useEffect, useState } from 'react';
 import fetcher from '../fetcher';
 
 import MessageForm from './MessageForm';
+import Message from './Message';
 import NavButton from './NavButton';
 
 export default function Messages() {
   const [type, setType] = useState('received');
+  const [message, setMessage] = useState(null);
   const [messages, setMessages] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -22,6 +24,16 @@ export default function Messages() {
   function completeNew(data) {
     if (type === 'sent') setMessages((messages) => [data, ...messages]);
     hideNew();
+  }
+
+  function showMessage(message) {
+    return function () {
+      setMessage(message);
+    };
+  }
+
+  function hideMessage() {
+    setMessage(null);
   }
 
   function handleErrors({ data }) {
@@ -47,47 +59,51 @@ export default function Messages() {
     setType('sent');
   }
 
+  let header;
+  if (!message)
+    header = (
+      <header>
+        {!newOn && <NavButton onClick={showNew}>New Message</NavButton>}
+        {newOn && (
+          <MessageForm
+            heading={false}
+            close={hideNew}
+            completeAction={completeNew}
+          />
+        )}
+        <div className="tabs">
+          <NavButton disabled={type === 'received'} onClick={tabInbox}>
+            Inbox
+          </NavButton>
+          <NavButton disabled={type === 'sent'} onClick={tabOutbox}>
+            Outbox
+          </NavButton>
+        </div>
+      </header>
+    );
+
   let main;
   if (error) main = <div className="error">{error}</div>;
   else if (loading) main = 'Loading...';
+  else if (message) main = <Message message={message} hide={hideMessage} />;
   else if (messages) {
     if (messages.length)
-      main = messages.map(
-        ({
-          id,
-          recipient: { name: recipientName },
-          sender: { name: senderName },
-          subject,
-        }) => (
-          <div key={id}>
-            {type === 'received' && <div>From: {senderName}</div>}
-            {type === 'sent' && <div>To: {recipientName}</div>}
-            <div>{subject}</div>
-          </div>
-        )
-      );
+      main = messages.map((message) => (
+        <div key={message.id}>
+          <NavButton onClick={showMessage(message)}>
+            {type === 'received' && <div>From: {message.sender.name}</div>}
+            {type === 'sent' && <div>To: {message.recipient.name}</div>}
+            <div>{message.subject}</div>
+          </NavButton>
+        </div>
+      ));
     else main = 'No messages yet!';
   }
 
   return (
     <div>
       <h1>My Messages</h1>
-      {!newOn && <NavButton onClick={showNew}>New Message</NavButton>}
-      {newOn && (
-        <MessageForm
-          heading={false}
-          close={hideNew}
-          completeAction={completeNew}
-        />
-      )}
-      <div className="tabs">
-        <button disabled={type === 'received'} onClick={tabInbox}>
-          Inbox
-        </button>
-        <button disabled={type === 'sent'} onClick={tabOutbox}>
-          Outbox
-        </button>
-      </div>
+      {header}
       {main}
     </div>
   );

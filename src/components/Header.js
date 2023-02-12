@@ -43,7 +43,7 @@ export default function Header() {
     );
 
   return (
-    <header>
+    <header className="site-header">
       <NavLink to="/" className="logo">
         Matter of Course
       </NavLink>

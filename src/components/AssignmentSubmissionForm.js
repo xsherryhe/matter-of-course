@@ -154,16 +154,6 @@ function AssignmentSubmissionFormBase({
       {formError && <div className="error">{formError}</div>}
     </form>
   );
-  // Don't use resource form
-  // If the assignment no longer exists
-  // *submit buttons disabled={!Boolean(assignment)}
-  // *validate on front end and don't allow update
-  // *validate on back end with error handling from Assignment.find
-  // different complete action for save vs submit
-  // *save: change button text to saved and disabled, and unsave on change of any field
-  // *submit: set an "Assignment (submitted / updated)" flash notice
-  // *specific validation for submit for body to not be blank
-  // *DO use withFormValidation
 }
 
 const AssignmentSubmissionForm = withFormValidation(

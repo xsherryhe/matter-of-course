@@ -37,7 +37,12 @@ function ResourceFormBase({
 
   function completeFormAction(data) {
     setCompleted((completed) => (completed === 'true' ? true : 'true'));
-    if (flash) setMessage(`Successfully ${action}d ${resource}.`);
+    if (flash)
+      setMessage(
+        typeof flash === 'string'
+          ? flash
+          : `Successfully ${action}d ${resource}.`
+      );
     if (completeAction) completeAction(data);
     else
       navigate(`${navPrefix}/${resource}/${id || data.id}`, {

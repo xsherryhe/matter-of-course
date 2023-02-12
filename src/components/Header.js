@@ -34,6 +34,9 @@ export default function Header() {
         <NavLink to="/my-assignments">
           <button>My Assignments</button>
         </NavLink>
+        <NavLink to="/my-messages">
+          <button>My Messages</button>
+        </NavLink>
         {user.name}
         <LogOutButton />
       </div>

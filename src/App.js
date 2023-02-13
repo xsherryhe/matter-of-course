@@ -22,6 +22,7 @@ import AssignmentSubmissionForm from './components/AssignmentSubmissionForm';
 import AssignmentSubmission from './components/AssignmentSubmission';
 import AssignmentSubmissions from './components/AssignmentSubmissions';
 import Messages from './components/Messages';
+import MessageForm from './components/MessageForm';
 
 function App() {
   const [popUp, setPopUp] = useState(null);
@@ -85,6 +86,7 @@ function App() {
                     element={<AssignmentSubmission />}
                   />
                   <Route path="/my-messages" element={<Messages />} />
+                  <Route path="/new-message" element={<MessageForm />} />
                 </Routes>
               </main>
               {popUp}

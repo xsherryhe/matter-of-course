@@ -1,6 +1,7 @@
 import { useContext, useState } from 'react';
 import fetcher from '../fetcher';
 import UserContext from './contexts/UserContext';
+import NavLink from './NavLink';
 
 export default function CourseEnrollButton({
   course: { id, authorized, enrolled },
@@ -90,7 +91,14 @@ export default function CourseEnrollButton({
     setLoading(false);
   }
 
-  if (!user || authorized) return null;
+  if (!user)
+    return (
+      <NavLink authenticationMessage={true} to={`/log-in?from=course_${id}`}>
+        <button>Enroll in Course</button>
+      </NavLink>
+    );
+
+  if (authorized) return null;
 
   return (
     <div>

@@ -1,6 +1,19 @@
+import { useLocation } from 'react-router-dom';
 import ResourceForm from './ResourceForm';
 
-export default function MessageForm({ recipientOptions, ...props }) {
+export default function MessageForm({
+  recipientOptions: propsRecipientOptions,
+  ...props
+}) {
+  const state = useLocation().state;
+  const {
+    defaultValues,
+    recipientOptions: stateRecipientOptions,
+    back,
+  } = state || {};
+
+  const recipientOptions = propsRecipientOptions || stateRecipientOptions;
+
   let recipientField = {
     attribute: 'recipient_login',
     labelText: 'To (username or email)',
@@ -34,7 +47,9 @@ export default function MessageForm({ recipientOptions, ...props }) {
     <ResourceForm
       resource="message"
       action="create"
+      defaultValues={defaultValues}
       fields={fields}
+      back={back}
       flash="Message has been sent."
       completeAction={() => {}}
       submitText="Send Message"

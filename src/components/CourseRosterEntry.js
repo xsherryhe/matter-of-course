@@ -65,7 +65,24 @@ export default function CourseRosterEntry({
       <td>{name}</td>
       <td>{username}</td>
       <td>
-        <button>Message</button>
+        <NavLink
+          to="/new-message"
+          state={{
+            recipientOptions: [
+              {
+                name: `${name} (${username})`,
+                value: username,
+              },
+            ],
+            back: {
+              location: 'Roster',
+              route: `/course/${courseId}`,
+              state: { rosterOn: true, submissionsOn: false },
+            },
+          }}
+        >
+          <button>Message</button>
+        </NavLink>
       </td>
       <td>
         <button onClick={toggleSubmissions}>

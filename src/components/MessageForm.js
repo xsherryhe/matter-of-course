@@ -1,26 +1,32 @@
 import ResourceForm from './ResourceForm';
 
 export default function MessageForm({ recipientOptions, ...props }) {
-  let subjectField = { attribute: 'subject', required: true };
+  let recipientField = {
+    attribute: 'recipient_login',
+    labelText: 'To (username or email)',
+    attributeText: 'Recipient in "To" field',
+    required: true,
+  };
   if (recipientOptions)
-    subjectField = {
-      ...subjectField,
+    recipientField = {
+      ...recipientField,
       type: 'select',
+      defaultValue: () =>
+        recipientOptions.find(({ isDefault }) => isDefault)?.value,
       valueOptions: recipientOptions,
     };
 
   const fields = [
-    {
-      attribute: 'recipient_login',
-      labelText: 'To (username or email)',
-      attributeText: 'Recipient in "To" field',
-      required: true,
-    },
-    subjectField,
+    recipientField,
+    { attribute: 'subject', required: true },
     {
       attribute: 'body',
       type: 'textarea',
       required: true,
+    },
+    {
+      attribute: 'parent_id',
+      type: 'hidden',
     },
   ];
 

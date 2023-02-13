@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import '../styles/Messages.css';
 import fetcher from '../fetcher';
 
 import MessageForm from './MessageForm';
@@ -6,7 +7,7 @@ import Message from './Message';
 import NavButton from './NavButton';
 
 export default function Messages() {
-  const [type, setType] = useState('received');
+  const [type, setType] = useState('inbox');
   const [message, setMessage] = useState(null);
   const [messages, setMessages] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -22,9 +23,25 @@ export default function Messages() {
   }
 
   function completeNew(data) {
-    if (type === 'sent') setMessages((messages) => [data, ...messages]);
+    if (type === 'outbox') setMessages((messages) => [data, ...messages]);
     hideNew();
   }
+
+  function handleErrors({ data }) {
+    if (data.error) setError(data.error);
+  }
+
+  const getMessages = useCallback(async () => {
+    setLoading(true);
+    const response = await fetcher(`current_messages/${type}`);
+    if (response.status < 400) setMessages(response.data);
+    else handleErrors(response);
+    setLoading(false);
+  }, [type]);
+
+  useEffect(() => {
+    getMessages();
+  }, [getMessages]);
 
   function showMessage(message) {
     return function () {
@@ -34,29 +51,15 @@ export default function Messages() {
 
   function hideMessage() {
     setMessage(null);
-  }
-
-  function handleErrors({ data }) {
-    if (data.error) setError(data.error);
-  }
-
-  useEffect(() => {
-    async function getMessages() {
-      setLoading(true);
-      const response = await fetcher(`current_messages/${type}`);
-      if (response.status < 400) setMessages(response.data);
-      else handleErrors(response);
-      setLoading(false);
-    }
     getMessages();
-  }, [type]);
+  }
 
   function tabInbox() {
-    setType('received');
+    setType('inbox');
   }
 
   function tabOutbox() {
-    setType('sent');
+    setType('outbox');
   }
 
   let header;
@@ -72,10 +75,10 @@ export default function Messages() {
           />
         )}
         <div className="tabs">
-          <NavButton disabled={type === 'received'} onClick={tabInbox}>
+          <NavButton disabled={type === 'inbox'} onClick={tabInbox}>
             Inbox
           </NavButton>
-          <NavButton disabled={type === 'sent'} onClick={tabOutbox}>
+          <NavButton disabled={type === 'outbox'} onClick={tabOutbox}>
             Outbox
           </NavButton>
         </div>
@@ -83,25 +86,40 @@ export default function Messages() {
     );
 
   let main;
-  if (error) main = <div className="error">{error}</div>;
-  else if (loading) main = 'Loading...';
-  else if (message) main = <Message message={message} hide={hideMessage} />;
+  if (loading) main = 'Loading...';
+  else if (error) main = <div className="error">{error}</div>;
+  else if (message)
+    main = (
+      <main>
+        <NavButton onClick={hideMessage}>Back to Messages</NavButton>
+        <Message message={message} type={type} />
+      </main>
+    );
   else if (messages) {
     if (messages.length)
-      main = messages.map((message) => (
-        <div key={message.id}>
-          <NavButton onClick={showMessage(message)}>
-            {type === 'received' && <div>From: {message.sender.name}</div>}
-            {type === 'sent' && <div>To: {message.recipient.name}</div>}
-            <div>{message.subject}</div>
-          </NavButton>
-        </div>
-      ));
+      main = (
+        <main>
+          {messages.map((message) => (
+            <div
+              className={`message-item ${
+                type === 'inbox' ? message.read_status : ''
+              }`}
+              key={message.id}
+            >
+              <NavButton onClick={showMessage(message)}>
+                {type === 'inbox' && <div>From: {message.sender.name}</div>}
+                {type === 'outbox' && <div>To: {message.recipient.name}</div>}
+                <div>{message.subject}</div>
+              </NavButton>
+            </div>
+          ))}
+        </main>
+      );
     else main = 'No messages yet!';
   }
 
   return (
-    <div>
+    <div className="messages">
       <h1>My Messages</h1>
       {header}
       {main}

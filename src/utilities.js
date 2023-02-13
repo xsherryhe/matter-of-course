@@ -17,3 +17,10 @@ export function list(array) {
     )
     .join(array.length < 3 ? ' ' : ', ');
 }
+
+export function getUniqueBy(array, attribute) {
+  return array.filter(
+    ({ [attribute]: val }, i, a) =>
+      i === a.findIndex((item) => item[attribute] === val)
+  );
+}

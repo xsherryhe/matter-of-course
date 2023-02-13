@@ -3,6 +3,7 @@ import fetcher from '../fetcher';
 import { getUniqueBy } from '../utilities';
 
 import MessageForm from './MessageForm';
+import NavLink from './NavLink';
 
 export default function Message({ message: initialMessage, messageId, type }) {
   const [message, setMessage] = useState(initialMessage);
@@ -10,8 +11,17 @@ export default function Message({ message: initialMessage, messageId, type }) {
   const [replyOn, setReplyOn] = useState(false);
   const [error, setError] = useState(null);
 
-  const { id, read_status, subject, body, role, parent_id, sender, recipient } =
-    message || {};
+  const {
+    id,
+    read_status,
+    subject,
+    body,
+    role,
+    parent_id,
+    messageable_type,
+    sender,
+    recipient,
+  } = message || {};
 
   function handleErrors({ data }) {
     if (data.error) setError(data.error);
@@ -75,13 +85,21 @@ export default function Message({ message: initialMessage, messageId, type }) {
     </div>
   );
 
+  let bodyDisplay = body;
+  if (messageable_type) {
+    const route = { InstructionInvitation: '/my-invitations' }[
+      messageable_type
+    ];
+    if (route) bodyDisplay = <NavLink to={route}>{body}</NavLink>;
+  }
+
   return (
     <div>
       {parent_id && parentMessage}
       <div>Subject: {subject}</div>
       <div>From: {sender.name}</div>
       <div>To: {recipient.name}</div>
-      <div>{body}</div>
+      <div>{bodyDisplay}</div>
       <div className="buttons">
         <button onClick={showReply} disabled={replyOn}>
           Reply

@@ -8,7 +8,10 @@ export default function SignUpButton() {
 
   return (
     <NavLink
-      to={`sign-up?from=${from || location.pathname.slice(1) || 'home'}`}
+      to={`sign-up?from=${
+        from || location.pathname.slice(1).replace(/\//g, '_') || 'home'
+      }`}
+      state={location.state}
     >
       <button>Sign Up</button>
     </NavLink>

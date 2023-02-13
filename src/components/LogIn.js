@@ -1,5 +1,5 @@
 import { useState, useContext } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';
 import fetcher from '../fetcher';
 
 import Field from './Field';
@@ -12,6 +12,7 @@ function LogInBase({ loggedIn, validate, toValidate, errors, handleErrors }) {
   const [loading, setLoading] = useState(false);
   const [searchParams] = useSearchParams();
   const from = searchParams.get('from') || '';
+  const state = useLocation().state;
   const navigate = useNavigate();
 
   const setMessage = useContext(MessageContext).set;
@@ -20,7 +21,7 @@ function LogInBase({ loggedIn, validate, toValidate, errors, handleErrors }) {
   function completeLogIn(data) {
     setMessage(data.message);
     setUser(data.user);
-    navigate('/' + from.replace(/-/g, '/'));
+    navigate('/' + from.replace(/_/g, '/'), { state });
   }
 
   async function handleSubmit(e) {

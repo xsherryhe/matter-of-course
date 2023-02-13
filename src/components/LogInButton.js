@@ -10,8 +10,9 @@ export default function LogInButton() {
   return (
     <NavLink
       to={`log-in?from=${
-        from || location.pathname.slice(1).replace(/\//g, '-') || 'home'
+        from || location.pathname.slice(1).replace(/\//g, '_') || 'home'
       }`}
+      state={location.state}
     >
       <button>Log In</button>
     </NavLink>

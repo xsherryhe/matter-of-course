@@ -68,6 +68,7 @@ function App() {
                     path="/course/:courseId/lesson/:id"
                     element={<Lesson />}
                   />
+                  <Route path="/lesson/:id" element={<Lesson />} />
                   <Route path="/my-invitations" element={<Invitations />} />
                   <Route
                     path="/my-assignments"

@@ -1,5 +1,3 @@
-import { useParams } from 'react-router-dom';
-
 import NavLink from './NavLink';
 import asResource from './higher-order/asResource';
 import LessonForm from './LessonForm';
@@ -12,7 +10,14 @@ function LessonBase({
   editButton,
   deleteButton,
 }) {
-  const { courseId } = useParams();
+  const {
+    id,
+    title,
+    course_id: courseId,
+    authorized,
+    lesson_sections,
+    assignments,
+  } = lesson;
 
   if (error) {
     let displayError = '';
@@ -30,34 +35,37 @@ function LessonBase({
 
   let main = (
     <main>
-      {lesson.authorized && (
+      {authorized && (
         <div className="buttons">
           {editButton}
           {deleteButton}
         </div>
       )}
-      {lesson.lesson_sections.map(({ id, title, body }) => (
+      {lesson_sections.map(({ id, title, body }) => (
         <div key={id} className="section">
           <h2>{title}</h2>
           <div>{body}</div>
         </div>
       ))}
       <h2>Assignments</h2>
-      {lesson.assignments.map((assignment) => (
+      {assignments.map((assignment) => (
         <Assignment
           key={assignment.id}
           assignment={assignment}
-          parentIds={{ course: courseId, lesson: lesson.id }}
-          authorized={lesson.authorized}
+          parentIds={{ course: courseId, lesson: id }}
+          authorized={authorized}
         />
       ))}
+      <NavLink to={`/lesson/${id}/discussion`} state={{ postable: lesson }}>
+        <button>View Discussion</button>
+      </NavLink>
     </main>
   );
 
   return (
     <div>
       <NavLink to={`/course/${courseId}`}>Back to Course</NavLink>
-      <h1>{lesson.title}</h1>
+      <h1>{title}</h1>
       {editForm || main}
     </div>
   );

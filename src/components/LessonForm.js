@@ -3,15 +3,16 @@ import { useLocation, useParams } from 'react-router-dom';
 import fetcher from '../fetcher';
 import ResourceForm from './ResourceForm';
 
-export default function LessonForm(props) {
+export default function LessonForm({ defaultValues, action, ...props }) {
   const initialCourse = useLocation().state?.course;
-  const { courseId } = useParams();
+  const { courseId: initialCourseId } = useParams();
+  const courseId = initialCourseId || defaultValues?.course_id;
   const [course, setCourse] = useState(initialCourse);
   const [error, setError] = useState(null);
 
   function handleErrors({ status, data }) {
     if (status === 401)
-      setError('You are unauthorized to create a lesson for this course.');
+      setError('You are unauthorized to edit lessons for this course.');
     else if (data.error) setError(data.error);
   }
 
@@ -107,9 +108,11 @@ export default function LessonForm(props) {
     <ResourceForm
       resource="lesson"
       fields={fields}
+      defaultValues={defaultValues}
+      action={action}
       heading={`Lesson for ${course.title}`}
       navPrefix={`/course/${course.id}`}
-      routePrefix={`courses/${course.id}/`}
+      routePrefix={action === 'create' ? `courses/${course.id}/` : ''}
       back={{ location: 'Course', route: `/course/${courseId}` }}
       {...props}
     />

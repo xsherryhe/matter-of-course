@@ -13,7 +13,7 @@ export default function asResource(
   resourceName,
   {
     route = (id) => `${resourceName}s/${id}`,
-    redirect,
+    redirect = () => null,
     formHeading = true,
     catchError = true,
   }
@@ -23,11 +23,11 @@ export default function asResource(
     const data = state?.[`${resourceName}Data`];
     const { id } = useParams();
     const navigate = useNavigate();
-    const { route: redirectRoute, state: redirectState } =
-      redirect || state?.back || {};
     const [resource, setResource] = useState(data);
     const [editOn, setEditOn] = useState(false);
     const [error, setError] = useState(null);
+    const { route: redirectRoute, state: redirectState } =
+      (resource && redirect(resource)) || state?.back || {};
 
     const setMessage = useContext(MessageContext).set;
 

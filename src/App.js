@@ -23,6 +23,8 @@ import AssignmentSubmission from './components/AssignmentSubmission';
 import AssignmentSubmissions from './components/AssignmentSubmissions';
 import Messages from './components/Messages';
 import MessageForm from './components/MessageForm';
+import Posts from './components/Posts';
+import Post from './components/Post';
 
 function App() {
   const [popUp, setPopUp] = useState(null);
@@ -88,6 +90,14 @@ function App() {
                   />
                   <Route path="/my-messages" element={<Messages />} />
                   <Route path="/new-message" element={<MessageForm />} />
+                  <Route
+                    path="/:postableType/:postableId/discussion/"
+                    element={<Posts />}
+                  />
+                  <Route
+                    path="/:postableType/:postableId/post/:id"
+                    element={<Post />}
+                  />
                 </Routes>
               </main>
               {popUp}

@@ -13,9 +13,10 @@ import CourseStatusButton from './CourseStatusButton';
 import CourseEnrollButton from './CourseEnrollButton';
 import CourseRoster from './CourseRoster';
 import CourseAssignments from './CourseAssignments';
-import NavLink from './NavLink';
 import NavButton from './NavButton';
 import CourseMessageButton from './CourseMessageButton';
+import CoursePostsButton from './CoursePostsButton';
+import CourseStatusError from './CourseStatusError';
 
 function CourseBase({
   resource: course,
@@ -40,28 +41,7 @@ function CourseBase({
   }
 
   if (error) {
-    if (error.status === 401) {
-      const { status, host } = error.data;
-      return (
-        <div className="error">
-          This course is {status}. For details, contact the course host,{' '}
-          <NavLink
-            to="/new-message"
-            state={{
-              recipientOptions: [
-                {
-                  name: `${host.name} (${host.username}) - Host`,
-                  value: host.username,
-                },
-              ],
-            }}
-          >
-            {host.name}
-          </NavLink>
-          .
-        </div>
-      );
-    }
+    if (error.status === 401) return <CourseStatusError error={error.data} />;
     if (error.data?.error)
       return <div className="error">{error.data.error}</div>;
     if (typeof error === 'string') return <div className="error">{error}</div>;
@@ -83,6 +63,7 @@ function CourseBase({
         </div>
       )}
       <CourseEnrollButton course={course} setCourse={setCourse} />
+      <CoursePostsButton course={course} />
       <CourseMessageButton course={course} />
       <div>Host: {course.host.name}</div>
       <CourseInstructors

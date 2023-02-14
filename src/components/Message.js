@@ -13,11 +13,11 @@ export default function Message({ message: initialMessage, messageId, type }) {
 
   const {
     id,
-    read_status,
+    read_status: readStatus,
     subject,
     body,
     role,
-    parent_id,
+    parent_id: parentId,
     messageable_type,
     sender,
     recipient,
@@ -40,7 +40,7 @@ export default function Message({ message: initialMessage, messageId, type }) {
 
   useEffect(() => {
     if (!message) return;
-    if (read_status === 'read') return;
+    if (readStatus === 'read') return;
 
     async function updateToRead() {
       const response = await fetcher(`messages/${id}`, {
@@ -52,7 +52,7 @@ export default function Message({ message: initialMessage, messageId, type }) {
       else handleErrors(response);
     }
     updateToRead();
-  }, [message, read_status, id]);
+  }, [message, readStatus, id]);
 
   function showParent() {
     setParentOn(true);
@@ -78,7 +78,7 @@ export default function Message({ message: initialMessage, messageId, type }) {
       {!parentOn && <button onClick={showParent}>View Previous Message</button>}
       {parentOn && (
         <div>
-          <Message messageId={parent_id} type="parent" />
+          <Message messageId={parentId} type="parent" />
           <button onClick={hideParent}>Hide</button>
         </div>
       )}
@@ -95,7 +95,7 @@ export default function Message({ message: initialMessage, messageId, type }) {
 
   return (
     <div>
-      {parent_id && parentMessage}
+      {parentId && parentMessage}
       <div>Subject: {subject}</div>
       <div>From: {sender.name}</div>
       <div>To: {recipient.name}</div>

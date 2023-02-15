@@ -1,8 +1,9 @@
+import { useLocation } from 'react-router-dom';
+
 import asResource from './higher-order/asResource';
 import AssignmentSubmissionForm from './AssignmentSubmissionForm';
-import { useLocation } from 'react-router-dom';
-import NavLink from './NavLink';
 import Comments from './Comments';
+import BackLink from './BackLink';
 
 function AssignmentSubmissionBase({
   resource: submission,
@@ -43,11 +44,7 @@ function AssignmentSubmissionBase({
 
   return (
     <div>
-      {back && (
-        <NavLink to={back.route} state={back.state}>
-          Back to {back.location}
-        </NavLink>
-      )}
+      <BackLink back={back} />
       {submission.assignment && (
         <div>
           <h1>{submission.assignment.title}</h1>

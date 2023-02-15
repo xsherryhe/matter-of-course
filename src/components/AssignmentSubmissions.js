@@ -3,6 +3,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import '../styles/AssignmentSubmissions.css';
 import fetcher from '../fetcher';
 
+import BackLink from './BackLink';
 import NavLink from './NavLink';
 import DeleteButton from './DeleteButton';
 import MessageContext from './contexts/MessageContext';
@@ -56,22 +57,14 @@ export default function AssignmentSubmissions() {
     return (
       <div>
         <div className="error">{error}</div>
-        {back && (
-          <NavLink to={back.route} state={back.state}>
-            Back to {back.location}
-          </NavLink>
-        )}
+        <BackLink back={back} />
       </div>
     );
   if (!(assignment && submissions)) return 'Loading...';
 
   return (
     <div className="assignment-submissions">
-      {back && (
-        <NavLink to={back.route} state={back.state}>
-          Back to {back.location}
-        </NavLink>
-      )}
+      <BackLink back={back} />
       <h1 className="title">{assignment.title}</h1>
       <DeleteButton
         resource="assignment"

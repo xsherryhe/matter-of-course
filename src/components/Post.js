@@ -3,6 +3,7 @@ import { capitalize } from '../utilities';
 import asResource from './higher-order/asResource';
 import NavLink from './NavLink';
 import PostForm from './PostForm';
+import Comments from './Comments';
 
 function PostBase({ resource: post, editForm, editButton, deleteButton }) {
   let main = (
@@ -17,6 +18,7 @@ function PostBase({ resource: post, editForm, editButton, deleteButton }) {
         </div>
       )}
       <div>{post.body}</div>
+      <Comments commentable={post} commentableType="post" />
     </main>
   );
 

@@ -1,30 +1,20 @@
-import { useContext, useState } from 'react';
-import fetcher from '../fetcher';
+import { useContext } from 'react';
 
 import PopUpContext from './contexts/PopUpContext';
 import NavButton from './NavButton';
 import PopUp from './PopUp';
 
 export default function DeleteConfirmPopUp({
-  route,
   resource,
-  id,
   action,
   confirmText,
-  completeAction,
-  handleErrors,
+  handleDelete,
+  loading,
 }) {
-  const [loading, setLoading] = useState(false);
   const setPopUp = useContext(PopUpContext).set;
 
   async function handleYes() {
-    setLoading(true);
-    const response = await fetcher(route || `${resource}s/${id}`, {
-      method: 'DELETE',
-    });
-    if (response.status < 400) completeAction();
-    else if (handleErrors) handleErrors(response);
-    setLoading(false);
+    handleDelete();
     setPopUp(null);
   }
 

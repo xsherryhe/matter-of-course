@@ -10,7 +10,16 @@ export default function Invitations() {
       const response = await fetcher('instruction_invitations');
       setInvitations(response.data);
     }
+
+    async function updateInvitations() {
+      await fetcher('instruction_invitations', {
+        method: 'PATCH',
+        query: 'read=true',
+      });
+    }
+
     getInvitations();
+    return updateInvitations;
   }, []);
 
   if (!invitations) return 'Loading...';

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import '../styles/Invitation.css';
 import fetcher from '../fetcher';
 
 export default function Invitation({
@@ -6,6 +7,7 @@ export default function Invitation({
     id,
     course: { title },
     sender: { username },
+    response: invitationResponse,
   },
 }) {
   const [message, setMessage] = useState(null);
@@ -15,12 +17,10 @@ export default function Invitation({
   }
 
   async function handleAccept() {
-    const response = await fetcher(
-      `instruction_invitations/${id}?accept=true`,
-      {
-        method: 'PATCH',
-      }
-    );
+    const response = await fetcher(`instruction_invitations/${id}`, {
+      method: 'PATCH',
+      query: 'accept=true',
+    });
     if (response.status < 400)
       setMessage(`You are now an instructor for ${title}!`);
     else handleErrors(response);
@@ -37,8 +37,10 @@ export default function Invitation({
   if (message) return <div>{message}</div>;
 
   return (
-    <div>
-      {username} invited you to instruct the course {title}.
+    <div className="invitation">
+      <div className={invitationResponse}>
+        {username} invited you to instruct the course {title}.
+      </div>
       <div className="buttons">
         <button onClick={handleAccept}>Accept</button>
         <button onClick={handleDecline}>Decline</button>

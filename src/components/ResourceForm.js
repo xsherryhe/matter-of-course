@@ -141,6 +141,7 @@ function ResourceFormBase({
       <button disabled={loading} type="submit">
         {submitText || `${capitalize(action)} ${capitalize(resource)}`}
       </button>
+      {formError && <div className="error">{formError}</div>}
     </form>
   );
 }

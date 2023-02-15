@@ -8,7 +8,14 @@ import UserContext from './contexts/UserContext';
 import withLogInCheck from './higher-order/withLogInCheck';
 import withFormValidation from './higher-order/withFormValidation';
 
-function LogInBase({ loggedIn, validate, toValidate, errors, handleErrors }) {
+function LogInBase({
+  loggedIn,
+  validate,
+  toValidate,
+  formError,
+  errors,
+  handleErrors,
+}) {
   const [loading, setLoading] = useState(false);
   const [searchParams] = useSearchParams();
   const from = searchParams.get('from') || '';
@@ -47,6 +54,7 @@ function LogInBase({ loggedIn, validate, toValidate, errors, handleErrors }) {
 
   return (
     <form noValidate onSubmit={handleSubmit}>
+      {formError && <div className="error">{formError}</div>}
       <h1>Log in</h1>
       <Field
         prefix="user"

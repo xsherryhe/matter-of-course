@@ -12,6 +12,7 @@ function CourseLessonsEditBase({
   reOrder,
   destroy,
   instancesToDestroy,
+  formError,
   errors,
   handleErrors,
   validate,
@@ -97,6 +98,7 @@ function CourseLessonsEditBase({
         <button disabled={loading} type="submit">
           Submit
         </button>
+        {formError && <div className="error">{formError}</div>}
       </form>
     </div>
   );

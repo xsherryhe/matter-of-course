@@ -17,6 +17,7 @@ function AssignmentSubmissionFormBase({
   deleteButton,
   validate: validateForm,
   toValidate,
+  formError: initialFormError,
   errors,
   handleErrors,
 }) {
@@ -28,7 +29,7 @@ function AssignmentSubmissionFormBase({
   const [body, setBody] = useState(defaultValues.body);
   const [saved, setSaved] = useState(false);
   const [pageError, setPageError] = useState(null);
-  const [formError, setFormError] = useState(null);
+  const [formError, setFormError] = useState(initialFormError);
 
   const setMessage = useContext(MessageContext).set;
   const navigate = useNavigate();
@@ -66,11 +67,6 @@ function AssignmentSubmissionFormBase({
     return true;
   }
 
-  function handleFormErrors({ data }) {
-    if (data.error) setFormError(data.error);
-    else handleErrors(data);
-  }
-
   function handleSubmit(changeToComplete) {
     return async function (e) {
       e.preventDefault();
@@ -104,7 +100,7 @@ function AssignmentSubmissionFormBase({
             state: { assignment, submissionData: response.data },
           });
         }
-      } else handleFormErrors(response);
+      } else handleErrors(response);
       setLoading(false);
     };
   }

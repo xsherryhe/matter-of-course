@@ -9,7 +9,14 @@ import PasswordCreationFields from './PasswordCreationFields';
 import withLogInCheck from './higher-order/withLogInCheck';
 import withFormValidation from './higher-order/withFormValidation';
 
-function SignUpBase({ loggedIn, validate, toValidate, errors, handleErrors }) {
+function SignUpBase({
+  loggedIn,
+  validate,
+  toValidate,
+  formError,
+  errors,
+  handleErrors,
+}) {
   const [loading, setLoading] = useState(false);
   const [searchParams] = useSearchParams();
   const from = searchParams.get('from') || '';
@@ -48,6 +55,7 @@ function SignUpBase({ loggedIn, validate, toValidate, errors, handleErrors }) {
 
   return (
     <form noValidate onSubmit={handleSubmit}>
+      {formError && <div className="error">{formError}</div>}
       <h1>Sign up</h1>
       <Field
         prefix="user"

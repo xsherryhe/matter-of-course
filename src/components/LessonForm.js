@@ -32,6 +32,7 @@ export default function LessonForm({ defaultValues, action, ...props }) {
     {
       attribute: 'course',
       type: 'immutable',
+      labelText: 'Course: ',
       defaultValue: () => course.title,
     },
     {

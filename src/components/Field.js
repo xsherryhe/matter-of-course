@@ -120,7 +120,7 @@ export default function Field({
         ))}
       </select>
     );
-  if (type === 'immutable') input = `: ${defaultValue}`;
+  if (type === 'immutable') input = defaultValue;
 
   return (
     <div className="field">

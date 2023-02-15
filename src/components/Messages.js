@@ -5,11 +5,13 @@ import fetcher from '../fetcher';
 import MessageForm from './MessageForm';
 import Message from './Message';
 import NavButton from './NavButton';
+import MessageDeleteButton from './MessageDeleteButton';
 
 export default function Messages() {
   const [type, setType] = useState('inbox');
   const [message, setMessage] = useState(null);
   const [messages, setMessages] = useState(null);
+  const [messagesFlash, setMessagesFlash] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [newOn, setNewOn] = useState(false);
@@ -43,8 +45,13 @@ export default function Messages() {
     getMessages();
   }, [getMessages]);
 
+  function hideMessagesFlash() {
+    setMessagesFlash(null);
+  }
+
   function showMessage(message) {
     return function () {
+      hideMessagesFlash();
       setMessage(message);
     };
   }
@@ -62,10 +69,32 @@ export default function Messages() {
     setType('outbox');
   }
 
+  function completeDelete(deleteId) {
+    return function () {
+      setMessages((messages) => {
+        const messageIndex = messages.findIndex(({ id }) => id === deleteId);
+        return [
+          ...messages.slice(0, messageIndex),
+          ...messages.slice(messageIndex + 1),
+        ];
+      });
+      setMessagesFlash('Message deleted.');
+      if (message) hideMessage();
+    };
+  }
+
   let header;
   if (!message)
     header = (
       <header>
+        {messagesFlash && (
+          <div>
+            {messagesFlash}
+            <button className="close" onClick={hideMessagesFlash}>
+              X
+            </button>
+          </div>
+        )}
         {!newOn && <NavButton onClick={showNew}>New Message</NavButton>}
         {newOn && (
           <MessageForm
@@ -92,7 +121,16 @@ export default function Messages() {
     main = (
       <main>
         <NavButton onClick={hideMessage}>Back to Messages</NavButton>
-        <Message message={message} type={type} />
+        <Message
+          message={message}
+          type={type}
+          deleteButton={
+            <MessageDeleteButton
+              id={message.id}
+              completeDelete={completeDelete(message.id)}
+            />
+          }
+        />
       </main>
     );
   else if (messages) {
@@ -100,17 +138,23 @@ export default function Messages() {
       main = (
         <main>
           {messages.map((message) => (
-            <div
-              className={`message-item ${
-                type === 'inbox' ? message.read_status : ''
-              }`}
-              key={message.id}
-            >
-              <NavButton onClick={showMessage(message)}>
+            <div key={message.id}>
+              <NavButton
+                onClick={showMessage(message)}
+                className={`message-item ${
+                  type === 'inbox' ? message.read_status : ''
+                }`}
+              >
                 {type === 'inbox' && <div>From: {message.sender.name}</div>}
                 {type === 'outbox' && <div>To: {message.recipient.name}</div>}
                 <div>{message.subject}</div>
               </NavButton>
+              {type === 'inbox' && (
+                <MessageDeleteButton
+                  id={message.id}
+                  completeDelete={completeDelete(message.id)}
+                />
+              )}
             </div>
           ))}
         </main>

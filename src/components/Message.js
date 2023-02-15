@@ -5,7 +5,12 @@ import { getUniqueBy } from '../utilities';
 import MessageForm from './MessageForm';
 import NavLink from './NavLink';
 
-export default function Message({ message: initialMessage, messageId, type }) {
+export default function Message({
+  message: initialMessage,
+  messageId,
+  type,
+  deleteButton,
+}) {
   const [message, setMessage] = useState(initialMessage);
   const [parentOn, setParentOn] = useState(false);
   const [replyOn, setReplyOn] = useState(false);
@@ -104,7 +109,7 @@ export default function Message({ message: initialMessage, messageId, type }) {
         <button onClick={showReply} disabled={replyOn}>
           Reply
         </button>
-        {type === 'inbox' && <button>Delete</button>}
+        {type === 'inbox' && deleteButton}
       </div>
       {replyOn && (
         <MessageForm

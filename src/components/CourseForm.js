@@ -2,7 +2,8 @@ import ResourceForm from './ResourceForm';
 
 export const instructorLoginsField = {
   attribute: 'instructor_logins',
-  value: (_, errors) => (errors?.instructor_logins?.valid || []).join(', '),
+  value: (_defaultValues, errors) =>
+    (errors?.instructor_logins?.valid || []).join(', '),
   type: 'textarea',
   labelText: 'Invite Instructors (username or email, comma-separated)',
   attributeText: 'Instructors',

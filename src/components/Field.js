@@ -11,8 +11,8 @@ export default function Field({
   value,
   valueOptions,
   defaultValue = '',
-  errors = {},
   onChange,
+  errors = {},
   handleErrors,
   toValidate,
   required,
@@ -22,7 +22,7 @@ export default function Field({
 }) {
   const attributeName =
     attributeText || humanName(attributes[attributes.length - 1]);
-  const [fieldValue, setFieldValue] = useState(value);
+  const [fieldValue, setFieldValue] = useState(value || undefined);
   const [error, setError] = useState(null);
   const errorAttributes = parentErrorAttributes || [
     attributes.map((attribute) => attribute.split('_attributes')[0]).join('.'),
@@ -59,7 +59,7 @@ export default function Field({
   }, [toValidate, inputRef, match, attributeName]);
 
   useEffect(() => {
-    setFieldValue(value);
+    setFieldValue((fieldValue) => (value === false ? fieldValue : value));
   }, [value, errors, completed]);
 
   function handleChange(e) {

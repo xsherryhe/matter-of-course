@@ -20,6 +20,7 @@ function ResourceFormBase({
   routePrefix = '',
   validate,
   toValidate,
+  formError,
   errors,
   handleErrors,
   id,
@@ -121,10 +122,10 @@ function ResourceFormBase({
                 type={type}
                 labelText={labelText}
                 attributeText={attributeText}
-                value={value ? value(defaultValues, errors) : null}
+                value={value ? value(defaultValues, errors, completed) : null}
                 defaultValue={
                   defaultValue
-                    ? defaultValue(defaultValues, errors)
+                    ? defaultValue(defaultValues, errors, completed)
                     : defaultValues[attribute]
                 }
                 valueOptions={valueOptions}

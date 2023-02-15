@@ -2,6 +2,7 @@ import asResource from './higher-order/asResource';
 import AssignmentSubmissionForm from './AssignmentSubmissionForm';
 import { useLocation } from 'react-router-dom';
 import NavLink from './NavLink';
+import Comments from './Comments';
 
 function AssignmentSubmissionBase({
   resource: submission,
@@ -33,6 +34,10 @@ function AssignmentSubmissionBase({
         {submission.authorized && submission.assignment && editButton}
         {submission.authorized && deleteButton}
         <div>{submission.body}</div>
+        <Comments
+          commentable={submission}
+          commentableType="assignment_submission"
+        />
       </main>
     );
 

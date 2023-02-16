@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import MessageContext from './contexts/MessageContext';
 
-export default function NavButton({ onClick, disabled, children, ...props }) {
+export default function NavButton({ onClick, children, ...props }) {
   const setMessage = useContext(MessageContext).set;
 
   function handleClick(e) {
@@ -9,8 +9,9 @@ export default function NavButton({ onClick, disabled, children, ...props }) {
     setMessage(null);
     onClick(e);
   }
+
   return (
-    <button disabled={disabled} onClick={handleClick} {...props}>
+    <button onClick={handleClick} {...props}>
       {children}
     </button>
   );

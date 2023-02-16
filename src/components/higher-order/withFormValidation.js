@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
+
+import MessageContext from '../contexts/MessageContext';
 
 export default function withFormValidation(FormBase) {
   return function Form(props) {
@@ -6,7 +8,10 @@ export default function withFormValidation(FormBase) {
     const [errors, setErrors] = useState({});
     const [toValidate, setToValidate] = useState(false);
 
+    const setMessage = useContext(MessageContext).set;
+
     function handleErrors({ data }) {
+      setMessage(null);
       if (data.error) setFormError(data.error);
       else setErrors(data);
     }

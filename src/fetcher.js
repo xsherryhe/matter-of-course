@@ -3,7 +3,7 @@ import server from './server';
 const errorMessage = 'Sorry, something went wrong.';
 const statusErrorMessage = (status) =>
   ({
-    401: 'Please sign in again before proceeding.',
+    401: 'Oops, unauthorized access! If this is an error, please try signing in again.',
     404: 'Page not found.',
     422: 'Sorry, something went wrong. Please sign in again and make sure cookies are enabled.',
   }[status] || 'Sorry, something went wrong.');

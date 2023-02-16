@@ -1,7 +1,11 @@
+import { useContext } from 'react';
+import { Navigate, useParams } from 'react-router-dom';
+
 import NavLink from './NavLink';
 import asResource from './higher-order/asResource';
 import LessonForm from './LessonForm';
 import LessonAssignments from './LessonAssignments';
+import MessageContext from './contexts/MessageContext';
 
 function LessonBase({
   resource: lesson,
@@ -10,27 +14,30 @@ function LessonBase({
   editButton,
   deleteButton,
 }) {
-  const {
-    id,
-    title,
-    course_id: courseId,
-    authorized,
-    lesson_sections,
-  } = lesson;
+  const courseId = useParams().courseId || lesson?.course_id;
+  const setMessage = useContext(MessageContext).set;
 
   if (error) {
     let displayError = '';
+    if (error.status === 401) {
+      setMessage('You are not authorized to view that lesson.');
+      return <Navigate to={courseId ? `/course/${courseId}` : '/home'} />;
+    }
     if (error.data?.error)
       displayError = <div className="error">{error.data.error}</div>;
     if (typeof error === 'string')
       displayError = <div className="error">{error}</div>;
     return (
       <div>
-        <NavLink to={`/course/${courseId}`}>Back to Course</NavLink>
+        {courseId && (
+          <NavLink to={`/course/${courseId}`}>Back to Course</NavLink>
+        )}
         {displayError}
       </div>
     );
   }
+
+  const { id, title, authorized, lesson_sections } = lesson;
 
   let main = (
     <main>
@@ -65,5 +72,6 @@ function LessonBase({
 const Lesson = asResource(LessonBase, LessonForm, 'lesson', {
   formHeading: false,
   catchError: false,
+  redirect: (lesson) => lesson && { route: `/course/${lesson.course_id}` },
 });
 export default Lesson;

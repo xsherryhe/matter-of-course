@@ -1,6 +1,10 @@
+import { useCallback } from 'react';
+import { useContext } from 'react';
 import { useEffect, useState } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import fetcher from '../fetcher';
+
+import MessageContext from './contexts/MessageContext';
 import ResourceForm from './ResourceForm';
 
 export default function LessonForm({ defaultValues, action, ...props }) {
@@ -9,15 +13,25 @@ export default function LessonForm({ defaultValues, action, ...props }) {
   const courseId = initialCourseId || defaultValues?.course_id;
   const [course, setCourse] = useState(initialCourse);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
-  function handleErrors({ status, data }) {
-    if (status === 401)
-      setError('You are unauthorized to edit lessons for this course.');
-    else if (data.error) setError(data.error);
-  }
+  const setMessage = useContext(MessageContext).set;
+  const redirectUnauthorized = useCallback(() => {
+    setMessage(
+      <span className="error">
+        You are unauthorized to edit lessons for that course.
+      </span>
+    );
+    navigate('/home');
+  }, [setMessage, navigate]);
 
   useEffect(() => {
     if (initialCourse) return;
+
+    function handleErrors({ status, data }) {
+      if (status === 401) redirectUnauthorized();
+      else if (data.error) setError(data.error);
+    }
 
     async function getCourse() {
       const response = await fetcher(`courses/${courseId}`);
@@ -25,7 +39,11 @@ export default function LessonForm({ defaultValues, action, ...props }) {
       else handleErrors(response);
     }
     getCourse();
-  }, [initialCourse, courseId]);
+  }, [initialCourse, courseId, redirectUnauthorized]);
+
+  useEffect(() => {
+    if (course && !course.authorized) redirectUnauthorized();
+  }, [course, setMessage, redirectUnauthorized]);
 
   const fields = [
     { attribute: 'title', attributeText: 'Lesson Title', required: true },
@@ -103,7 +121,7 @@ export default function LessonForm({ defaultValues, action, ...props }) {
   ];
 
   if (error) return <div className="error">{error}</div>;
-  if (!course) return 'Loading...';
+  if (!course || !course.authorized) return 'Loading...';
 
   return (
     <ResourceForm

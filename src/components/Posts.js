@@ -50,8 +50,8 @@ export default function Posts() {
     setNewPostOn(false);
   }
 
-  if (!postable) return 'Loading...';
   if (error) return <div className="error">{error}</div>;
+  if (!postable) return 'Loading...';
 
   let postsMain = 'Loading...';
   if (posts) {

@@ -20,24 +20,7 @@ export default function CourseLessons({ course, setCourse }) {
     hideEdit();
   }
 
-  if (!lessons.length) return 'No lessons yet!';
-
-  let main = (
-    <main>
-      {authorized && <button onClick={showEdit}>Edit Lesson Structure</button>}
-      {lessons.map(({ id: lessonId, title }) => (
-        <div key={lessonId}>
-          {authorized || enrolled ? (
-            <NavLink to={`/course/${id}/lesson/${lessonId}`} state={{ course }}>
-              {title}
-            </NavLink>
-          ) : (
-            title
-          )}
-        </div>
-      ))}
-    </main>
-  );
+  let main = 'No lessons yet!';
   if (editOn)
     main = (
       <CourseLessonsEdit
@@ -45,6 +28,28 @@ export default function CourseLessons({ course, setCourse }) {
         hideEdit={hideEdit}
         finishEdit={finishEdit}
       />
+    );
+  else if (lessons.length)
+    main = (
+      <main>
+        {authorized && (
+          <button onClick={showEdit}>Edit Lesson Structure</button>
+        )}
+        {lessons.map(({ id: lessonId, title }) => (
+          <div key={lessonId}>
+            {authorized || enrolled ? (
+              <NavLink
+                to={`/course/${id}/lesson/${lessonId}`}
+                state={{ course }}
+              >
+                {title}
+              </NavLink>
+            ) : (
+              title
+            )}
+          </div>
+        ))}
+      </main>
     );
 
   return (

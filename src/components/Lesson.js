@@ -1,7 +1,7 @@
 import NavLink from './NavLink';
 import asResource from './higher-order/asResource';
 import LessonForm from './LessonForm';
-import Assignment from './Assignment';
+import LessonAssignments from './LessonAssignments';
 
 function LessonBase({
   resource: lesson,
@@ -16,7 +16,6 @@ function LessonBase({
     course_id: courseId,
     authorized,
     lesson_sections,
-    assignments,
   } = lesson;
 
   if (error) {
@@ -47,15 +46,7 @@ function LessonBase({
           <div>{body}</div>
         </div>
       ))}
-      <h2>Assignments</h2>
-      {assignments.map((assignment) => (
-        <Assignment
-          key={assignment.id}
-          assignment={assignment}
-          parentIds={{ course: courseId, lesson: id }}
-          authorized={authorized}
-        />
-      ))}
+      <LessonAssignments lesson={lesson} />
       <NavLink to={`/lesson/${id}/discussion`} state={{ postable: lesson }}>
         <button>View Discussion</button>
       </NavLink>

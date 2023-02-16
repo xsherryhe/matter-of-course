@@ -5,6 +5,7 @@ export default function CourseAssignments({
   course: { id: courseId, assignments, authorized },
 }) {
   if (!authorized) return null;
+  if (!assignments.length) return null;
 
   return (
     <div>

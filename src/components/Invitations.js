@@ -24,12 +24,16 @@ export default function Invitations() {
 
   if (!invitations) return 'Loading...';
 
+  let main = 'No invitations yet!';
+  if (invitations.length)
+    main = invitations.map((invitation) => (
+      <Invitation key={invitation.id} invitation={invitation} />
+    ));
+
   return (
     <div>
       <h1>My Invitations</h1>
-      {invitations.map((invitation) => (
-        <Invitation key={invitation.id} invitation={invitation} />
-      ))}
+      <main>{main}</main>
     </div>
   );
 }

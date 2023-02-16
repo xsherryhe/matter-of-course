@@ -23,6 +23,13 @@ export default function CourseRoster({ course: { id }, hide }) {
 
   if (error) return <div className="error">{error}</div>;
   if (!roster) return 'Loading...';
+
+  let tbody = 'No students yet!';
+  if (roster.length)
+    tbody = roster.map(({ student }) => (
+      <CourseRosterEntry key={student.id} courseId={id} student={student} />
+    ));
+
   return (
     <div>
       <h2>Course Roster</h2>
@@ -38,15 +45,7 @@ export default function CourseRoster({ course: { id }, hide }) {
             <th></th>
           </tr>
         </thead>
-        <tbody>
-          {roster.map(({ student }) => (
-            <CourseRosterEntry
-              key={student.id}
-              courseId={id}
-              student={student}
-            />
-          ))}
-        </tbody>
+        <tbody>{tbody}</tbody>
       </table>
     </div>
   );

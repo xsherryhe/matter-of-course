@@ -24,14 +24,20 @@ export default function UserCourses() {
   return (
     <div>
       <h1>{name}'s Courses</h1>
-      {['hosted', 'instructed', 'enrolled'].map((type) => (
-        <div key={type} className={type}>
-          <h2>{capitalize(type)} Courses</h2>
-          {courses[type].map((course) => (
+      {['hosted', 'instructed', 'enrolled'].map((type) => {
+        let list = `No ${type} courses available.`;
+        if (courses[type].length)
+          list = courses[type].map((course) => (
             <CourseItem key={course.id} course={course} />
-          ))}
-        </div>
-      ))}
+          ));
+
+        return (
+          <div key={type} className={type}>
+            <h2>{capitalize(type)} Courses</h2>
+            {list}
+          </div>
+        );
+      })}
     </div>
   );
 }

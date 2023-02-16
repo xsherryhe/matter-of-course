@@ -66,6 +66,10 @@ const AssignmentSubmission = asResource(
   AssignmentSubmissionBase,
   AssignmentSubmissionForm,
   'submission',
-  { route: (id) => `assignment_submissions/${id}`, formHeading: false }
+  {
+    route: (id) => `assignment_submissions/${id}`,
+    redirect: () => ({ route: '/my-assignments' }),
+    formHeading: false,
+  }
 );
 export default AssignmentSubmission;

@@ -37,10 +37,11 @@ function PostBase({ resource: post, editForm, editButton, deleteButton }) {
 }
 
 const Post = asResource(PostBase, PostForm, 'post', {
-  redirect: (post) => ({
-    route: `/${post.postable_type.toLowerCase()}/${
-      post.postable_id
-    }/discussion`,
-  }),
+  redirect: (post) =>
+    post && {
+      route: `/${post.postable_type.toLowerCase()}/${
+        post.postable_id
+      }/discussion`,
+    },
 });
 export default Post;

@@ -96,5 +96,6 @@ function CourseBase({
 const Course = asResource(CourseBase, CourseForm, 'course', {
   formHeading: false,
   catchError: false,
+  redirect: () => ({ route: '/my-courses' }),
 });
 export default Course;

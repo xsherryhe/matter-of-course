@@ -27,7 +27,7 @@ export default function asResource(
     const [editOn, setEditOn] = useState(false);
     const [error, setError] = useState(null);
     const { route: redirectRoute, state: redirectState } =
-      (resource && redirect(resource)) || state?.back || {};
+      state?.back || redirect(resource) || {};
 
     const setMessage = useContext(MessageContext).set;
 

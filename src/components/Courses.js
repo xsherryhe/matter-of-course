@@ -1,14 +1,11 @@
-import { useEffect, useState, useContext } from 'react';
+import { useEffect, useState } from 'react';
 import fetcher from '../fetcher';
 
-import UserContext from './contexts/UserContext';
 import CourseItem from './CourseItem';
 import NavLink from './NavLink';
 
 export default function Courses() {
   const [courses, setCourses] = useState(null);
-
-  const { user } = useContext(UserContext);
 
   useEffect(() => {
     async function getCourses() {
@@ -23,13 +20,7 @@ export default function Courses() {
   let main = (
     <div>
       Uh oh, no courses here! Help us out by{' '}
-      <NavLink
-        authenticationMessage={true}
-        to={user ? '/new-course' : `/log-in?from=new-course`}
-      >
-        creating a course
-      </NavLink>
-      .
+      <NavLink to="/new-course">creating a course</NavLink>.
     </div>
   );
   if (courses.length)

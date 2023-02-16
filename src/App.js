@@ -25,6 +25,28 @@ import Messages from './components/Messages';
 import MessageForm from './components/MessageForm';
 import Posts from './components/Posts';
 import Post from './components/Post';
+import withAuthentication from './components/higher-order/withAuthentication';
+
+const AuthenticatedUserCourses = withAuthentication(UserCourses);
+const AuthenticatedCourseForm = withAuthentication(CourseForm);
+const AuthenticatedLessonForm = withAuthentication(LessonForm);
+const AuthenticatedLesson = withAuthentication(Lesson);
+const AuthenticatedInvitations = withAuthentication(Invitations);
+const AuthenticatedUserAssignmentSubmissions = withAuthentication(
+  UserAssignmentSubmissions
+);
+const AuthenticatedAssignmentSubmissionForm = withAuthentication(
+  AssignmentSubmissionForm
+);
+const AuthenticatedAssignmentSubmissions = withAuthentication(
+  AssignmentSubmissions
+);
+const AuthenticatedAssignmentSubmission =
+  withAuthentication(AssignmentSubmission);
+const AuthenticatedMessages = withAuthentication(Messages);
+const AuthenticatedMessageForm = withAuthentication(MessageForm);
+const AuthenticatedPosts = withAuthentication(Posts);
+const AuthenticatedPost = withAuthentication(Post);
 
 function App() {
   const [popUp, setPopUp] = useState(null);
@@ -56,47 +78,61 @@ function App() {
                   <Route path="/sign-up" element={<SignUp />} />
                   <Route path="/log-in" element={<LogIn />} />
                   <Route path="/courses" element={<Courses />} />
-                  <Route path="/my-courses" element={<UserCourses />} />
+                  <Route
+                    path="/my-courses"
+                    element={<AuthenticatedUserCourses />}
+                  />
                   <Route
                     path="/new-course"
-                    element={<CourseForm action="create" />}
+                    element={<AuthenticatedCourseForm action="create" />}
                   />
                   <Route path="/course/:id" element={<Course />} />
                   <Route
                     path="/course/:courseId/new-lesson"
-                    element={<LessonForm action="create" />}
+                    element={<AuthenticatedLessonForm action="create" />}
                   />
                   <Route
                     path="/course/:courseId/lesson/:id"
-                    element={<Lesson />}
+                    element={<AuthenticatedLesson />}
                   />
-                  <Route path="/lesson/:id" element={<Lesson />} />
-                  <Route path="/my-invitations" element={<Invitations />} />
+                  <Route path="/lesson/:id" element={<AuthenticatedLesson />} />
+                  <Route
+                    path="/my-invitations"
+                    element={<AuthenticatedInvitations />}
+                  />
                   <Route
                     path="/my-assignments"
-                    element={<UserAssignmentSubmissions />}
+                    element={<AuthenticatedUserAssignmentSubmissions />}
                   />
                   <Route
                     path="/assignment/:assignmentId/new"
-                    element={<AssignmentSubmissionForm action="create" />}
+                    element={
+                      <AuthenticatedAssignmentSubmissionForm action="create" />
+                    }
                   />
                   <Route
                     path="/assignment/:assignmentId/submissions"
-                    element={<AssignmentSubmissions />}
+                    element={<AuthenticatedAssignmentSubmissions />}
                   />
                   <Route
                     path="/assignment/:id"
-                    element={<AssignmentSubmission />}
+                    element={<AuthenticatedAssignmentSubmission />}
                   />
-                  <Route path="/my-messages" element={<Messages />} />
-                  <Route path="/new-message" element={<MessageForm />} />
+                  <Route
+                    path="/my-messages"
+                    element={<AuthenticatedMessages />}
+                  />
+                  <Route
+                    path="/new-message"
+                    element={<AuthenticatedMessageForm />}
+                  />
                   <Route
                     path="/:postableType/:postableId/discussion/"
-                    element={<Posts />}
+                    element={<AuthenticatedPosts />}
                   />
                   <Route
                     path="/:postableType/:postableId/post/:id"
-                    element={<Post />}
+                    element={<AuthenticatedPost />}
                   />
                 </Routes>
               </main>

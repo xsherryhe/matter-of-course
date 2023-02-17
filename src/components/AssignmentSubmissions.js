@@ -9,8 +9,7 @@ import DeleteButton from './DeleteButton';
 import MessageContext from './contexts/MessageContext';
 
 export default function AssignmentSubmissions() {
-  const { pathname: path, state } = useLocation();
-  const back = state?.back;
+  const back = useLocation().state?.back;
   const navigate = useNavigate();
   const { assignmentId } = useParams();
   const [assignment, setAssignment] = useState(null);
@@ -92,7 +91,10 @@ export default function AssignmentSubmissions() {
                   <NavLink
                     to={`/assignment/${id}`}
                     state={{
-                      back: { location: 'Assignment', route: path },
+                      back: {
+                        location: 'Assignment',
+                        route: `/assignment/${assignmentId}/submissions`,
+                      },
                     }}
                   >
                     View Submission

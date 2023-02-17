@@ -1,11 +1,16 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import fetcher from '../fetcher';
+import NavButton from './NavButton';
 import NavLink from './NavLink';
 
 export default function UserAssignmentSubmissions() {
-  const route = useLocation().pathname;
+  const stateTab = useLocation().state?.tab;
   const [submissions, setSubmissions] = useState(null);
+  const [tab, setTab] = useState(stateTab || 'incomplete');
+
+  const tabNames = useRef({ incomplete: 'To Do', complete: 'Complete' });
+
   useEffect(() => {
     async function getSubmissions() {
       const response = await fetcher('current_user', {
@@ -16,14 +21,22 @@ export default function UserAssignmentSubmissions() {
     getSubmissions();
   }, []);
 
+  function tabTo(tabOption) {
+    return function () {
+      setTab(tabOption);
+    };
+  }
+
   if (!submissions) return 'Loading...';
 
-  let incomplete = 'No assignments here!';
-  if (submissions.incomplete)
-    incomplete = submissions.incomplete.map(({ id, title, body }) => (
+  let main = <div>No assignments here!</div>;
+  if (tab === 'incomplete' && submissions.incomplete)
+    main = submissions.incomplete.map(({ id, title, body }) => (
       <NavLink
         to={`/assignment/${id}`}
-        state={{ back: { location: 'My Assignments', route } }}
+        state={{
+          back: { location: 'My Assignments', route: '/my-assignments' },
+        }}
         key={id}
       >
         <div className="title">
@@ -35,12 +48,17 @@ export default function UserAssignmentSubmissions() {
       </NavLink>
     ));
 
-  let complete = 'No assignments here!';
-  if (submissions.complete)
-    complete = submissions.complete.map(({ id, title, body }) => (
+  if (tab === 'complete' && submissions.complete)
+    main = submissions.complete.map(({ id, title, body }) => (
       <NavLink
         to={`/assignment/${id}`}
-        state={{ back: { location: 'My Assignments', route } }}
+        state={{
+          back: {
+            location: 'My Assignments',
+            route: '/my-assignments',
+            state: { tab: 'complete' },
+          },
+        }}
         key={id}
       >
         <div className="title">
@@ -53,10 +71,17 @@ export default function UserAssignmentSubmissions() {
   return (
     <div>
       <h1>My Assignments</h1>
-      <h2>To Do</h2>
-      {incomplete}
-      <h2>Completed</h2>
-      {complete}
+      {['incomplete', 'complete'].map((tabOption) => (
+        <NavButton
+          className="tab"
+          disabled={tabOption === tab}
+          onClick={tabTo(tabOption)}
+          key={tabOption}
+        >
+          {tabNames.current[tabOption]}
+        </NavButton>
+      ))}
+      {main}
     </div>
   );
 }

@@ -13,7 +13,7 @@ export default function CourseItem({ course, includeDescription = false }) {
           <div className="description">{course.description}</div>
         )}
         <div>
-          <h3>Status:</h3> {capitalize(course.status)}
+          <h3>{capitalize(course.status)}</h3>
         </div>
         <CourseInstructors course={course} />
       </div>

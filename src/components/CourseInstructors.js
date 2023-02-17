@@ -98,7 +98,7 @@ export default function CourseInstructors({
 
   return (
     <div className="instructors">
-      Instructors:{' '}
+      <h3>Instructors:</h3>{' '}
       {list(
         instructors
           .filter(({ id }) => !removed.includes(id))

@@ -24,9 +24,17 @@ export default function Courses() {
     </div>
   );
   if (courses.length)
-    main = courses.map((course) => (
-      <CourseItem key={course.id} course={course} />
-    ));
+    main = (
+      <div className="course-items">
+        {courses.map((course) => (
+          <CourseItem
+            key={course.id}
+            course={course}
+            includeDescription={true}
+          />
+        ))}
+      </div>
+    );
 
   return (
     <div>

@@ -1,11 +1,18 @@
+import { useLocation } from 'react-router-dom';
 import { capitalize } from '../utilities';
 
 import asResource from './higher-order/asResource';
-import NavLink from './NavLink';
+import BackLink from './BackLink';
 import PostForm from './PostForm';
 import Comments from './Comments';
 
 function PostBase({ resource: post, editForm, editButton, deleteButton }) {
+  const back = useLocation().state?.back || {
+    route: `/${post.postable_type.toLowerCase()}/${post.postable_id}`,
+    location: capitalize(post.postable_type),
+    state: { tab: 'discussion' },
+  };
+
   let main = (
     <main className="post">
       <h1>{post.title}</h1>
@@ -24,13 +31,7 @@ function PostBase({ resource: post, editForm, editButton, deleteButton }) {
 
   return (
     <div>
-      <NavLink
-        to={`/${post.postable_type.toLowerCase()}/${
-          post.postable_id
-        }/discussion`}
-      >
-        Back to Discussion
-      </NavLink>
+      <BackLink back={back} />
       {editForm || main}
     </div>
   );
@@ -39,9 +40,8 @@ function PostBase({ resource: post, editForm, editButton, deleteButton }) {
 const Post = asResource(PostBase, PostForm, 'post', {
   redirect: (post) =>
     post && {
-      route: `/${post.postable_type.toLowerCase()}/${
-        post.postable_id
-      }/discussion`,
+      route: `/${post.postable_type.toLowerCase()}/${post.postable_id}`,
+      state: { tab: 'discussion' },
     },
 });
 export default Post;

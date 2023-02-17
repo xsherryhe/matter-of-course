@@ -23,7 +23,6 @@ import AssignmentSubmission from './components/AssignmentSubmission';
 import AssignmentSubmissions from './components/AssignmentSubmissions';
 import Messages from './components/Messages';
 import MessageForm from './components/MessageForm';
-import Posts from './components/Posts';
 import Post from './components/Post';
 import withAuthentication from './components/higher-order/withAuthentication';
 
@@ -45,7 +44,6 @@ const AuthenticatedAssignmentSubmission =
   withAuthentication(AssignmentSubmission);
 const AuthenticatedMessages = withAuthentication(Messages);
 const AuthenticatedMessageForm = withAuthentication(MessageForm);
-const AuthenticatedPosts = withAuthentication(Posts);
 const AuthenticatedPost = withAuthentication(Post);
 
 function App() {
@@ -125,10 +123,6 @@ function App() {
                   <Route
                     path="/new-message"
                     element={<AuthenticatedMessageForm />}
-                  />
-                  <Route
-                    path="/:postableType/:postableId/discussion/"
-                    element={<AuthenticatedPosts />}
                   />
                   <Route
                     path="/:postableType/:postableId/post/:id"

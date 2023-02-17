@@ -3,7 +3,6 @@ import { capitalize, list } from '../utilities';
 import CourseStatusButton from './CourseStatusButton';
 import LeaveInstructorButton from './LeaveInstructorButton';
 import CourseEnrollButton from './CourseEnrollButton';
-import CoursePostsButton from './CoursePostsButton';
 import CourseMessageButton from './CourseMessageButton';
 import CourseInvitedInstructors from './CourseInvitedInstructors';
 
@@ -29,7 +28,6 @@ export default function CourseOverview({
   return (
     <div>
       <CourseEnrollButton course={course} setCourse={setCourse} />
-      <CoursePostsButton course={course} />
       <CourseMessageButton course={course} />
       {authorized && (
         <div>

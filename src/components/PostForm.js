@@ -2,8 +2,16 @@ import { useParams } from 'react-router-dom';
 
 import ResourceForm from './ResourceForm';
 
-export default function PostForm({ action, ...props }) {
-  const { postableType, postableId } = useParams();
+export default function PostForm({
+  action,
+  postableType: propsPostableType,
+  postableId: propsPostableId,
+  ...props
+}) {
+  const { postableType: paramsPostableType, postableId: paramsPostableId } =
+    useParams();
+  const postableType = paramsPostableType || propsPostableType;
+  const postableId = paramsPostableId || propsPostableId;
 
   const fields = [
     { attribute: 'title', required: true },

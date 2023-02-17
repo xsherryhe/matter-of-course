@@ -1,11 +1,13 @@
-import { useContext } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
+import fetcher from '../fetcher';
 
 import NavLink from './NavLink';
 import asResource from './higher-order/asResource';
 import LessonForm from './LessonForm';
 import LessonAssignments from './LessonAssignments';
 import MessageContext from './contexts/MessageContext';
+import Posts from './Posts';
 
 function LessonBase({
   resource: lesson,
@@ -15,7 +17,24 @@ function LessonBase({
   deleteButton,
 }) {
   const courseId = useParams().courseId || lesson?.course_id;
+  const [posts, setPosts] = useState(null);
+  const [postsError, setPostsError] = useState(null);
   const setMessage = useContext(MessageContext).set;
+
+  function handlePostsErrors({ data }) {
+    if (data.error) setPostsError(data.error);
+  }
+
+  useEffect(() => {
+    if (!lesson) return;
+
+    async function getPosts() {
+      const response = await fetcher(`lessons/${lesson.id}/posts`);
+      if (response.status < 400) setPosts(response.data);
+      else handlePostsErrors(response);
+    }
+    if (!posts) getPosts();
+  }, [lesson, posts]);
 
   if (error) {
     let displayError = '';
@@ -37,7 +56,7 @@ function LessonBase({
     );
   }
 
-  const { id, title, authorized, lesson_sections } = lesson;
+  const { title, authorized, lesson_sections } = lesson;
 
   let main = (
     <main>
@@ -54,9 +73,12 @@ function LessonBase({
         </div>
       ))}
       <LessonAssignments lesson={lesson} />
-      <NavLink to={`/lesson/${id}/discussion`} state={{ postable: lesson }}>
-        <button>View Discussion</button>
-      </NavLink>
+      <Posts
+        postable={lesson}
+        postableType="lesson"
+        posts={posts}
+        postsError={postsError}
+      />
     </main>
   );
 

@@ -27,16 +27,14 @@ function CourseBase({
   const [roster, setRoster] = useState(null);
   const [rosterError, setRosterError] = useState(null);
   const stateTab = useLocation().state?.tab;
-  const [authorizedTab, setAuthorizedTab] = useState(
-    (course.authorized && stateTab) || 'overview'
-  );
+  const [tab, setTab] = useState((course.authorized && stateTab) || 'overview');
 
   function handleRosterErrors({ data }) {
     if (data.error) setRosterError(data.error);
   }
 
   useEffect(() => {
-    if (authorizedTab !== 'roster' || roster) return;
+    if (tab !== 'roster' || roster) return;
 
     async function getRoster() {
       const response = await fetcher(`courses/${course.id}/enrollments`);
@@ -44,11 +42,11 @@ function CourseBase({
       else handleRosterErrors(response);
     }
     getRoster();
-  }, [authorizedTab, course, roster]);
+  }, [tab, course, roster]);
 
-  function tabTo(newTab) {
+  function tabTo(tabOption) {
     return function () {
-      setAuthorizedTab(newTab);
+      setTab(tabOption);
     };
   }
 
@@ -70,18 +68,18 @@ function CourseBase({
     main = (
       <main>
         {['overview', 'roster', 'lessons', 'assignments', 'instructors'].map(
-          (tab) => (
+          (tabOption) => (
             <NavButton
-              key={tab}
+              key={tabOption}
               className="tab"
-              onClick={tabTo(tab)}
-              disabled={tab === authorizedTab}
+              onClick={tabTo(tabOption)}
+              disabled={tab === tabOption}
             >
-              {capitalize(tab)}
+              {capitalize(tabOption)}
             </NavButton>
           )
         )}
-        {authorizedTab === 'overview' && (
+        {tab === 'overview' && (
           <CourseOverview
             course={course}
             setCourse={setCourse}
@@ -91,20 +89,18 @@ function CourseBase({
             deleteButton={deleteButton}
           />
         )}
-        {authorizedTab === 'roster' && (
+        {tab === 'roster' && (
           <CourseRoster
             course={course}
             roster={roster}
             rosterError={rosterError}
           />
         )}
-        {authorizedTab === 'lessons' && (
+        {tab === 'lessons' && (
           <CourseLessons course={course} setCourse={setCourse} />
         )}
-        {authorizedTab === 'assignments' && (
-          <CourseAssignments course={course} />
-        )}
-        {authorizedTab === 'instructors' && (
+        {tab === 'assignments' && <CourseAssignments course={course} />}
+        {tab === 'instructors' && (
           <CourseInstructors
             course={course}
             setCourse={setCourse}

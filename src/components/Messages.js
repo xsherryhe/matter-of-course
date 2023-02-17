@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import '../styles/Messages.css';
 import fetcher from '../fetcher';
+import { capitalize } from '../utilities';
 
 import MessageForm from './MessageForm';
 import Message from './Message';
@@ -8,7 +9,7 @@ import NavButton from './NavButton';
 import MessageDeleteButton from './MessageDeleteButton';
 
 export default function Messages() {
-  const [type, setType] = useState('inbox');
+  const [tab, setTab] = useState('inbox');
   const [message, setMessage] = useState(null);
   const [messages, setMessages] = useState(null);
   const [messagesFlash, setMessagesFlash] = useState(null);
@@ -25,7 +26,7 @@ export default function Messages() {
   }
 
   function completeNew(data) {
-    if (type === 'outbox') setMessages((messages) => [data, ...messages]);
+    if (tab === 'outbox') setMessages((messages) => [data, ...messages]);
     hideNew();
   }
 
@@ -35,11 +36,11 @@ export default function Messages() {
 
   const getMessages = useCallback(async () => {
     setLoading(true);
-    const response = await fetcher(`current_messages/${type}`);
+    const response = await fetcher(`current_messages/${tab}`);
     if (response.status < 400) setMessages(response.data);
     else handleErrors(response);
     setLoading(false);
-  }, [type]);
+  }, [tab]);
 
   useEffect(() => {
     getMessages();
@@ -61,12 +62,10 @@ export default function Messages() {
     getMessages();
   }
 
-  function tabInbox() {
-    setType('inbox');
-  }
-
-  function tabOutbox() {
-    setType('outbox');
+  function tabTo(tabOption) {
+    return function () {
+      setTab(tabOption);
+    };
   }
 
   function completeDelete(deleteId) {
@@ -104,12 +103,11 @@ export default function Messages() {
           />
         )}
         <div className="tabs">
-          <NavButton disabled={type === 'inbox'} onClick={tabInbox}>
-            Inbox
-          </NavButton>
-          <NavButton disabled={type === 'outbox'} onClick={tabOutbox}>
-            Outbox
-          </NavButton>
+          {['inbox', 'outbox'].map((tabOption) => (
+            <NavButton disabled={tab === tabOption} onClick={tabTo(tabOption)}>
+              {capitalize(tabOption)}
+            </NavButton>
+          ))}
         </div>
       </header>
     );
@@ -123,7 +121,7 @@ export default function Messages() {
         <NavButton onClick={hideMessage}>Back to Messages</NavButton>
         <Message
           message={message}
-          type={type}
+          type={tab}
           deleteButton={
             <MessageDeleteButton
               id={message.id}
@@ -142,14 +140,14 @@ export default function Messages() {
               <NavButton
                 onClick={showMessage(message)}
                 className={`message-item ${
-                  type === 'inbox' ? message.read_status : ''
+                  tab === 'inbox' ? message.read_status : ''
                 }`}
               >
-                {type === 'inbox' && <div>From: {message.sender.name}</div>}
-                {type === 'outbox' && <div>To: {message.recipient.name}</div>}
+                {tab === 'inbox' && <div>From: {message.sender.name}</div>}
+                {tab === 'outbox' && <div>To: {message.recipient.name}</div>}
                 <div>{message.subject}</div>
               </NavButton>
-              {type === 'inbox' && (
+              {tab === 'inbox' && (
                 <MessageDeleteButton
                   id={message.id}
                   completeDelete={completeDelete(message.id)}

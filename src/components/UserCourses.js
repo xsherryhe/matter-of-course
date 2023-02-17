@@ -10,7 +10,7 @@ import NavButton from './NavButton';
 
 export default function UserCourses({ heading = true }) {
   const [name, setName] = useState(null);
-  const [type, setType] = useState(null);
+  const [tab, setTab] = useState(null);
   const [courses, setCourses] = useState(null);
   const { id } = useParams();
 
@@ -25,9 +25,9 @@ export default function UserCourses({ heading = true }) {
     getCourses();
   }, [id]);
 
-  function tabTo(newType) {
+  function tabTo(tabOption) {
     return function () {
-      setType(newType);
+      setTab(tabOption);
     };
   }
 
@@ -57,13 +57,13 @@ export default function UserCourses({ heading = true }) {
             <NavButton
               className="course-type tab"
               onClick={tabTo(courseType)}
-              disabled={type ? courseType === type : i === 0}
+              disabled={tab ? courseType === tab : i === 0}
             >
               {capitalize(courseType)} Courses
             </NavButton>
           ))}
         <div className="course-items">
-          {courses[type || courseTypes[0]].map((course) => (
+          {courses[tab || courseTypes[0]].map((course) => (
             <CourseItem key={course.id} course={course} />
           ))}
         </div>

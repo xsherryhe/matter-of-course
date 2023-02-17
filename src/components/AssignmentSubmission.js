@@ -20,7 +20,6 @@ function AssignmentSubmissionBase({
         heading={false}
         defaultValues={submission}
         completeAction={setSubmission}
-        id={submission.id}
         action="update"
         deleteButton={deleteButton}
       />
@@ -29,11 +28,11 @@ function AssignmentSubmissionBase({
     main = (
       <main>
         <h2>
-          {submission.authorized ? 'Your' : `${submission.student.name}'s`}{' '}
-          completed assignment:
+          {submission.owned ? 'Your' : `${submission.student.name}'s`} completed
+          assignment:
         </h2>
         {submission.authorized && submission.assignment && editButton}
-        {submission.authorized && deleteButton}
+        {submission.owned && deleteButton}
         <div>{submission.body}</div>
         <Comments
           commentable={submission}
@@ -45,10 +44,16 @@ function AssignmentSubmissionBase({
   return (
     <div>
       <BackLink back={back} />
-      {submission.assignment && (
+      {submission.assignment && submission.authorized && (
         <div>
           <h1>{submission.assignment.title}</h1>
           <div>{submission.assignment.body}</div>
+        </div>
+      )}
+      {submission.assignment && !submission.authorized && (
+        <div>
+          This assignment is no longer accepting submissions, but you can still
+          read or delete this submission.
         </div>
       )}
       {!submission.assignment && (

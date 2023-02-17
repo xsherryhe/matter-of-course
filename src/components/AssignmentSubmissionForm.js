@@ -10,8 +10,7 @@ import NavButton from './NavButton';
 function AssignmentSubmissionFormBase({
   heading = true,
   defaultValues = {},
-  action,
-  id,
+  action: initialAction,
   close,
   completeAction,
   deleteButton,
@@ -24,7 +23,9 @@ function AssignmentSubmissionFormBase({
   const initialAssignment =
     useLocation().state?.assignment || defaultValues.assignment;
   const { assignmentId } = useParams();
+  const [action, setAction] = useState(initialAction);
   const [assignment, setAssignment] = useState(initialAssignment);
+  const [submission, setSubmission] = useState(defaultValues);
   const [loading, setLoading] = useState(false);
   const [body, setBody] = useState(defaultValues.body);
   const [saved, setSaved] = useState(false);
@@ -33,6 +34,10 @@ function AssignmentSubmissionFormBase({
 
   const setMessage = useContext(MessageContext).set;
   const navigate = useNavigate();
+
+  const { id, authorized: submissionAuthorized } = submission;
+  const authorized =
+    (action === 'create' && assignment) || submissionAuthorized;
 
   function handleAssignmentErrors({ data }) {
     if (data.error) setPageError(data.error);
@@ -59,6 +64,9 @@ function AssignmentSubmissionFormBase({
     if (!assignment) {
       setFormError('This assignment no longer exists.');
       return false;
+    }
+    if (!authorized) {
+      setFormError('You are not authorized to edit this submission.');
     }
     if (changeToComplete && !body) {
       setFormError('Please fill out the assignment before submitting it.');
@@ -87,6 +95,9 @@ function AssignmentSubmissionFormBase({
       );
       if (response.status < 400) {
         setSaved(true);
+        setSubmission(response.data);
+        setAction('update');
+
         if (completeAction) completeAction(response.data);
         if (changeToComplete) {
           setMessage(
@@ -135,14 +146,14 @@ function AssignmentSubmissionFormBase({
         {!(defaultValues.completion_status === 'complete') && (
           <button
             onClick={handleSubmit(false)}
-            disabled={saved || loading || !assignment}
+            disabled={saved || loading || !assignment || !authorized}
           >
             {saved ? 'Saved' : 'Save Without Submitting'}
           </button>
         )}
         <NavButton
           onClick={handleSubmit(true)}
-          disabled={loading || !assignment}
+          disabled={loading || !assignment || !authorized}
         >
           Submit
         </NavButton>

@@ -21,6 +21,10 @@ button {
   cursor: pointer;
 }
 
+button.tab {
+  font-weight: 600;
+}
+
 a {
   color: black;
   text-decoration: none;

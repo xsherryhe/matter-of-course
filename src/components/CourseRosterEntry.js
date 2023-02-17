@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import '../styles/CourseRosterEntry.css';
 import fetcher from '../fetcher';
 import NavLink from './NavLink';
@@ -9,7 +9,9 @@ export default function CourseRosterEntry({
   courseId,
   student: { id: studentId, name, username },
 }) {
-  const submissionsOnId = useLocation().state?.submissionsOn;
+  const navigate = useNavigate();
+  const { state, pathname } = useLocation();
+  const submissionsOnId = state?.submissionsOn;
   const [submissionsOn, setSubmissionsOn] = useState(false);
   const [submissions, setSubmissions] = useState(null);
   const [removed, setRemoved] = useState(false);
@@ -32,8 +34,9 @@ export default function CourseRosterEntry({
     if (submissionsOnId === studentId) {
       setSubmissionsOn(true);
       getSubmissions();
+      navigate(pathname, { replace: true });
     }
-  }, [submissionsOnId, studentId, getSubmissions]);
+  }, [submissionsOnId, studentId, getSubmissions, navigate, pathname]);
 
   function toggleSubmissions() {
     setSubmissionsOn((submissionsOn) => !submissionsOn);
@@ -62,7 +65,7 @@ export default function CourseRosterEntry({
               back: {
                 location: 'Roster',
                 route: `/course/${courseId}`,
-                state: { rosterOn: true, submissionsOn: studentId },
+                state: { tab: 'roster', submissionsOn: studentId },
               },
             }}
           >
@@ -90,7 +93,7 @@ export default function CourseRosterEntry({
             back: {
               location: 'Roster',
               route: `/course/${courseId}`,
-              state: { rosterOn: true, submissionsOn: false },
+              state: { tab: 'roster', submissionsOn: false },
             },
           }}
         >

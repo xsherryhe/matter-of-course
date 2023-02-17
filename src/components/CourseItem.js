@@ -1,8 +1,7 @@
 import '../styles/CourseItem.css';
-import { capitalize } from '../utilities';
+import { capitalize, list } from '../utilities';
 
 import NavLink from './NavLink';
-import CourseInstructors from './CourseInstructors';
 
 export default function CourseItem({ course, includeDescription = false }) {
   return (
@@ -15,7 +14,10 @@ export default function CourseItem({ course, includeDescription = false }) {
         <div>
           <h3>{capitalize(course.status)}</h3>
         </div>
-        <CourseInstructors course={course} />
+        <div>
+          <h3>Instructors:</h3>{' '}
+          {list(course.instructors.map(({ name }) => name))}
+        </div>
       </div>
     </NavLink>
   );

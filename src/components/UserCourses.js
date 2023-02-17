@@ -6,6 +6,7 @@ import { capitalize } from '../utilities';
 
 import NavLink from './NavLink';
 import CourseItem from './CourseItem';
+import NavButton from './NavButton';
 
 export default function UserCourses({ heading = true }) {
   const [name, setName] = useState(null);
@@ -53,13 +54,13 @@ export default function UserCourses({ heading = true }) {
         )}
         {courseTypes.length > 1 &&
           courseTypes.map((courseType, i) => (
-            <button
-              className="course-type"
+            <NavButton
+              className="course-type tab"
               onClick={tabTo(courseType)}
               disabled={type ? courseType === type : i === 0}
             >
               {capitalize(courseType)} Courses
-            </button>
+            </NavButton>
           ))}
         <div className="course-items">
           {courses[type || courseTypes[0]].map((course) => (

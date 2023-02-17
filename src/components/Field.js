@@ -16,7 +16,7 @@ export default function Field({
   handleErrors,
   toValidate,
   required,
-  completed,
+  completed = false,
   match,
   parentInputRef,
 }) {
@@ -126,7 +126,9 @@ export default function Field({
     <div className="field">
       {type === 'checkbox' ? input : label}
       {type === 'checkbox' ? label : input}
-      {displayError && <div className="error">{displayError}</div>}
+      {!completed && displayError && (
+        <div className="error">{displayError}</div>
+      )}
     </div>
   );
 }

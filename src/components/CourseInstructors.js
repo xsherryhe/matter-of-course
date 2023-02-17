@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import '../styles/CourseInstructors.css';
-import { list } from '../utilities';
 
 import ResourceForm from './ResourceForm';
 import { instructorLoginsField } from './CourseForm';
@@ -9,20 +8,10 @@ import DeleteButton from './DeleteButton';
 export default function CourseInstructors({
   course: { id, instructors, hosted, authorized },
   setCourse,
-  editable = false,
 }) {
-  const [editOn, setEditOn] = useState(false);
-  const [messages, setMessages] = useState({});
-  const [errors, setErrors] = useState({});
+  const [invited, setInvited] = useState(false);
   const [removed, setRemoved] = useState([]);
-
-  function showEdit() {
-    setEditOn(true);
-  }
-
-  function hideEdit() {
-    setEditOn(false);
-  }
+  const [errors, setErrors] = useState({});
 
   function handleErrors(instructorId) {
     return function ({ data }) {
@@ -33,78 +22,78 @@ export default function CourseInstructors({
 
   function completeInvite(data) {
     setCourse(data);
-    setMessages((messages) => ({ ...messages, invite: 'Invited!' }));
-    setTimeout(
-      () => setMessages((messages) => ({ ...messages, invite: null })),
-      2000
-    );
+    setInvited(true);
+    setTimeout(() => setInvited(false), 2000);
   }
 
-  function completeRemove(instructorId) {
+  function completeRemove(instructor) {
     return function () {
-      setMessages((messages) => ({
-        ...messages,
-        [instructorId]: 'Instructor has been removed.',
-      }));
-      setRemoved((removed) => [...removed, instructorId]);
+      setRemoved((removed) => [...removed, instructor]);
+
+      setCourse((course) => {
+        const instructors = course.instructors;
+        const instructorIndex = instructors.findIndex(
+          ({ id }) => id === instructor.id
+        );
+        return {
+          ...course,
+          instructors: [
+            ...instructors.slice(0, instructorIndex),
+            ...instructors.slice(instructorIndex + 1),
+          ],
+        };
+      });
     };
   }
 
-  if (editOn)
-    return (
-      <div className="instructors-edit">
-        <button className="close" onClick={hideEdit}>
-          X
-        </button>
-        <h2>Instructors</h2>
-        <ul>
-          {instructors.map(({ id: instructorId, name }) => (
-            <li key={instructorId}>
-              {messages[instructorId] || (
-                <span>
-                  {name}
-                  {hosted && (
-                    <DeleteButton
-                      route={`courses/${id}/instructors/${instructorId}`}
-                      resource="instructor"
-                      id={instructorId}
-                      buttonText="Remove"
-                      action="remove"
-                      completeAction={completeRemove(instructorId)}
-                      handleErrors={handleErrors(instructorId)}
-                    />
-                  )}
-                  {errors[instructorId] && (
-                    <div className="error">{errors[instructorId]}</div>
-                  )}
-                </span>
-              )}
-            </li>
-          ))}
-        </ul>
-        <ResourceForm
-          heading={false}
-          flash={false}
-          resource="course"
-          fields={[instructorLoginsField]}
-          action="update"
-          id={id}
-          completeAction={completeInvite}
-          submitText="Invite"
-        />
-        {messages.invite}
-      </div>
-    );
+  if (!authorized) return null;
 
   return (
-    <div className="instructors">
-      <h3>Instructors:</h3>{' '}
-      {list(
-        instructors
-          .filter(({ id }) => !removed.includes(id))
-          .map(({ name }) => name)
-      )}
-      {authorized && editable && <button onClick={showEdit}>Edit</button>}
+    <div className="course-instructors">
+      <h2>Instructors</h2>
+      <ul>
+        {instructors
+          .concat(removed)
+          .sort((a, b) => a.name.localeCompare(b.name))
+          .map((instructor) => {
+            const instructorRemoved = removed.includes(instructor);
+            return (
+              <li key={instructor.id}>
+                {instructorRemoved && 'Instructor has been removed.'}
+                {!instructorRemoved && (
+                  <span>
+                    {instructor.name}
+                    {hosted && (
+                      <DeleteButton
+                        route={`courses/${id}/instructors/${instructor.id}`}
+                        resource="instructor"
+                        id={instructor.id}
+                        buttonText="Remove"
+                        action="remove"
+                        completeAction={completeRemove(instructor)}
+                        handleErrors={handleErrors(instructor.id)}
+                      />
+                    )}
+                    {errors[instructor.id] && (
+                      <div className="error">{errors[instructor.id]}</div>
+                    )}
+                  </span>
+                )}
+              </li>
+            );
+          })}
+      </ul>
+      <ResourceForm
+        heading={false}
+        flash={false}
+        resource="course"
+        fields={[instructorLoginsField]}
+        action="update"
+        id={id}
+        completeAction={completeInvite}
+        submitText="Invite"
+      />
+      {invited && 'Invited!'}
     </div>
   );
 }

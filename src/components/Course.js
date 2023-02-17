@@ -1,22 +1,19 @@
 import { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import fetcher from '../fetcher';
 import { capitalize } from '../utilities';
 
 import CourseStatusNotice from './CourseStatusNotice';
 import CourseForm from './CourseForm';
 import asResource from './higher-order/asResource';
 import CourseInstructors from './CourseInstructors';
-import CourseInvitedInstructors from './CourseInvitedInstructors';
-import LeaveInstructorButton from './LeaveInstructorButton';
 import CourseLessons from './CourseLessons';
-import CourseStatusButton from './CourseStatusButton';
-import CourseEnrollButton from './CourseEnrollButton';
 import CourseRoster from './CourseRoster';
 import CourseAssignments from './CourseAssignments';
 import NavButton from './NavButton';
-import CourseMessageButton from './CourseMessageButton';
-import CoursePostsButton from './CoursePostsButton';
 import CourseStatusError from './CourseStatusError';
+import CourseOverview from './CourseOverview';
+import { useEffect } from 'react';
 
 function CourseBase({
   resource: course,
@@ -27,17 +24,32 @@ function CourseBase({
   editButton,
   deleteButton,
 }) {
-  const navigate = useNavigate();
-  const { state, pathname } = useLocation();
-  const [rosterOn, setRosterOn] = useState(state?.rosterOn || false);
+  const [roster, setRoster] = useState(null);
+  const [rosterError, setRosterError] = useState(null);
+  const stateTab = useLocation().state?.tab;
+  const [authorizedTab, setAuthorizedTab] = useState(
+    (course.authorized && stateTab) || 'overview'
+  );
 
-  function showRoster() {
-    setRosterOn(true);
+  function handleRosterErrors({ data }) {
+    if (data.error) setRosterError(data.error);
   }
 
-  function hideRoster() {
-    setRosterOn(false);
-    navigate(pathname, { replace: true });
+  useEffect(() => {
+    if (authorizedTab !== 'roster' || roster) return;
+
+    async function getRoster() {
+      const response = await fetcher(`courses/${course.id}/enrollments`);
+      if (response.status < 400) setRoster(response.data);
+      else handleRosterErrors(response);
+    }
+    getRoster();
+  }, [authorizedTab, course, roster]);
+
+  function tabTo(newTab) {
+    return function () {
+      setAuthorizedTab(newTab);
+    };
   }
 
   if (error) {
@@ -49,46 +61,64 @@ function CourseBase({
 
   let main = (
     <main>
-      {course.authorized && (
-        <div className="buttons">
-          <NavButton onClick={showRoster}>View Roster</NavButton>
-          {editButton}
-          <CourseStatusButton course={course} setCourse={setCourse} />
-          <LeaveInstructorButton
-            course={course}
-            setCourse={setCourse}
-            setCourseError={setError}
-          />
-          {deleteButton}
-        </div>
-      )}
-      <CourseEnrollButton course={course} setCourse={setCourse} />
-      <CoursePostsButton course={course} />
-      <CourseMessageButton course={course} />
-      <div>Host: {course.host.name}</div>
-      <CourseInstructors
-        course={course}
-        setCourse={setCourse}
-        editable={true}
-      />
-      {course.authorized && (
-        <CourseInvitedInstructors
-          invitations={course.instruction_invitations}
-        />
-      )}
-      <div>Status: {capitalize(course.status)}</div>
-      <div>{course.description}</div>
+      <CourseOverview course={course} setCourse={setCourse} />
       <CourseLessons course={course} setCourse={setCourse} />
-      <CourseAssignments course={course} />
     </main>
   );
-  if (rosterOn) main = <CourseRoster course={course} hide={hideRoster} />;
+
+  if (course.authorized)
+    main = (
+      <main>
+        {['overview', 'roster', 'lessons', 'assignments', 'instructors'].map(
+          (tab) => (
+            <NavButton
+              key={tab}
+              className="tab"
+              onClick={tabTo(tab)}
+              disabled={tab === authorizedTab}
+            >
+              {capitalize(tab)}
+            </NavButton>
+          )
+        )}
+        {authorizedTab === 'overview' && (
+          <CourseOverview
+            course={course}
+            setCourse={setCourse}
+            setError={setError}
+            editButton={editButton}
+            editForm={editForm}
+            deleteButton={deleteButton}
+          />
+        )}
+        {authorizedTab === 'roster' && (
+          <CourseRoster
+            course={course}
+            roster={roster}
+            rosterError={rosterError}
+          />
+        )}
+        {authorizedTab === 'lessons' && (
+          <CourseLessons course={course} setCourse={setCourse} />
+        )}
+        {authorizedTab === 'assignments' && (
+          <CourseAssignments course={course} />
+        )}
+        {authorizedTab === 'instructors' && (
+          <CourseInstructors
+            course={course}
+            setCourse={setCourse}
+            editable={true}
+          />
+        )}
+      </main>
+    );
 
   return (
     <div>
       {<CourseStatusNotice status={course.status} />}
       <h1>{course.title}</h1>
-      {editForm || main}
+      {main}
     </div>
   );
 }

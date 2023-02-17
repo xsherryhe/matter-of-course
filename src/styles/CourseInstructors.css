@@ -1,21 +1,7 @@
-.instructors h3 {
-  display: inline;
-  font-size: 1rem;
-}
-
-.instructors-edit {
+.course-instructors {
   display: flex;
   flex-direction: column;
   align-items: center;
   width: max-content;
   margin: auto;
-}
-
-.instructors-edit .close {
-  align-self: flex-end;
-}
-
-.instructors-edit h2 {
-  margin: 0;
-  font-size: 1rem;
 }

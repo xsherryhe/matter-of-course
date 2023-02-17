@@ -4,7 +4,7 @@
 
 .course-roster tr {
   display: grid;
-  grid-template-columns: repeat(3, 10rem) 15rem;
+  grid-template-columns: repeat(4, 10rem) 15rem;
 }
 
 .course-roster th {

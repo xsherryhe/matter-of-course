@@ -43,6 +43,7 @@ export default function CourseRoster({ course: { id }, hide }) {
             <th>Username</th>
             <th></th>
             <th></th>
+            <th></th>
           </tr>
         </thead>
         <tbody>{tbody}</tbody>

@@ -1,3 +1,5 @@
-.course-roster .entry .submissions {
-  grid-column: 1 / span 4;
+.course-roster .entry .removed, 
+.course-roster .entry .submissions, 
+.course-roster .entry .error {
+  grid-column: 1 / span 5;
 }

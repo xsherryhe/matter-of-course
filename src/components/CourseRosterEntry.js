@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import '../styles/CourseRosterEntry.css';
 import fetcher from '../fetcher';
 import NavLink from './NavLink';
+import DeleteButton from './DeleteButton';
 
 export default function CourseRosterEntry({
   courseId,
@@ -11,6 +12,7 @@ export default function CourseRosterEntry({
   const submissionsOnId = useLocation().state?.submissionsOn;
   const [submissionsOn, setSubmissionsOn] = useState(false);
   const [submissions, setSubmissions] = useState(null);
+  const [removed, setRemoved] = useState(false);
   const [error, setError] = useState(null);
 
   function handleErrors({ data }) {
@@ -26,17 +28,28 @@ export default function CourseRosterEntry({
     else handleErrors(response);
   }, [courseId, studentId]);
 
-  function toggleSubmissions() {
-    setSubmissionsOn((submissionsOn) => !submissionsOn);
-    if (!submissions) getSubmissions();
-  }
-
   useEffect(() => {
     if (submissionsOnId === studentId) {
       setSubmissionsOn(true);
       getSubmissions();
     }
   }, [submissionsOnId, studentId, getSubmissions]);
+
+  function toggleSubmissions() {
+    setSubmissionsOn((submissionsOn) => !submissionsOn);
+    if (!submissions) getSubmissions();
+  }
+
+  function completeRemove() {
+    setRemoved(true);
+  }
+
+  if (removed)
+    return (
+      <tr className="entry">
+        <td className="removed">Student has been removed from course.</td>
+      </tr>
+    );
 
   let submissionsTD = 'Loading...';
   if (submissions) {
@@ -58,7 +71,7 @@ export default function CourseRosterEntry({
         </div>
       ));
     else submissionsTD = 'This student has not submitted any assignments.';
-  } else if (error) submissionsTD = <div className="error">{error}</div>;
+  }
 
   return (
     <tr className="entry">
@@ -89,6 +102,19 @@ export default function CourseRosterEntry({
           {submissionsOn ? 'Hide' : 'View'} Assignment Submissions
         </button>
       </td>
+      <td>
+        <DeleteButton
+          resource="enrollment"
+          id={studentId}
+          route={`courses/${courseId}/enrollments/${studentId}`}
+          action="remove"
+          completeAction={completeRemove}
+          handleErrors={handleErrors}
+          buttonText="Remove Student"
+          confirmText="Are you sure you wish to remove this student?"
+        />
+      </td>
+      {error && <td className="error">{error}</td>}
       {submissionsOn && <td className="submissions">{submissionsTD}</td>}
     </tr>
   );

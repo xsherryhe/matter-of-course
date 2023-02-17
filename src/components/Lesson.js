@@ -62,7 +62,9 @@ function LessonBase({
 
   return (
     <div>
-      <NavLink to={`/course/${courseId}`}>Back to Course</NavLink>
+      <NavLink to={`/course/${courseId}`} state={{ tab: 'lessons' }}>
+        Back to Course
+      </NavLink>
       <h1>{title}</h1>
       {editForm || main}
     </div>

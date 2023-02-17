@@ -15,7 +15,11 @@ export default function CourseAssignments({
           <NavLink
             to={`/assignment/${id}/submissions`}
             state={{
-              back: { location: 'Course', route: `/course/${courseId}` },
+              back: {
+                location: 'Course',
+                route: `/course/${courseId}`,
+                state: { tab: 'assignments' },
+              },
             }}
           >
             {title}

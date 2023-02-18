@@ -111,7 +111,11 @@ function CourseBase({
       : ['overview', 'lessons', 'assignments', 'discussion'];
 
     const assignments = course.authorized ? (
-      <CourseAssignments course={course} tabToLessons={tabTo('lessons')} />
+      <CourseAssignments
+        course={course}
+        setCourse={setCourse}
+        tabToLessons={tabTo('lessons')}
+      />
     ) : (
       <CourseUserAssignmentSubmissions
         course={course}

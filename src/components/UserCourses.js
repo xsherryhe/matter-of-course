@@ -55,6 +55,7 @@ export default function UserCourses({ heading = true }) {
         {courseTypes.length > 1 &&
           courseTypes.map((courseType, i) => (
             <NavButton
+              key={courseType}
               className="course-type tab"
               onClick={tabTo(courseType)}
               disabled={tab ? courseType === tab : i === 0}

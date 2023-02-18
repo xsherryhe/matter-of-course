@@ -13,6 +13,7 @@ import CourseRoster from './CourseRoster';
 import CourseAssignments from './CourseAssignments';
 import CourseStatusError from './CourseStatusError';
 import CourseOverview from './CourseOverview';
+import CourseUserAssignmentSubmissions from './CourseUserAssignmentSubmissions';
 import Posts from './Posts';
 
 function CourseBase({
@@ -28,8 +29,10 @@ function CourseBase({
   const [rosterError, setRosterError] = useState(null);
   const [posts, setPosts] = useState(null);
   const [postsError, setPostsError] = useState(null);
+  const [submissions, setSubmissions] = useState(null);
+  const [submissionsError, setSubmissionsError] = useState(null);
   const stateTab = useLocation().state?.tab;
-  const [tab, setTab] = useState((course.authorized && stateTab) || 'overview');
+  const [tab, setTab] = useState(stateTab || 'overview');
 
   function handleRosterErrors({ data }) {
     if (data.error) setRosterError(data.error);
@@ -37,6 +40,10 @@ function CourseBase({
 
   function handlePostsErrors({ data }) {
     if (data.error) setPostsError(data.error);
+  }
+
+  function handleSubmissionsErrors({ data }) {
+    if (data.error) setSubmissionsError(data.error);
   }
 
   useEffect(() => {
@@ -52,9 +59,25 @@ function CourseBase({
       else handlePostsErrors(response);
     }
 
+    async function getSubmissions() {
+      const response = await fetcher('current_user', {
+        query: `with=all_assignment_submissions&scope=course_${course.id}`,
+      });
+      if (response.status < 400)
+        setSubmissions(response.data.all_assignment_submissions);
+      else handleSubmissionsErrors(response);
+    }
+
     if (tab === 'roster' && !roster) getRoster();
     if (tab === 'discussion' && !posts) getPosts();
-  }, [tab, course, roster, posts]);
+    if (
+      tab === 'assignments' &&
+      !submissions &&
+      course.enrolled &&
+      !course.authorized
+    )
+      getSubmissions();
+  }, [tab, course, roster, posts, submissions]);
 
   function tabTo(tabOption) {
     return function () {
@@ -72,21 +95,34 @@ function CourseBase({
   let main = (
     <main>
       <CourseOverview course={course} setCourse={setCourse} />
-      <CourseLessons course={course} setCourse={setCourse} />
     </main>
   );
 
-  if (course.authorized)
-    main = (
-      <main>
-        {[
+  if (course.enrolled || course.authorized) {
+    const tabOptions = course.authorized
+      ? [
           'overview',
           'roster',
           'lessons',
           'assignments',
           'instructors',
           'discussion',
-        ].map((tabOption) => (
+        ]
+      : ['overview', 'lessons', 'assignments', 'discussion'];
+
+    const assignments = course.authorized ? (
+      <CourseAssignments course={course} tabToLessons={tabTo('lessons')} />
+    ) : (
+      <CourseUserAssignmentSubmissions
+        course={course}
+        submissions={submissions}
+        submissionsError={submissionsError}
+      />
+    );
+
+    main = (
+      <main>
+        {tabOptions.map((tabOption) => (
           <NavButton
             key={tabOption}
             className="tab"
@@ -116,7 +152,7 @@ function CourseBase({
         {tab === 'lessons' && (
           <CourseLessons course={course} setCourse={setCourse} />
         )}
-        {tab === 'assignments' && <CourseAssignments course={course} />}
+        {tab === 'assignments' && assignments}
         {tab === 'instructors' && (
           <CourseInstructors
             course={course}
@@ -134,6 +170,7 @@ function CourseBase({
         )}
       </main>
     );
+  }
 
   return (
     <div>

@@ -17,7 +17,7 @@ import PopUpContext from './components/contexts/PopUpContext';
 import Invitations from './components/Invitations';
 import LessonForm from './components/LessonForm';
 import Lesson from './components/Lesson';
-import UserAssignmentSubmissions from './components/UserAssignmentSubmissions';
+import UserAllAssignmentSubmissions from './components/UserAllAssignmentSubmissions';
 import AssignmentSubmissionForm from './components/AssignmentSubmissionForm';
 import AssignmentSubmission from './components/AssignmentSubmission';
 import AssignmentSubmissions from './components/AssignmentSubmissions';
@@ -31,8 +31,8 @@ const AuthenticatedCourseForm = withAuthentication(CourseForm);
 const AuthenticatedLessonForm = withAuthentication(LessonForm);
 const AuthenticatedLesson = withAuthentication(Lesson);
 const AuthenticatedInvitations = withAuthentication(Invitations);
-const AuthenticatedUserAssignmentSubmissions = withAuthentication(
-  UserAssignmentSubmissions
+const AuthenticatedUserAllAssignmentSubmissions = withAuthentication(
+  UserAllAssignmentSubmissions
 );
 const AuthenticatedAssignmentSubmissionForm = withAuthentication(
   AssignmentSubmissionForm
@@ -100,7 +100,7 @@ function App() {
                   />
                   <Route
                     path="/my-assignments"
-                    element={<AuthenticatedUserAssignmentSubmissions />}
+                    element={<AuthenticatedUserAllAssignmentSubmissions />}
                   />
                   <Route
                     path="/assignment/:assignmentId/new"

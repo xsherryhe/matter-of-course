@@ -7,6 +7,37 @@ import fetcher from '../fetcher';
 import MessageContext from './contexts/MessageContext';
 import ResourceForm from './ResourceForm';
 
+export const assignmentsFields = {
+  nested: {
+    resource: 'assignments',
+    resourceText: 'Assignment',
+    resourceTitleAttribute: 'title',
+    heading: 'Assignments',
+    multiple: true,
+    initialInstanceCount: 0,
+    fields: [
+      {
+        attribute: 'order',
+        type: 'select',
+        order: true,
+        attributeText: 'Assignment #',
+        required: true,
+      },
+      {
+        attribute: 'title',
+        attributeText: 'Assignment Title',
+        required: true,
+      },
+      {
+        attribute: 'body',
+        type: 'textarea',
+        attributeText: 'Instructions',
+        required: true,
+      },
+    ],
+  },
+};
+
 export default function LessonForm({ defaultValues, action, ...props }) {
   const initialCourse = useLocation().state?.course;
   const { courseId: initialCourseId } = useParams();
@@ -88,36 +119,7 @@ export default function LessonForm({ defaultValues, action, ...props }) {
         ],
       },
     },
-    {
-      nested: {
-        resource: 'assignments',
-        resourceText: 'Assignment',
-        resourceTitleAttribute: 'title',
-        heading: 'Assignments',
-        multiple: true,
-        initialInstanceCount: 0,
-        fields: [
-          {
-            attribute: 'order',
-            type: 'select',
-            order: true,
-            attributeText: 'Assignment #',
-            required: true,
-          },
-          {
-            attribute: 'title',
-            attributeText: 'Assignment Title',
-            required: true,
-          },
-          {
-            attribute: 'body',
-            type: 'textarea',
-            attributeText: 'Instructions',
-            required: true,
-          },
-        ],
-      },
-    },
+    assignmentsFields,
   ];
 
   if (error) return <div className="error">{error}</div>;

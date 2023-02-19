@@ -14,6 +14,7 @@ import LessonMain from './LessonMain';
 
 function LessonBase({
   resource: lesson,
+  setResource: setLesson,
   error,
   editForm,
   editButton,
@@ -102,7 +103,12 @@ function LessonBase({
         />
       )}
       {tab === 'assignments' && (
-        <LessonAssignments lesson={lesson} tab="assignments" />
+        <LessonAssignments
+          lesson={lesson}
+          setLesson={setLesson}
+          editable={true}
+          tab="assignments"
+        />
       )}
       {tab === 'discussion' && (
         <Posts

@@ -3,8 +3,14 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import fetcher from '../fetcher';
 
 import NavLink from './NavLink';
+import DeleteButton from './DeleteButton';
 
-export default function Assignment({ assignment, authorized, back }) {
+export default function Assignment({
+  assignment,
+  handleDelete,
+  authorized,
+  back,
+}) {
   const { state, pathname } = useLocation();
   const { id, title, body } = assignment;
   const expandedId = state?.expanded;
@@ -12,6 +18,8 @@ export default function Assignment({ assignment, authorized, back }) {
   const [submission, setSubmission] = useState(null);
   const [submissionError, setSubmissionError] = useState(null);
   const [addMessage, setAddMessage] = useState(null);
+  const [deleted, setDeleted] = useState(false);
+  const [deleteError, setDeleteError] = useState(null);
   const navigate = useNavigate();
 
   function handleSubmissionErrors({ data }) {
@@ -65,6 +73,15 @@ export default function Assignment({ assignment, authorized, back }) {
     setAddMessage('Assignment added!');
   }
 
+  function handleDeleteErrors({ data }) {
+    if (data.error) setDeleteError(data.error);
+  }
+
+  function completeDelete() {
+    handleDelete();
+    setDeleted(true);
+  }
+
   async function addEmptySubmission() {
     if (!validateAdd()) return;
 
@@ -76,6 +93,8 @@ export default function Assignment({ assignment, authorized, back }) {
     if (response.status < 400) completeAdd(response.data);
     else handleAddErrors(response);
   }
+
+  if (deleted) return 'Assignment has been deleted.';
 
   let details = 'Loading...';
   if (submissionError) details = <div className="error">{submissionError}</div>;
@@ -92,22 +111,22 @@ export default function Assignment({ assignment, authorized, back }) {
             <button onClick={addEmptySubmission}>Add to My Assignments</button>
           )}
           {addMessage && <span>{addMessage}</span>}
-          {submission?.completion_status !== 'complete' && (
-            <NavLink
-              to={
-                submission
-                  ? `/assignment/${submission.id}`
-                  : `/assignment/${id}/new`
-              }
-              state={{ back, assignment }}
-            >
-              <button>
-                {submission?.body ? 'Continue' : 'Start'} Assignment
-              </button>
-            </NavLink>
-          )}
+          <NavLink
+            to={
+              submission
+                ? `/assignment/${submission.id}`
+                : `/assignment/${id}/new`
+            }
+            state={{ back, assignment }}
+          >
+            <button>
+              {submission?.completion_status !== 'complete' &&
+                `${submission?.body ? 'Continue' : 'Start'} Assignment`}
+              {submission?.completion_status === 'complete' &&
+                'View Completed Submission'}
+            </button>
+          </NavLink>
         </div>
-        {submission?.completion_status === 'complete' && <div>Completed!</div>}
         <div className="body">{body}</div>
       </div>
     );
@@ -119,6 +138,16 @@ export default function Assignment({ assignment, authorized, back }) {
         <button onClick={toggleExpand}>
           {expanded ? 'Collapse' : 'Expand'}
         </button>
+        {authorized && (
+          <DeleteButton
+            resource="assignment"
+            id={id}
+            buttonText="Delete"
+            completeAction={completeDelete}
+            handleErrors={handleDeleteErrors}
+          />
+        )}
+        {deleteError && <div className="error">{deleteError}</div>}
       </h3>
       {expanded && details}
     </div>

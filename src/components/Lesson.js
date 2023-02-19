@@ -1,13 +1,16 @@
 import { useContext, useState, useEffect } from 'react';
-import { Navigate, useParams } from 'react-router-dom';
+import { Navigate, useLocation, useParams } from 'react-router-dom';
 import fetcher from '../fetcher';
+import { capitalize } from '../utilities';
 
-import NavLink from './NavLink';
+import BackLink from './BackLink';
 import asResource from './higher-order/asResource';
 import LessonForm from './LessonForm';
 import LessonAssignments from './LessonAssignments';
 import MessageContext from './contexts/MessageContext';
 import Posts from './Posts';
+import NavButton from './NavButton';
+import LessonMain from './LessonMain';
 
 function LessonBase({
   resource: lesson,
@@ -17,6 +20,8 @@ function LessonBase({
   deleteButton,
 }) {
   const courseId = useParams().courseId || lesson?.course_id;
+  const stateTab = useLocation().state?.tab;
+  const [tab, setTab] = useState(stateTab || 'main');
   const [posts, setPosts] = useState(null);
   const [postsError, setPostsError] = useState(null);
   const setMessage = useContext(MessageContext).set;
@@ -33,8 +38,14 @@ function LessonBase({
       if (response.status < 400) setPosts(response.data);
       else handlePostsErrors(response);
     }
-    if (!posts) getPosts();
-  }, [lesson, posts]);
+    if (tab === 'discussion' && !posts) getPosts();
+  }, [lesson, posts, tab]);
+
+  function tabTo(tabOption) {
+    return function () {
+      setTab(tabOption);
+    };
+  }
 
   if (error) {
     let displayError = '';
@@ -49,46 +60,58 @@ function LessonBase({
     return (
       <div>
         {courseId && (
-          <NavLink to={`/course/${courseId}`}>Back to Course</NavLink>
+          <BackLink
+            back={{
+              route: `/course/${courseId}`,
+              location: 'Course',
+              state: { tab: 'lessons' },
+            }}
+          />
         )}
         {displayError}
       </div>
     );
   }
 
-  const { title, authorized, lesson_sections } = lesson;
-
-  let main = (
-    <main>
-      {authorized && (
-        <div className="buttons">
-          {editButton}
-          {deleteButton}
-        </div>
-      )}
-      {lesson_sections.map(({ id, title, body }) => (
-        <div key={id} className="section">
-          <h2>{title}</h2>
-          <div>{body}</div>
-        </div>
-      ))}
-      <LessonAssignments lesson={lesson} />
-      <Posts
-        postable={lesson}
-        postableType="lesson"
-        posts={posts}
-        postsError={postsError}
-      />
-    </main>
-  );
-
   return (
     <div>
-      <NavLink to={`/course/${courseId}`} state={{ tab: 'lessons' }}>
-        Back to Course
-      </NavLink>
-      <h1>{title}</h1>
-      {editForm || main}
+      <BackLink
+        back={{
+          route: `/course/${courseId}`,
+          location: 'Course',
+          state: { tab: 'lessons' },
+        }}
+      />
+      <h1>{lesson.title}</h1>
+      {['main', 'assignments', 'discussion'].map((tabOption) => (
+        <NavButton
+          className="tab"
+          disabled={tab === tabOption}
+          key={tabOption}
+          onClick={tabTo(tabOption)}
+        >
+          {capitalize(tabOption)}
+        </NavButton>
+      ))}
+      {tab === 'main' && (
+        <LessonMain
+          lesson={lesson}
+          editForm={editForm}
+          editButton={editButton}
+          deleteButton={deleteButton}
+        />
+      )}
+      {tab === 'assignments' && (
+        <LessonAssignments lesson={lesson} tab="assignments" />
+      )}
+      {tab === 'discussion' && (
+        <Posts
+          postable={lesson}
+          postableType="lesson"
+          posts={posts}
+          postsError={postsError}
+        />
+      )}
     </div>
   );
 }

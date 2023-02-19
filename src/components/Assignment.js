@@ -1,29 +1,39 @@
-import { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useState, useEffect, useCallback } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import fetcher from '../fetcher';
 
 import NavLink from './NavLink';
 
-export default function Assignment({ assignment, parentIds, authorized }) {
+export default function Assignment({ assignment, authorized, back }) {
+  const { state, pathname } = useLocation();
   const { id, title, body } = assignment;
-  const route = useLocation().pathname;
+  const expandedId = state?.expanded;
   const [expanded, setExpanded] = useState(false);
   const [submission, setSubmission] = useState(null);
   const [submissionError, setSubmissionError] = useState(null);
   const [addMessage, setAddMessage] = useState(null);
+  const navigate = useNavigate();
 
   function handleSubmissionErrors({ data }) {
     if (data.error) setSubmissionError(data.error);
   }
 
-  async function getSubmission() {
+  const getSubmission = useCallback(async () => {
     const response = await fetcher(`assignments/${id}/current_submission`);
     if (response.status < 400) setSubmission(response.data);
     else {
       setSubmission(false);
       handleSubmissionErrors(response);
     }
-  }
+  }, [id]);
+
+  useEffect(() => {
+    if (expandedId === id) {
+      setExpanded(true);
+      getSubmission();
+      navigate(pathname, { replace: true });
+    }
+  }, [expandedId, id, getSubmission, navigate, pathname]);
 
   function toggleExpand() {
     setExpanded((expanded) => !expanded);
@@ -74,15 +84,7 @@ export default function Assignment({ assignment, parentIds, authorized }) {
       <div>
         <div className="buttons">
           {authorized && (
-            <NavLink
-              to={`/assignment/${id}/submissions`}
-              state={{
-                back: {
-                  location: 'Lesson',
-                  route: `/course/${parentIds.course}/lesson/${parentIds.lesson}`,
-                },
-              }}
-            >
+            <NavLink to={`/assignment/${id}/submissions`} state={{ back }}>
               <button>View Student Submissions</button>
             </NavLink>
           )}
@@ -97,7 +99,7 @@ export default function Assignment({ assignment, parentIds, authorized }) {
                   ? `/assignment/${submission.id}`
                   : `/assignment/${id}/new`
               }
-              state={{ back: { location: 'Lesson', route }, assignment }}
+              state={{ back, assignment }}
             >
               <button>
                 {submission?.body ? 'Continue' : 'Start'} Assignment

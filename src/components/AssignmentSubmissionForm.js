@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import fetcher from '../fetcher';
+import BackLink from './BackLink';
 import MessageContext from './contexts/MessageContext';
 
 import Field from './Field';
@@ -11,6 +12,7 @@ function AssignmentSubmissionFormBase({
   heading = true,
   defaultValues = {},
   action: initialAction,
+  back: propsBack = true,
   close,
   completeAction,
   deleteButton,
@@ -20,8 +22,9 @@ function AssignmentSubmissionFormBase({
   errors,
   handleErrors,
 }) {
-  const initialAssignment =
-    useLocation().state?.assignment || defaultValues.assignment;
+  const state = useLocation().state;
+  const back = propsBack && (propsBack.route ? propsBack : state?.back);
+  const initialAssignment = state?.assignment || defaultValues.assignment;
   const { assignmentId } = useParams();
   const [action, setAction] = useState(initialAction);
   const [assignment, setAssignment] = useState(initialAssignment);
@@ -119,6 +122,7 @@ function AssignmentSubmissionFormBase({
   if (pageError) return <div className="error">{pageError}</div>;
   return (
     <form noValidate>
+      {back && <BackLink back={back} />}
       {close && (
         <button className="close" onClick={close}>
           X

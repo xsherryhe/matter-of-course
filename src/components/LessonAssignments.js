@@ -2,6 +2,7 @@ import Assignment from './Assignment';
 
 export default function LessonAssignments({
   lesson: { id, course_id: courseId, authorized, assignments },
+  tab,
 }) {
   if (!assignments.length) return null;
 
@@ -12,8 +13,12 @@ export default function LessonAssignments({
         <Assignment
           key={assignment.id}
           assignment={assignment}
-          parentIds={{ course: courseId, lesson: id }}
           authorized={authorized}
+          back={{
+            location: 'Lesson',
+            route: `/course/${courseId}/lesson/${id}`,
+            state: { tab, expanded: assignment.id },
+          }}
         />
       ))}
     </div>

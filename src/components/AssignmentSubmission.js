@@ -18,6 +18,7 @@ function AssignmentSubmissionBase({
     main = (
       <AssignmentSubmissionForm
         heading={false}
+        back={false}
         defaultValues={submission}
         completeAction={setSubmission}
         action="update"

@@ -41,7 +41,7 @@ export default function Posts({ postable, postableType, posts, postsError }) {
 
   return (
     <div>
-      <h2>Discussion for {postable.title}</h2>
+      <h2>Discussion</h2>
       {!newPostOn && (
         <button onClick={showNewPost}>Add a Discussion Post</button>
       )}

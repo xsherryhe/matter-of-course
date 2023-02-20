@@ -27,12 +27,6 @@ function CoursesBase({ page, updatePage, pagination }) {
   let main = 'Loading...';
   if (error) main = <div className="error">{error}</div>;
   else if (courses) {
-    main = (
-      <div>
-        Uh oh, no courses here! Help us out by{' '}
-        <NavLink to="/new-course">creating a course</NavLink>.
-      </div>
-    );
     if (courses.length)
       main = (
         <div className="course-items">
@@ -44,6 +38,13 @@ function CoursesBase({ page, updatePage, pagination }) {
             />
           ))}
           {pagination}
+        </div>
+      );
+    else
+      main = (
+        <div>
+          Uh oh, no courses here! Help us out by{' '}
+          <NavLink to="/new-course">creating a course</NavLink>.
         </div>
       );
   }

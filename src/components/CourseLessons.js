@@ -20,7 +20,7 @@ export default function CourseLessons({ course, setCourse }) {
     hideEdit();
   }
 
-  let main = 'No lessons yet!';
+  let main;
   if (editOn)
     main = (
       <CourseLessonsEdit
@@ -51,6 +51,7 @@ export default function CourseLessons({ course, setCourse }) {
         ))}
       </main>
     );
+  else main = 'No lessons yet!';
 
   return (
     <div className="lessons">

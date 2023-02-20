@@ -40,12 +40,7 @@ export default function CourseAssignments({
 
   if (!authorized) return null;
 
-  let main = (
-    <div>
-      No assignments yet! Create assignments by{' '}
-      <NavButton onClick={tabToLessons}>adding them into lessons</NavButton>.
-    </div>
-  );
+  let main;
   if (assignments.length)
     main = assignments.map(({ id, title }) => {
       const assignmentDeleted = deleted.includes(id);
@@ -79,6 +74,13 @@ export default function CourseAssignments({
         </div>
       );
     });
+  else
+    main = (
+      <div>
+        No assignments yet! Create assignments by{' '}
+        <NavButton onClick={tabToLessons}>adding them into lessons</NavButton>.
+      </div>
+    );
 
   return (
     <div>

@@ -37,13 +37,7 @@ export default function UserCourses({ heading = true }) {
     (courseType) => courses[courseType].length
   );
 
-  let main = (
-    <main>
-      No courses here! Get started by{' '}
-      <NavLink to="/courses">enrolling in a course</NavLink>.
-    </main>
-  );
-
+  let main;
   if (courseTypes.length)
     main = (
       <main>
@@ -68,6 +62,13 @@ export default function UserCourses({ heading = true }) {
             <CourseItem key={course.id} course={course} />
           ))}
         </div>
+      </main>
+    );
+  else
+    main = (
+      <main>
+        No courses here! Get started by{' '}
+        <NavLink to="/courses">enrolling in a course</NavLink>.
       </main>
     );
 

@@ -4,10 +4,14 @@ import '../styles/CourseRosterEntry.css';
 import fetcher from '../fetcher';
 import NavLink from './NavLink';
 import DeleteButton from './DeleteButton';
+import withPagination from './higher-order/withPagination';
 
-export default function CourseRosterEntry({
+function CourseRosterEntryBase({
   courseId,
   student: { id: studentId, name, username },
+  submissionsPage,
+  updateSubmissionsPage,
+  submissionsPagination,
 }) {
   const navigate = useNavigate();
   const { state, pathname } = useLocation();
@@ -24,23 +28,27 @@ export default function CourseRosterEntry({
   const getSubmissions = useCallback(async () => {
     const response = await fetcher(
       `courses/${courseId}/assignment_submissions`,
-      { query: `student_id=${studentId}` }
+      { query: `student_id=${studentId}&page=${submissionsPage}` }
     );
-    if (response.status < 400) setSubmissions(response.data);
-    else handleErrors(response);
-  }, [courseId, studentId]);
+    if (response.status < 400) {
+      setSubmissions(response.data.submissions);
+      updateSubmissionsPage(response.data);
+    } else handleErrors(response);
+  }, [courseId, studentId, submissionsPage, updateSubmissionsPage]);
+
+  useEffect(() => {
+    if (submissionsOn) getSubmissions();
+  }, [submissionsOn, getSubmissions]);
 
   useEffect(() => {
     if (submissionsOnId === studentId) {
       setSubmissionsOn(true);
-      getSubmissions();
       navigate(pathname, { replace: true });
     }
-  }, [submissionsOnId, studentId, getSubmissions, navigate, pathname]);
+  }, [submissionsOnId, studentId, navigate, pathname]);
 
   function toggleSubmissions() {
     setSubmissionsOn((submissionsOn) => !submissionsOn);
-    if (!submissions) getSubmissions();
   }
 
   function completeRemove() {
@@ -57,22 +65,27 @@ export default function CourseRosterEntry({
   let submissionsTD = 'Loading...';
   if (submissions) {
     if (submissions.length)
-      submissionsTD = submissions.map(({ id, assignment: { title } }) => (
-        <div key={id}>
-          <NavLink
-            to={`/assignment/${id}`}
-            state={{
-              back: {
-                location: 'Roster',
-                route: `/course/${courseId}`,
-                state: { tab: 'roster', submissionsOn: studentId },
-              },
-            }}
-          >
-            {title}
-          </NavLink>
+      submissionsTD = (
+        <div className="with-pagination">
+          {submissions.map(({ id, assignment: { title } }) => (
+            <div key={id}>
+              <NavLink
+                to={`/assignment/${id}`}
+                state={{
+                  back: {
+                    location: 'Roster',
+                    route: `/course/${courseId}`,
+                    state: { tab: 'roster', submissionsOn: studentId },
+                  },
+                }}
+              >
+                {title}
+              </NavLink>
+            </div>
+          ))}
+          {submissionsPagination}
         </div>
-      ));
+      );
     else submissionsTD = 'This student has not submitted any assignments.';
   }
 
@@ -122,3 +135,6 @@ export default function CourseRosterEntry({
     </tr>
   );
 }
+
+const CourseRosterEntry = withPagination(CourseRosterEntryBase, 'submissions');
+export default CourseRosterEntry;

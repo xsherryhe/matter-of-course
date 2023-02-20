@@ -111,7 +111,7 @@ function AssignmentSubmissionFormBase({
             }.`
           );
           navigate(`/assignment/${response.data.id}`, {
-            state: { assignment, submissionData: response.data },
+            state: { assignment, submissionData: response.data, back },
           });
         }
       } else handleErrors(response);

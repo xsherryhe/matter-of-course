@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import '../../styles/withPagination.css';
+import { capitalize } from '../../utilities';
 
 import NavButton from '../NavButton';
 
-export default function withPagination(ComponentBase) {
+export default function withPagination(ComponentBase, resourceName) {
   return function Component(props) {
     const [page, setPage] = useState(1);
     const [lastPage, setLastPage] = useState(null);
@@ -36,9 +37,11 @@ export default function withPagination(ComponentBase) {
 
     return (
       <ComponentBase
-        page={page}
-        updatePage={updatePage}
-        pagination={pagination}
+        {...{
+          [`${resourceName}Page`]: page,
+          [`update${capitalize(resourceName)}Page`]: updatePage,
+          [`${resourceName}Pagination`]: pagination,
+        }}
         {...props}
       />
     );

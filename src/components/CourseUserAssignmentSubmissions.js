@@ -5,6 +5,8 @@ export default function CourseUserAssignmentSubmissions({
   course: { id },
   submissions,
   submissionsError,
+  incompleteSubmissionsPagination,
+  completeSubmissionsPagination,
 }) {
   const stateTab = useLocation().state?.assignmentTab;
 
@@ -15,6 +17,8 @@ export default function CourseUserAssignmentSubmissions({
         heading={false}
         submissions={submissions}
         submissionsError={submissionsError}
+        incompleteSubmissionsPagination={incompleteSubmissionsPagination}
+        completeSubmissionsPagination={completeSubmissionsPagination}
         back={{
           location: 'Course',
           route: `/course/${id}`,

@@ -6,6 +6,8 @@ export default function UserAssignmentSubmissions({
   heading = true,
   submissions,
   submissionsError,
+  incompleteSubmissionsPagination,
+  completeSubmissionsPagination,
   back,
   tab: initialTab,
 }) {
@@ -23,40 +25,50 @@ export default function UserAssignmentSubmissions({
   if (!submissions) return 'Loading...';
 
   let main = <div>No assignments here!</div>;
-  if (tab === 'incomplete' && submissions.incomplete)
-    main = submissions.incomplete.map(({ id, title, body }) => (
-      <NavLink to={`/assignment/${id}`} state={{ back }} key={id}>
-        <div className="title">
-          {title || 'Submission Draft for Deleted Assignment'}
-        </div>
-        <div className="preview">
-          {body ? `${body.slice(0, 51)}...` : 'Not started yet!'}
-        </div>
-      </NavLink>
-    ));
+  if (tab === 'incomplete' && submissions.incomplete.submissions.length)
+    main = (
+      <main>
+        {submissions.incomplete.submissions.map(({ id, title, body }) => (
+          <NavLink to={`/assignment/${id}`} state={{ back }} key={id}>
+            <div className="title">
+              {title || 'Submission Draft for Deleted Assignment'}
+            </div>
+            <div className="preview">
+              {body ? `${body.slice(0, 51)}...` : 'Not started yet!'}
+            </div>
+          </NavLink>
+        ))}
+        {incompleteSubmissionsPagination}
+      </main>
+    );
 
-  if (tab === 'complete' && submissions.complete)
-    main = submissions.complete.map(({ id, title, body }) => (
-      <NavLink
-        to={`/assignment/${id}`}
-        state={{
-          back: {
-            ...back,
-            state: {
-              tab: 'complete',
-              assignmentTab: 'complete',
-              ...back.state,
-            },
-          },
-        }}
-        key={id}
-      >
-        <div className="title">
-          {title || 'Submission for Deleted Assignment'}
-        </div>
-        <div className="preview">{body.slice(0, 51)}...</div>
-      </NavLink>
-    ));
+  if (tab === 'complete' && submissions.complete.submissions.length)
+    main = (
+      <main>
+        {submissions.complete.submissions.map(({ id, title, body }) => (
+          <NavLink
+            to={`/assignment/${id}`}
+            state={{
+              back: {
+                ...back,
+                state: {
+                  tab: 'complete',
+                  assignmentTab: 'complete',
+                  ...back.state,
+                },
+              },
+            }}
+            key={id}
+          >
+            <div className="title">
+              {title || 'Submission for Deleted Assignment'}
+            </div>
+            <div className="preview">{body.slice(0, 51)}...</div>
+          </NavLink>
+        ))}
+        {completeSubmissionsPagination}
+      </main>
+    );
 
   return (
     <div>

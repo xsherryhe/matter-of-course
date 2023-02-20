@@ -5,7 +5,7 @@ import withPagination from './higher-order/withPagination';
 import CourseItem from './CourseItem';
 import NavLink from './NavLink';
 
-function CoursesBase({ page, updatePage, pagination }) {
+function CoursesBase({ coursePage, updateCoursePage, coursePagination }) {
   const [courses, setCourses] = useState(null);
   const [error, setError] = useState(null);
 
@@ -15,14 +15,16 @@ function CoursesBase({ page, updatePage, pagination }) {
 
   useEffect(() => {
     async function getCourses() {
-      const response = await fetcher('courses', { query: `page=${page}` });
+      const response = await fetcher('courses', {
+        query: `page=${coursePage}`,
+      });
       if (response.status < 400) {
         setCourses(response.data.courses);
-        updatePage(response.data);
+        updateCoursePage(response.data);
       } else handleErrors(response);
     }
     getCourses();
-  }, [page, updatePage]);
+  }, [coursePage, updateCoursePage]);
 
   let main = 'Loading...';
   if (error) main = <div className="error">{error}</div>;
@@ -37,7 +39,7 @@ function CoursesBase({ page, updatePage, pagination }) {
               includeDescription={true}
             />
           ))}
-          {pagination}
+          {coursePagination}
         </div>
       );
     else
@@ -57,5 +59,5 @@ function CoursesBase({ page, updatePage, pagination }) {
   );
 }
 
-const Courses = withPagination(CoursesBase);
+const Courses = withPagination(CoursesBase, 'course');
 export default Courses;

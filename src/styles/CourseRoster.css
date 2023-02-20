@@ -14,3 +14,7 @@
 .course-roster th, .course-roster td {
   border-bottom: 1px solid black;
 }
+
+.course-roster td.full-row {
+  grid-column: 1 / span 5;
+}

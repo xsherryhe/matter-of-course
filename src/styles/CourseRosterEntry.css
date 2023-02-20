@@ -3,3 +3,16 @@
 .course-roster .entry .error {
   grid-column: 1 / span 5;
 }
+
+.course-roster .entry .submissions .with-pagination {
+  padding-bottom: 2.5rem;
+}
+
+.course-roster .entry .submissions footer.pagination {
+  bottom: 0.5rem;
+  font-size: 0.75rem;
+}
+
+.course-roster .entry .submissions footer.pagination button {
+  font-size: 0.75rem;
+}

@@ -2,15 +2,31 @@ import '../styles/CourseRoster.css';
 
 import CourseRosterEntry from './CourseRosterEntry';
 
-export default function CourseRoster({ course: { id }, roster, rosterError }) {
+export default function CourseRoster({
+  course: { id },
+  roster,
+  rosterError,
+  rosterPagination,
+}) {
   if (rosterError) return <div className="error">{rosterError}</div>;
-  if (!roster) return 'Loading...';
 
-  let tbody = 'No students yet!';
-  if (roster.length)
-    tbody = roster.map(({ student }) => (
-      <CourseRosterEntry key={student.id} courseId={id} student={student} />
-    ));
+  let tbody = (
+    <tr>
+      <td className="full-row">Loading...</td>
+    </tr>
+  );
+  if (roster) {
+    if (roster.length)
+      tbody = roster.map(({ student }) => (
+        <CourseRosterEntry key={student.id} courseId={id} student={student} />
+      ));
+    else
+      tbody = (
+        <tr>
+          <td className="full-row">No students yet!</td>
+        </tr>
+      );
+  }
 
   return (
     <div>
@@ -27,6 +43,7 @@ export default function CourseRoster({ course: { id }, roster, rosterError }) {
         </thead>
         <tbody>{tbody}</tbody>
       </table>
+      {roster?.length && rosterPagination}
     </div>
   );
 }

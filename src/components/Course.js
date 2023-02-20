@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import fetcher from '../fetcher';
 import { capitalize } from '../utilities';
 
+import withPagination from './higher-order/withPagination';
 import asResource from './higher-order/asResource';
 import NavButton from './NavButton';
 import CourseStatusNotice from './CourseStatusNotice';
@@ -24,6 +25,15 @@ function CourseBase({
   editForm,
   editButton,
   deleteButton,
+  rosterPage,
+  updateRosterPage,
+  rosterPagination,
+  incompleteSubmissionsPage,
+  updateIncompleteSubmissionsPage,
+  incompleteSubmissionsPagination,
+  completeSubmissionsPage,
+  updateCompleteSubmissionsPage,
+  completeSubmissionsPagination,
 }) {
   const [roster, setRoster] = useState(null);
   const [rosterError, setRosterError] = useState(null);
@@ -48,9 +58,13 @@ function CourseBase({
 
   useEffect(() => {
     async function getRoster() {
-      const response = await fetcher(`courses/${course.id}/enrollments`);
-      if (response.status < 400) setRoster(response.data);
-      else handleRosterErrors(response);
+      const response = await fetcher(`courses/${course.id}/enrollments`, {
+        query: `page=${rosterPage}`,
+      });
+      if (response.status < 400) {
+        setRoster(response.data.enrollments);
+        updateRosterPage(response.data);
+      } else handleRosterErrors(response);
     }
 
     async function getPosts() {
@@ -61,23 +75,35 @@ function CourseBase({
 
     async function getSubmissions() {
       const response = await fetcher('current_user', {
-        query: `with=all_assignment_submissions&scope=course_${course.id}`,
+        headers: { 'Content-Type': 'application/json' },
+        query: `with=all_assignment_submissions&scope=course_${course.id}&page=${incompleteSubmissionsPage},${completeSubmissionsPage}`,
       });
-      if (response.status < 400)
+      if (response.status < 400) {
         setSubmissions(response.data.all_assignment_submissions);
-      else handleSubmissionsErrors(response);
+        updateIncompleteSubmissionsPage(
+          response.data.all_assignment_submissions.incomplete
+        );
+        updateCompleteSubmissionsPage(
+          response.data.all_assignment_submissions.complete
+        );
+      } else handleSubmissionsErrors(response);
     }
 
-    if (tab === 'roster' && !roster) getRoster();
+    if (tab === 'roster') getRoster();
     if (tab === 'discussion' && !posts) getPosts();
-    if (
-      tab === 'assignments' &&
-      !submissions &&
-      course.enrolled &&
-      !course.authorized
-    )
+    if (tab === 'assignments' && course.enrolled && !course.authorized)
       getSubmissions();
-  }, [tab, course, roster, posts, submissions]);
+  }, [
+    tab,
+    course,
+    rosterPage,
+    updateRosterPage,
+    posts,
+    incompleteSubmissionsPage,
+    updateIncompleteSubmissionsPage,
+    completeSubmissionsPage,
+    updateCompleteSubmissionsPage,
+  ]);
 
   function tabTo(tabOption) {
     return function () {
@@ -121,6 +147,8 @@ function CourseBase({
         course={course}
         submissions={submissions}
         submissionsError={submissionsError}
+        incompleteSubmissionsPagination={incompleteSubmissionsPagination}
+        completeSubmissionsPagination={completeSubmissionsPagination}
       />
     );
 
@@ -151,6 +179,7 @@ function CourseBase({
             course={course}
             roster={roster}
             rosterError={rosterError}
+            rosterPagination={rosterPagination}
           />
         )}
         {tab === 'lessons' && (
@@ -185,7 +214,15 @@ function CourseBase({
   );
 }
 
-const Course = asResource(CourseBase, CourseForm, 'course', {
+const PaginatedCourseBase = [
+  'roster',
+  'incompleteSubmissions',
+  'completeSubmissions',
+].reduce(
+  (Component, resourceName) => withPagination(Component, resourceName),
+  CourseBase
+);
+const Course = asResource(PaginatedCourseBase, CourseForm, 'course', {
   formHeading: false,
   catchError: false,
   redirect: () => ({ route: '/my-courses' }),

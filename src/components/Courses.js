@@ -5,7 +5,7 @@ import withPagination from './higher-order/withPagination';
 import CourseItem from './CourseItem';
 import NavLink from './NavLink';
 
-function CoursesBase({ page, setLastPage, pagination }) {
+function CoursesBase({ page, updatePage, pagination }) {
   const [courses, setCourses] = useState(null);
   const [error, setError] = useState(null);
 
@@ -18,11 +18,11 @@ function CoursesBase({ page, setLastPage, pagination }) {
       const response = await fetcher('courses', { query: `page=${page}` });
       if (response.status < 400) {
         setCourses(response.data.courses);
-        setLastPage(response.data.last_page);
+        updatePage(response.data);
       } else handleErrors(response);
     }
     getCourses();
-  }, [page, setLastPage]);
+  }, [page, updatePage]);
 
   let main = 'Loading...';
   if (error) main = <div className="error">{error}</div>;

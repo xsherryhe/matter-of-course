@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import '../../styles/withPagination.css';
 
 import NavButton from '../NavButton';
 
@@ -8,25 +9,35 @@ export default function withPagination(ComponentBase) {
     const [lastPage, setLastPage] = useState(null);
 
     function decrementPage() {
-      setPage((page) => page - 1);
+      setPage((page) => Math.max(page - 1, 1));
     }
 
     function incrementPage() {
+      if (lastPage) return;
+
       setPage((page) => page + 1);
+    }
+
+    function updatePage(data) {
+      setLastPage(data.last_page);
     }
 
     const pagination = (
       <footer className="pagination">
-        {page > 1 && <NavButton onClick={decrementPage}>Previous</NavButton>}
+        <NavButton disabled={page === 1} onClick={decrementPage}>
+          Previous
+        </NavButton>
         <span>Page {page}</span>
-        {!lastPage && <NavButton onClick={incrementPage}>Next</NavButton>}
+        <NavButton disabled={lastPage} onClick={incrementPage}>
+          Next
+        </NavButton>
       </footer>
     );
 
     return (
       <ComponentBase
         page={page}
-        setLastPage={setLastPage}
+        updatePage={updatePage}
         pagination={pagination}
         {...props}
       />

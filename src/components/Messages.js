@@ -7,8 +7,16 @@ import MessageForm from './MessageForm';
 import Message from './Message';
 import NavButton from './NavButton';
 import MessageDeleteButton from './MessageDeleteButton';
+import withPagination from './higher-order/withPagination';
 
-export default function Messages() {
+function MessagesBase({
+  inboxPage,
+  updateInboxPage,
+  inboxPagination,
+  outboxPage,
+  updateOutboxPage,
+  outboxPagination,
+}) {
   const [tab, setTab] = useState('inbox');
   const [message, setMessage] = useState(null);
   const [messages, setMessages] = useState(null);
@@ -36,11 +44,15 @@ export default function Messages() {
 
   const getMessages = useCallback(async () => {
     setLoading(true);
-    const response = await fetcher(`current_messages/${tab}`);
-    if (response.status < 400) setMessages(response.data);
-    else handleErrors(response);
+    const response = await fetcher(`current_messages/${tab}`, {
+      query: `page=${tab === 'inbox' ? inboxPage : outboxPage}`,
+    });
+    if (response.status < 400) {
+      setMessages(response.data.messages);
+      (tab === 'inbox' ? updateInboxPage : updateOutboxPage)(response.data);
+    } else handleErrors(response);
     setLoading(false);
-  }, [tab]);
+  }, [tab, inboxPage, outboxPage, updateInboxPage, updateOutboxPage]);
 
   useEffect(() => {
     getMessages();
@@ -155,6 +167,8 @@ export default function Messages() {
               )}
             </div>
           ))}
+          {tab === 'inbox' && inboxPagination}
+          {tab === 'outbox' && outboxPagination}
         </main>
       );
     else main = 'No messages yet!';
@@ -168,3 +182,9 @@ export default function Messages() {
     </div>
   );
 }
+
+const Messages = ['inbox', 'outbox'].reduce(
+  (Component, resourceName) => withPagination(Component, resourceName),
+  MessagesBase
+);
+export default Messages;

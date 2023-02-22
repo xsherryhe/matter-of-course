@@ -7,23 +7,54 @@ import { capitalize } from '../utilities';
 import NavLink from './NavLink';
 import CourseItem from './CourseItem';
 import NavButton from './NavButton';
+import withPagination from './higher-order/withPagination';
 
-export default function UserCourses({ heading = true }) {
+function UserCoursesBase({
+  heading = true,
+  hostedPage,
+  updateHostedPage,
+  hostedPagination,
+  instructedPage,
+  updateInstructedPage,
+  instructedPagination,
+  enrolledPage,
+  updateEnrolledPage,
+  enrolledPagination,
+}) {
   const [name, setName] = useState(null);
   const [tab, setTab] = useState(null);
   const [courses, setCourses] = useState(null);
+  const [error, setError] = useState(null);
   const { id } = useParams();
+
+  function handleErrors({ data }) {
+    if (data.error) setError(data.error);
+  }
 
   useEffect(() => {
     async function getCourses() {
       const response = await fetcher(id ? `users/${id}` : 'current_user', {
-        query: 'with=all_courses',
+        query: `with=all_courses&page=${hostedPage},${instructedPage},${enrolledPage}`,
       });
-      setName(response.data.name);
-      setCourses(response.data.all_courses);
+      if (response.status < 400) {
+        setName(response.data.name);
+        const responseCourses = response.data.all_courses;
+        setCourses(responseCourses);
+        updateHostedPage(responseCourses.hosted);
+        updateInstructedPage(responseCourses.instructed);
+        updateEnrolledPage(responseCourses.enrolled);
+      } else handleErrors(response.data);
     }
     getCourses();
-  }, [id]);
+  }, [
+    id,
+    hostedPage,
+    instructedPage,
+    enrolledPage,
+    updateHostedPage,
+    updateInstructedPage,
+    updateEnrolledPage,
+  ]);
 
   function tabTo(tabOption) {
     return function () {
@@ -31,11 +62,17 @@ export default function UserCourses({ heading = true }) {
     };
   }
 
+  if (error) return <div className="error">{error}</div>;
   if (!courses) return 'Loading...';
 
   const courseTypes = ['hosted', 'instructed', 'enrolled'].filter(
-    (courseType) => courses[courseType].length
+    (courseType) => courses[courseType].courses.length
   );
+  const coursePaginations = {
+    hosted: hostedPagination,
+    instructed: instructedPagination,
+    enrolled: enrolledPagination,
+  };
 
   let main;
   if (courseTypes.length)
@@ -58,9 +95,10 @@ export default function UserCourses({ heading = true }) {
             </NavButton>
           ))}
         <div className="course-items">
-          {courses[tab || courseTypes[0]].map((course) => (
+          {courses[tab || courseTypes[0]].courses.map((course) => (
             <CourseItem key={course.id} course={course} />
           ))}
+          {coursePaginations[tab || courseTypes[0]]}
         </div>
       </main>
     );
@@ -79,3 +117,9 @@ export default function UserCourses({ heading = true }) {
     </div>
   );
 }
+
+const UserCourses = ['hosted', 'instructed', 'enrolled'].reduce(
+  (Component, resourceName) => withPagination(Component, resourceName),
+  UserCoursesBase
+);
+export default UserCourses;

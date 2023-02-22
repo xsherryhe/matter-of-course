@@ -17,7 +17,7 @@ export default function CourseOverview({
   const {
     host,
     instructors,
-    instruction_invitations,
+    instruction_invitations: instructionInvitations,
     status,
     description,
     authorized,
@@ -44,7 +44,7 @@ export default function CourseOverview({
       <div>Host: {host.name}</div>
       <div>Instructors: {list(instructors.map(({ name }) => name))}</div>
       {authorized && (
-        <CourseInvitedInstructors invitations={instruction_invitations} />
+        <CourseInvitedInstructors invitations={instructionInvitations} />
       )}
       <div>Status: {capitalize(status)}</div>
       <div>{description}</div>

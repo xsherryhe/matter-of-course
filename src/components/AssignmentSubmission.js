@@ -45,13 +45,13 @@ function AssignmentSubmissionBase({
   return (
     <div>
       <BackLink back={back} />
-      {submission.assignment && submission.authorized && (
+      {submission.assignment && submission.assignment_authorized && (
         <div>
           <h1>{submission.assignment.title}</h1>
           <div>{submission.assignment.body}</div>
         </div>
       )}
-      {submission.assignment && !submission.authorized && (
+      {submission.assignment && !submission.assignment_authorized && (
         <div>
           This assignment is no longer accepting submissions, but you can still
           read or delete this submission.

@@ -1,10 +1,18 @@
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import fetcher from '../fetcher';
+import withPagination from './higher-order/withPagination';
 
 import UserAssignmentSubmissions from './UserAssignmentSubmissions';
 
-export default function UserAllAssignmentSubmissions() {
+function UserAllAssignmentSubmissionsBase({
+  incompleteSubmissionsPage,
+  updateIncompleteSubmissionsPage,
+  incompleteSubmissionsPagination,
+  completeSubmissionsPage,
+  updateCompleteSubmissionsPage,
+  completeSubmissionsPagination,
+}) {
   const stateTab = useLocation().state?.tab;
   const [submissions, setSubmissions] = useState(null);
   const [error, setError] = useState(null);
@@ -16,19 +24,32 @@ export default function UserAllAssignmentSubmissions() {
   useEffect(() => {
     async function getSubmissions() {
       const response = await fetcher('current_user', {
-        query: 'with=all_assignment_submissions',
+        query: `with=all_assignment_submissions&page=${incompleteSubmissionsPage},${completeSubmissionsPage}`,
       });
-      if (response.status < 400)
+      if (response.status < 400) {
         setSubmissions(response.data.all_assignment_submissions);
-      else handleErrors(response);
+        updateIncompleteSubmissionsPage(
+          response.data.all_assignment_submissions.incomplete
+        );
+        updateCompleteSubmissionsPage(
+          response.data.all_assignment_submissions.complete
+        );
+      } else handleErrors(response);
     }
     getSubmissions();
-  }, []);
+  }, [
+    incompleteSubmissionsPage,
+    updateIncompleteSubmissionsPage,
+    completeSubmissionsPage,
+    updateCompleteSubmissionsPage,
+  ]);
 
   return (
     <UserAssignmentSubmissions
       submissions={submissions}
       submissionsError={error}
+      incompleteSubmissionsPagination={incompleteSubmissionsPagination}
+      completeSubmissionsPagination={completeSubmissionsPagination}
       back={{
         location: 'My Assignments',
         route: '/my-assignments',
@@ -38,3 +59,12 @@ export default function UserAllAssignmentSubmissions() {
     />
   );
 }
+
+const UserAllAssignmentSubmissions = [
+  'incompleteSubmissions',
+  'completeSubmissions',
+].reduce(
+  (Component, resourceName) => withPagination(Component, resourceName),
+  UserAllAssignmentSubmissionsBase
+);
+export default UserAllAssignmentSubmissions;

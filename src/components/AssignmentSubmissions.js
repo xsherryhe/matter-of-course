@@ -7,8 +7,13 @@ import BackLink from './BackLink';
 import NavLink from './NavLink';
 import DeleteButton from './DeleteButton';
 import MessageContext from './contexts/MessageContext';
+import withPagination from './higher-order/withPagination';
 
-export default function AssignmentSubmissions() {
+function AssignmentSubmissionsBase({
+  submissionsPage,
+  updateSubmissionsPage,
+  submissionsPagination,
+}) {
   const back = useLocation().state?.back;
   const navigate = useNavigate();
   const { assignmentId } = useParams();
@@ -23,25 +28,31 @@ export default function AssignmentSubmissions() {
   }
 
   useEffect(() => {
-    async function getAssignmentAndSubmissions() {
-      let assignmentResponse, submissionsResponse;
-      assignmentResponse = await fetcher(`assignments/${assignmentId}`, {
+    async function getAssignment() {
+      const response = await fetcher(`assignments/${assignmentId}`, {
         query: 'with=lesson',
       });
-      if (assignmentResponse.status < 400)
-        submissionsResponse = await fetcher(
-          `assignments/${assignmentId}/submissions`
-        );
-      else return handleErrors(assignmentResponse);
-
-      if (submissionsResponse.status < 400) {
-        setAssignment(assignmentResponse.data);
-        setSubmissions(submissionsResponse.data);
-      } else handleErrors(submissionsResponse);
+      if (response.status < 400) setAssignment(response.data);
+      else handleErrors(response);
     }
-
-    getAssignmentAndSubmissions();
+    getAssignment();
   }, [assignmentId]);
+
+  useEffect(() => {
+    if (!assignment) return;
+
+    async function getSubmissions() {
+      const response = await fetcher(
+        `assignments/${assignmentId}/submissions`,
+        { query: `page=${submissionsPage}` }
+      );
+      if (response.status < 400) {
+        setSubmissions(response.data.submissions);
+        updateSubmissionsPage(response.data);
+      } else handleErrors(response);
+    }
+    getSubmissions();
+  }, [assignment, assignmentId, submissionsPage, updateSubmissionsPage]);
 
   function completeDelete() {
     setMessage('Successfully deleted assignment.');
@@ -76,35 +87,45 @@ export default function AssignmentSubmissions() {
       <h2>Submissions</h2>
       {!submissions.length && 'No submissions yet!'}
       {submissions.length > 0 && (
-        <table className="submissions">
-          <thead>
-            <tr>
-              <th>Student</th>
-              <th>Submission</th>
-            </tr>
-          </thead>
-          <tbody>
-            {submissions.map(({ id, student: { name } }) => (
-              <tr key={id}>
-                <td>{name}</td>
-                <td>
-                  <NavLink
-                    to={`/assignment/${id}`}
-                    state={{
-                      back: {
-                        location: 'Assignment',
-                        route: `/assignment/${assignmentId}/submissions`,
-                      },
-                    }}
-                  >
-                    View Submission
-                  </NavLink>
-                </td>
+        <div>
+          <table className="submissions">
+            <thead>
+              <tr>
+                <th>Student</th>
+                <th>Submission</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {submissions.map(({ id, student: { name } }) => (
+                <tr key={id}>
+                  <td>{name}</td>
+                  <td>
+                    <NavLink
+                      to={`/assignment/${id}`}
+                      state={{
+                        back: {
+                          location: 'Assignment',
+                          route: `/assignment/${assignmentId}/submissions`,
+                          state: { back },
+                        },
+                      }}
+                    >
+                      View Submission
+                    </NavLink>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {submissionsPagination}
+        </div>
       )}
     </div>
   );
 }
+
+const AssignmentSubmissions = withPagination(
+  AssignmentSubmissionsBase,
+  'submissions'
+);
+export default AssignmentSubmissions;

@@ -1,14 +1,7 @@
 footer.pagination {
-  position: absolute;
-  width: 100%;
-  bottom: 2rem;
+  padding: 0.5rem 0;
   display: flex;
   gap: 0.5rem;
   justify-content: center;
   align-items: center;
-}
-
-.with-pagination {
-  position: relative;
-  padding-bottom: 4rem;
 }

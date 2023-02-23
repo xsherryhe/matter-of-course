@@ -11,6 +11,7 @@ import MessageContext from './contexts/MessageContext';
 import Posts from './Posts';
 import NavButton from './NavButton';
 import LessonMain from './LessonMain';
+import withPagination from './higher-order/withPagination';
 
 function LessonBase({
   resource: lesson,
@@ -19,6 +20,9 @@ function LessonBase({
   editForm,
   editButton,
   deleteButton,
+  postsPage,
+  updatePostsPage,
+  postsPagination,
 }) {
   const courseId = useParams().courseId || lesson?.course_id;
   const stateTab = useLocation().state?.tab;
@@ -35,12 +39,16 @@ function LessonBase({
     if (!lesson) return;
 
     async function getPosts() {
-      const response = await fetcher(`lessons/${lesson.id}/posts`);
-      if (response.status < 400) setPosts(response.data);
-      else handlePostsErrors(response);
+      const response = await fetcher(`lessons/${lesson.id}/posts`, {
+        query: `page=${postsPage}`,
+      });
+      if (response.status < 400) {
+        setPosts(response.data.posts);
+        updatePostsPage(response.data);
+      } else handlePostsErrors(response);
     }
-    if (tab === 'discussion' && !posts) getPosts();
-  }, [lesson, posts, tab]);
+    if (tab === 'discussion') getPosts();
+  }, [lesson, tab, postsPage, updatePostsPage]);
 
   function tabTo(tabOption) {
     return function () {
@@ -116,13 +124,16 @@ function LessonBase({
           postableType="lesson"
           posts={posts}
           postsError={postsError}
+          postsPage={postsPage}
+          postsPagination={postsPagination}
         />
       )}
     </div>
   );
 }
 
-const Lesson = asResource(LessonBase, LessonForm, 'lesson', {
+const PaginatedLessonBase = withPagination(LessonBase, 'posts');
+const Lesson = asResource(PaginatedLessonBase, LessonForm, 'lesson', {
   formHeading: false,
   catchError: false,
   redirect: (lesson) => lesson && { route: `/course/${lesson.course_id}` },

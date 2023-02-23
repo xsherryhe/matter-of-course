@@ -9,6 +9,7 @@ import withPagination from './higher-order/withPagination';
 function CourseRosterEntryBase({
   courseId,
   student: { id: studentId, name, username },
+  rosterPage,
   submissionsPage,
   updateSubmissionsPage,
   submissionsPagination,
@@ -75,7 +76,12 @@ function CourseRosterEntryBase({
                   back: {
                     location: 'Roster',
                     route: `/course/${courseId}`,
-                    state: { tab: 'roster', submissionsOn: studentId },
+                    state: {
+                      tab: 'roster',
+                      rosterPage,
+                      submissionsOn: studentId,
+                      submissionsPage,
+                    },
                   },
                 }}
               >
@@ -106,7 +112,12 @@ function CourseRosterEntryBase({
             back: {
               location: 'Roster',
               route: `/course/${courseId}`,
-              state: { tab: 'roster', submissionsOn: false },
+              state: {
+                tab: 'roster',
+                rosterPage,
+                submissionsOn: false,
+                submissionsPage,
+              },
             },
           }}
         >

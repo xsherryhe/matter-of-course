@@ -106,7 +106,7 @@ function AssignmentSubmissionsBase({
                         back: {
                           location: 'Assignment',
                           route: `/assignment/${assignmentId}/submissions`,
-                          state: { back },
+                          state: { submissionsPage, back },
                         },
                       }}
                     >

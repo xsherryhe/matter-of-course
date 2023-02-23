@@ -53,7 +53,7 @@ function UserAllAssignmentSubmissionsBase({
       back={{
         location: 'My Assignments',
         route: '/my-assignments',
-        state: {},
+        state: { incompleteSubmissionsPage, completeSubmissionsPage },
       }}
       tab={stateTab}
     />

@@ -4,7 +4,14 @@ import { capitalize } from '../utilities';
 import NavLink from './NavLink';
 import PostForm from './PostForm';
 
-export default function Posts({ postable, postableType, posts, postsError }) {
+export default function Posts({
+  postable,
+  postableType,
+  posts,
+  postsError,
+  postsPage,
+  postsPagination,
+}) {
   const [newPostOn, setNewPostOn] = useState(false);
 
   function showNewPost() {
@@ -17,26 +24,31 @@ export default function Posts({ postable, postableType, posts, postsError }) {
 
   if (postsError) return <div className="error">{postsError}</div>;
 
-  let postsMain = 'Loading...';
+  let main = 'Loading...';
   if (posts) {
     if (posts.length)
-      postsMain = posts.map(({ id, title }) => (
-        <div key={id}>
-          <NavLink
-            to={`/${postableType}/${postable.id}/post/${id}`}
-            state={{
-              back: {
-                route: `/${postableType}/${postable.id}`,
-                location: capitalize(postableType),
-                state: { tab: 'discussion' },
-              },
-            }}
-          >
-            {title}
-          </NavLink>
+      main = (
+        <div>
+          {posts.map(({ id, title }) => (
+            <div key={id}>
+              <NavLink
+                to={`/${postableType}/${postable.id}/post/${id}`}
+                state={{
+                  back: {
+                    route: `/${postableType}/${postable.id}`,
+                    location: capitalize(postableType),
+                    state: { tab: 'discussion', postsPage },
+                  },
+                }}
+              >
+                {title}
+              </NavLink>
+            </div>
+          ))}
+          {postsPagination}
         </div>
-      ));
-    else postsMain = 'No discussion yet!';
+      );
+    else main = 'No discussion yet!';
   }
 
   return (
@@ -54,7 +66,7 @@ export default function Posts({ postable, postableType, posts, postsError }) {
           close={hideNewPost}
         />
       )}
-      <main>{postsMain}</main>
+      <main>{main}</main>
     </div>
   );
 }

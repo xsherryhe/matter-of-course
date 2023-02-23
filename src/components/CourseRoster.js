@@ -6,6 +6,7 @@ export default function CourseRoster({
   course: { id },
   roster,
   rosterError,
+  rosterPage,
   rosterPagination,
 }) {
   if (rosterError) return <div className="error">{rosterError}</div>;
@@ -18,7 +19,12 @@ export default function CourseRoster({
   if (roster) {
     if (roster.length)
       tbody = roster.map(({ student }) => (
-        <CourseRosterEntry key={student.id} courseId={id} student={student} />
+        <CourseRosterEntry
+          key={student.id}
+          rosterPage={rosterPage}
+          courseId={id}
+          student={student}
+        />
       ));
     else
       tbody = (

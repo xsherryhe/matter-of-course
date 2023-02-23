@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import '../../styles/withPagination.css';
 import { capitalize } from '../../utilities';
 
@@ -6,7 +7,8 @@ import NavButton from '../NavButton';
 
 export default function withPagination(ComponentBase, resourceName) {
   return function Component(props) {
-    const [page, setPage] = useState(1);
+    const statePage = useLocation().state?.[`${resourceName}Page`];
+    const [page, setPage] = useState(statePage || 1);
     const [lastPage, setLastPage] = useState(null);
 
     function decrementPage() {
@@ -40,7 +42,8 @@ export default function withPagination(ComponentBase, resourceName) {
         {...{
           [`${resourceName}Page`]: page,
           [`update${capitalize(resourceName)}Page`]: updatePage,
-          [`${resourceName}Pagination`]: pagination,
+          [`${resourceName}Pagination`]:
+            !(page === 1 && lastPage) && pagination,
         }}
         {...props}
       />

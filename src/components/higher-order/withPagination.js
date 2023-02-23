@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import '../../styles/withPagination.css';
@@ -21,9 +22,7 @@ export default function withPagination(ComponentBase, resourceName) {
       setPage((page) => page + 1);
     }
 
-    function updatePage(data) {
-      setLastPage(data.last_page);
-    }
+    const updatePage = useCallback((data) => setLastPage(data.last_page), []);
 
     const pagination = (
       <footer className="pagination">

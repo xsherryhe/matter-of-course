@@ -4,7 +4,7 @@ import { capitalize } from '../utilities';
 import asResource from './higher-order/asResource';
 import BackLink from './BackLink';
 import PostForm from './PostForm';
-import Comments from './Comments';
+import PaginatedComments from './PaginatedComments';
 
 function PostBase({ resource: post, editForm, editButton, deleteButton }) {
   const back = useLocation().state?.back || {
@@ -25,7 +25,7 @@ function PostBase({ resource: post, editForm, editButton, deleteButton }) {
         </div>
       )}
       <div>{post.body}</div>
-      <Comments commentable={post} commentableType="post" />
+      <PaginatedComments commentable={post} commentableType="post" />
     </main>
   );
 

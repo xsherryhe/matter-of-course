@@ -2,7 +2,7 @@ import { useLocation } from 'react-router-dom';
 
 import asResource from './higher-order/asResource';
 import AssignmentSubmissionForm from './AssignmentSubmissionForm';
-import Comments from './Comments';
+import AppendedComments from './AppendedComments';
 import BackLink from './BackLink';
 
 function AssignmentSubmissionBase({
@@ -35,7 +35,7 @@ function AssignmentSubmissionBase({
         {submission.authorized && submission.assignment && editButton}
         {submission.owned && deleteButton}
         <div>{submission.body}</div>
-        <Comments
+        <AppendedComments
           commentable={submission}
           commentableType="assignment_submission"
         />

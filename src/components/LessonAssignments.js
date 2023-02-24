@@ -49,9 +49,7 @@ export default function LessonAssignments({
     };
   }
 
-  if (!assignments.length) return null;
-
-  let main;
+  let main = 'No assignments here!';
   if (editOn)
     main = (
       <LessonForm
@@ -67,7 +65,7 @@ export default function LessonAssignments({
         flash="Successfully updated assignments."
       />
     );
-  else
+  else if (assignments.length)
     main = (
       <main>
         {authorized && editable && (

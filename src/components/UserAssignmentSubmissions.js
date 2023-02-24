@@ -45,27 +45,30 @@ export default function UserAssignmentSubmissions({
   if (tab === 'complete' && submissions.complete.submissions.length)
     main = (
       <main>
-        {submissions.complete.submissions.map(({ id, title, body }) => (
-          <NavLink
-            to={`/assignment/${id}`}
-            state={{
-              back: {
-                ...back,
-                state: {
-                  tab: 'complete',
-                  assignmentTab: 'complete',
-                  ...back.state,
+        {submissions.complete.submissions.map(
+          ({ id, title, body, completion_date: completionDate }) => (
+            <NavLink
+              to={`/assignment/${id}`}
+              state={{
+                back: {
+                  ...back,
+                  state: {
+                    tab: 'complete',
+                    assignmentTab: 'complete',
+                    ...back.state,
+                  },
                 },
-              },
-            }}
-            key={id}
-          >
-            <div className="title">
-              {title || 'Submission for Deleted Assignment'}
-            </div>
-            <div className="preview">{body.slice(0, 51)}...</div>
-          </NavLink>
-        ))}
+              }}
+              key={id}
+            >
+              <div className="title">
+                {title || 'Submission for Deleted Assignment'}
+              </div>
+              <div className="preview">{body.slice(0, 51)}...</div>
+              <div className="completed">Submitted {completionDate}</div>
+            </NavLink>
+          )
+        )}
         {completeSubmissionsPagination}
       </main>
     );

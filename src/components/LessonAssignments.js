@@ -49,12 +49,20 @@ export default function LessonAssignments({
     };
   }
 
-  let main = 'No assignments here!';
+  let main;
   if (editOn)
     main = (
       <LessonForm
         heading={false}
-        fields={[assignmentsFields]}
+        fields={[
+          {
+            nested: {
+              ...assignmentsFields.nested,
+              heading: false,
+              initialInstanceCount: 1,
+            },
+          },
+        ]}
         defaultValues={lesson}
         id={id}
         action="update"
@@ -65,31 +73,36 @@ export default function LessonAssignments({
         flash="Successfully updated assignments."
       />
     );
-  else if (assignments.length)
-    main = (
-      <main>
-        {authorized && editable && (
-          <NavButton onClick={showEdit}>Edit</NavButton>
-        )}
-        {assignments.map((assignment) => (
-          <Assignment
-            key={assignment.id}
-            assignment={assignment}
-            handleDelete={handleDelete(assignment.id)}
-            authorized={authorized}
-            back={{
-              location: 'Lesson',
-              route: `/course/${courseId}/lesson/${id}`,
-              state: { tab, expanded: assignment.id },
-            }}
-          />
-        ))}
-      </main>
-    );
+  else {
+    if (assignments.length)
+      main = (
+        <main>
+          {assignments.map((assignment) => (
+            <Assignment
+              key={assignment.id}
+              assignment={assignment}
+              handleDelete={handleDelete(assignment.id)}
+              authorized={authorized}
+              back={{
+                location: 'Lesson',
+                route: `/course/${courseId}/lesson/${id}`,
+                state: { tab, expanded: assignment.id },
+              }}
+            />
+          ))}
+        </main>
+      );
+    else main = <div>No assignments here!</div>;
+  }
 
   return (
     <div>
       <h2>Assignments</h2>
+      {authorized && editable && !editOn && (
+        <NavButton onClick={showEdit}>
+          {assignments.length ? 'Edit' : 'Add Assignment'}
+        </NavButton>
+      )}
       {main}
     </div>
   );

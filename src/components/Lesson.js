@@ -1,5 +1,6 @@
 import { useContext, useState, useEffect } from 'react';
 import { Navigate, useLocation, useParams } from 'react-router-dom';
+import '../styles/Lesson.css';
 import fetcher from '../fetcher';
 import { capitalize } from '../utilities';
 
@@ -12,6 +13,7 @@ import Posts from './Posts';
 import NavButton from './NavButton';
 import LessonMain from './LessonMain';
 import withPagination from './higher-order/withPagination';
+import NavLink from './NavLink';
 
 function LessonBase({
   resource: lesson,
@@ -83,7 +85,7 @@ function LessonBase({
   }
 
   return (
-    <div>
+    <div className="lesson">
       <BackLink
         back={{
           route: `/course/${courseId}`,
@@ -128,6 +130,20 @@ function LessonBase({
           postsPagination={postsPagination}
         />
       )}
+      <div className="adjacent-buttons">
+        {['previous', 'next'].map(
+          (adjacent) =>
+            lesson.adjacent_ids[adjacent] && (
+              <NavLink
+                className={adjacent}
+                key={adjacent}
+                to={`/course/${lesson.course_id}/lesson/${lesson.adjacent_ids[adjacent]}`}
+              >
+                <button>{capitalize(adjacent)} Lesson</button>
+              </NavLink>
+            )
+        )}
+      </div>
     </div>
   );
 }

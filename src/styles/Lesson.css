@@ -1,0 +1,13 @@
+.lesson .adjacent-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, max-content);
+  justify-content: space-around;
+}
+
+.lesson .adjacent-buttons .previous {
+  grid-column: 1;
+}
+
+.lesson .adjacent-buttons .next {
+  grid-column: 2;
+}

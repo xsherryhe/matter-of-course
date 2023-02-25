@@ -1,4 +1,5 @@
 import { useLocation } from 'react-router-dom';
+import '../styles/AssignmentSubmission.css';
 
 import asResource from './higher-order/asResource';
 import AssignmentSubmissionForm from './AssignmentSubmissionForm';
@@ -34,6 +35,9 @@ function AssignmentSubmissionBase({
         </h2>
         {submission.authorized && submission.assignment && editButton}
         {submission.owned && deleteButton}
+        <div className="completion-date">
+          <h3>Submitted:</h3> {submission.completion_date}
+        </div>
         <div>{submission.body}</div>
         <AppendedComments
           commentable={submission}
@@ -43,7 +47,7 @@ function AssignmentSubmissionBase({
     );
 
   return (
-    <div>
+    <div className="assignment-submission">
       <BackLink back={back} />
       {submission.assignment && submission.assignment_authorized && (
         <div>

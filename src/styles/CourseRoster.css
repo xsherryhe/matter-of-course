@@ -2,19 +2,19 @@
   margin: auto;
 }
 
-.course-roster tr {
+.course-roster > thead > tr, .course-roster > tbody > tr {
   display: grid;
   grid-template-columns: repeat(4, 10rem) 15rem;
 }
 
-.course-roster th {
+.course-roster > thead > tr > th {
   border-top: 1px solid black;
 }
 
-.course-roster th, .course-roster td {
+.course-roster > thead > tr > th, .course-roster > tbody > tr > td {
   border-bottom: 1px solid black;
 }
 
-.course-roster td.full-row {
+.course-roster > tbody > tr > td.full-row {
   grid-column: 1 / span 5;
 }

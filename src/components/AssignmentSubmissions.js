@@ -92,29 +92,37 @@ function AssignmentSubmissionsBase({
             <thead>
               <tr>
                 <th>Student</th>
+                <th>Date</th>
                 <th>Submission</th>
               </tr>
             </thead>
             <tbody>
-              {submissions.map(({ id, student: { name } }) => (
-                <tr key={id}>
-                  <td>{name}</td>
-                  <td>
-                    <NavLink
-                      to={`/assignment/${id}`}
-                      state={{
-                        back: {
-                          location: 'Assignment',
-                          route: `/assignment/${assignmentId}/submissions`,
-                          state: { submissionsPage, back },
-                        },
-                      }}
-                    >
-                      View Submission
-                    </NavLink>
-                  </td>
-                </tr>
-              ))}
+              {submissions.map(
+                ({
+                  id,
+                  completion_date: completionDate,
+                  student: { name },
+                }) => (
+                  <tr key={id}>
+                    <td>{name}</td>
+                    <td>{completionDate}</td>
+                    <td>
+                      <NavLink
+                        to={`/assignment/${id}`}
+                        state={{
+                          back: {
+                            location: 'Assignment',
+                            route: `/assignment/${assignmentId}/submissions`,
+                            state: { submissionsPage, back },
+                          },
+                        }}
+                      >
+                        View Submission
+                      </NavLink>
+                    </td>
+                  </tr>
+                )
+              )}
             </tbody>
           </table>
           {submissionsPagination}

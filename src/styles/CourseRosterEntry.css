@@ -4,6 +4,10 @@
   grid-column: 1 / span 5;
 }
 
+.course-roster .entry .submissions-table {
+  margin: auto;
+}
+
 .course-roster .entry .submissions footer.pagination {
   font-size: 0.75rem;
 }

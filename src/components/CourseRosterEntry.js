@@ -67,28 +67,47 @@ function CourseRosterEntryBase({
   if (submissions) {
     if (submissions.length)
       submissionsTD = (
-        <div className="with-pagination">
-          {submissions.map(({ id, assignment: { title } }) => (
-            <div key={id}>
-              <NavLink
-                to={`/assignment/${id}`}
-                state={{
-                  back: {
-                    location: 'Roster',
-                    route: `/course/${courseId}`,
-                    state: {
-                      tab: 'roster',
-                      rosterPage,
-                      submissionsOn: studentId,
-                      submissionsPage,
-                    },
-                  },
-                }}
-              >
-                {title}
-              </NavLink>
-            </div>
-          ))}
+        <div>
+          <table className="submissions-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Assignment</th>
+              </tr>
+            </thead>
+            <tbody>
+              {submissions.map(
+                ({
+                  id,
+                  completion_date: completionDate,
+                  assignment: { title },
+                }) => (
+                  <tr key={id}>
+                    <td>{completionDate}</td>
+                    <td>
+                      <NavLink
+                        to={`/assignment/${id}`}
+                        state={{
+                          back: {
+                            location: 'Roster',
+                            route: `/course/${courseId}`,
+                            state: {
+                              tab: 'roster',
+                              rosterPage,
+                              submissionsOn: studentId,
+                              submissionsPage,
+                            },
+                          },
+                        }}
+                      >
+                        {title}
+                      </NavLink>
+                    </td>
+                  </tr>
+                )
+              )}
+            </tbody>
+          </table>
           {submissionsPagination}
         </div>
       );

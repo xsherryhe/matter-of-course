@@ -8,24 +8,21 @@ import NavLink from './NavLink';
 import DeleteButton from './DeleteButton';
 import MessageContext from './contexts/MessageContext';
 import withPagination from './higher-order/withPagination';
+import withErrorHandling from './higher-order/withErrorHandling';
 
 function AssignmentSubmissionsBase({
   submissionsPage,
   updateSubmissionsPage,
   submissionsPagination,
+  handleErrors,
 }) {
   const back = useLocation().state?.back;
   const navigate = useNavigate();
   const { assignmentId } = useParams();
   const [assignment, setAssignment] = useState(null);
   const [submissions, setSubmissions] = useState(null);
-  const [error, setError] = useState(null);
 
   const setMessage = useContext(MessageContext).set;
-
-  function handleErrors({ data }) {
-    if (data.error) setError(data.error);
-  }
 
   useEffect(() => {
     async function getAssignment() {
@@ -36,7 +33,7 @@ function AssignmentSubmissionsBase({
       else handleErrors(response);
     }
     getAssignment();
-  }, [assignmentId]);
+  }, [assignmentId, handleErrors]);
 
   useEffect(() => {
     if (!assignment) return;
@@ -52,7 +49,13 @@ function AssignmentSubmissionsBase({
       } else handleErrors(response);
     }
     getSubmissions();
-  }, [assignment, assignmentId, submissionsPage, updateSubmissionsPage]);
+  }, [
+    assignment,
+    assignmentId,
+    submissionsPage,
+    updateSubmissionsPage,
+    handleErrors,
+  ]);
 
   function completeDelete() {
     setMessage('Successfully deleted assignment.');
@@ -63,13 +66,6 @@ function AssignmentSubmissionsBase({
     );
   }
 
-  if (error)
-    return (
-      <div>
-        <div className="error">{error}</div>
-        <BackLink back={back} />
-      </div>
-    );
   if (!(assignment && submissions)) return 'Loading...';
 
   return (
@@ -132,8 +128,7 @@ function AssignmentSubmissionsBase({
   );
 }
 
-const AssignmentSubmissions = withPagination(
-  AssignmentSubmissionsBase,
-  'submissions'
+const AssignmentSubmissions = withErrorHandling(
+  withPagination(AssignmentSubmissionsBase, 'submissions')
 );
 export default AssignmentSubmissions;

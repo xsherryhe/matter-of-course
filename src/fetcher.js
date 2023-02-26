@@ -36,7 +36,7 @@ export default async function fetcher(
       })
     );
   } catch (err) {
-    throw new Error(errorMessage);
+    return { data: { error: errorMessage } };
   }
 
   const status = response.status;
@@ -44,11 +44,14 @@ export default async function fetcher(
   try {
     data = await response.json();
   } catch {
-    if (status >= 400) throw new Error(statusErrorMessage(status));
+    return {
+      status,
+      data: status < 400 ? {} : { error: statusErrorMessage(status) },
+    };
   }
 
   if (status >= 400 && ![401, 422].includes(status)) {
-    throw new Error(statusErrorMessage(status));
+    return { status, data: { error: statusErrorMessage(status) } };
   }
 
   headerData.csrf = response.headers.get('CSRF-TOKEN') || headerData.csrf;

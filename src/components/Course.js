@@ -143,8 +143,7 @@ function CourseBase({
 
   if (error) {
     if (error.status === 401) return <CourseStatusError error={error.data} />;
-    if (error.data?.error)
-      return <div className="error">{error.data.error}</div>;
+    if (error.message) return <div className="error">{error.mesage}</div>;
     if (typeof error === 'string') return <div className="error">{error}</div>;
   }
 

@@ -1,5 +1,5 @@
 import { useContext, useState, useEffect } from 'react';
-import { Navigate, useLocation, useParams } from 'react-router-dom';
+import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import '../styles/Lesson.css';
 import fetcher from '../fetcher';
 import { capitalize } from '../utilities';
@@ -28,6 +28,7 @@ function LessonBase({
 }) {
   const courseId = useParams().courseId || lesson?.course_id;
   const stateTab = useLocation().state?.tab;
+  const navigate = useNavigate();
   const [tab, setTab] = useState(stateTab || 'main');
   const [posts, setPosts] = useState(null);
   const [postsError, setPostsError] = useState(null);
@@ -52,6 +53,15 @@ function LessonBase({
     if (tab === 'discussion') getPosts();
   }, [lesson, tab, postsPage, updatePostsPage]);
 
+  useEffect(() => {
+    if (error?.status !== 401) return;
+
+    setMessage(
+      <div className="error">You are not authorized to view that lesson.</div>
+    );
+    navigate(courseId ? `/course/${courseId}` : '/home');
+  }, [error, courseId, setMessage, navigate]);
+
   function tabTo(tabOption) {
     return function () {
       setTab(tabOption);
@@ -60,12 +70,8 @@ function LessonBase({
 
   if (error) {
     let displayError = '';
-    if (error.status === 401) {
-      setMessage('You are not authorized to view that lesson.');
-      return <Navigate to={courseId ? `/course/${courseId}` : '/home'} />;
-    }
-    if (error.data?.error)
-      displayError = <div className="error">{error.data.error}</div>;
+    if (error.message)
+      displayError = <div className="error">{error.message}</div>;
     if (typeof error === 'string')
       displayError = <div className="error">{error}</div>;
     return (

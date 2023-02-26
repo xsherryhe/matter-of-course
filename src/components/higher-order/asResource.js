@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState, useCallback } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import fetcher from '../../fetcher';
 
@@ -31,10 +31,15 @@ export default function asResource(
 
     const setMessage = useContext(MessageContext).set;
 
-    function handleErrors({ status, data }) {
-      if (catchError && data.error) return setError(data.error);
-      else setError({ data, status });
-    }
+    const handleErrors = useCallback(
+      ({ status, data }) => {
+        if (catchError && status === 401 && data.error) {
+          setMessage(<div className="error">{data.error}</div>);
+          return navigate(redirectRoute, { state: redirectState });
+        } else setError({ status, data, message: data.error });
+      },
+      [redirectRoute, redirectState, setMessage, navigate]
+    );
 
     function handleDelete() {
       if (redirectRoute) {
@@ -52,7 +57,7 @@ export default function asResource(
         else handleErrors(response);
       }
       getResource();
-    }, [data, id]);
+    }, [data, id, handleErrors]);
 
     function showEdit() {
       setEditOn(true);

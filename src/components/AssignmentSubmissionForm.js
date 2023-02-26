@@ -18,7 +18,7 @@ function AssignmentSubmissionFormBase({
   deleteButton,
   validate: validateForm,
   toValidate,
-  formError: initialFormError,
+  formError: propsFormError,
   errors,
   handleErrors,
 }) {
@@ -33,7 +33,8 @@ function AssignmentSubmissionFormBase({
   const [body, setBody] = useState(defaultValues.body);
   const [saved, setSaved] = useState(false);
   const [pageError, setPageError] = useState(null);
-  const [formError, setFormError] = useState(initialFormError);
+  const [stateFormError, setStateFormError] = useState(null);
+  const formError = propsFormError || stateFormError;
 
   const setMessage = useContext(MessageContext).set;
   const navigate = useNavigate();
@@ -65,14 +66,14 @@ function AssignmentSubmissionFormBase({
   function validate(form, changeToComplete) {
     if (!validateForm(form)) return false;
     if (!assignment) {
-      setFormError('This assignment no longer exists.');
+      setStateFormError('This assignment no longer exists.');
       return false;
     }
     if (!authorized) {
-      setFormError('You are not authorized to edit this submission.');
+      setStateFormError('You are not authorized to edit this submission.');
     }
     if (changeToComplete && !body) {
-      setFormError('Please fill out the assignment before submitting it.');
+      setStateFormError('Please fill out the assignment before submitting it.');
       return false;
     }
     return true;

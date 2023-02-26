@@ -4,9 +4,10 @@ import { capitalize } from '../utilities';
 
 import PopUpContext from './contexts/PopUpContext';
 import DeleteConfirmPopUp from './DeleteConfirmPopUp';
+import withErrorHandling from './higher-order/withErrorHandling';
 import NavButton from './NavButton';
 
-export default function DeleteButton({
+function DeleteButtonBase({
   route,
   resource,
   id,
@@ -26,7 +27,7 @@ export default function DeleteButton({
       method: 'DELETE',
     });
     if (response.status < 400) completeAction();
-    else if (handleErrors) handleErrors(response);
+    else handleErrors(response);
     setLoading(false);
   }
 
@@ -51,3 +52,6 @@ export default function DeleteButton({
     </NavButton>
   );
 }
+
+const DeleteButton = withErrorHandling(DeleteButtonBase, { routed: false });
+export default DeleteButton;

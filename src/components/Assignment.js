@@ -4,36 +4,33 @@ import fetcher from '../fetcher';
 
 import NavLink from './NavLink';
 import DeleteButton from './DeleteButton';
+import withErrorHandling from './higher-order/withErrorHandling';
 
-export default function Assignment({
+function AssignmentBase({
   assignment,
   handleDelete,
   authorized,
   back,
+  error,
+  handleErrors,
 }) {
   const { state, pathname } = useLocation();
   const { id, title, body } = assignment;
   const expandedId = state?.expanded;
   const [expanded, setExpanded] = useState(false);
   const [submission, setSubmission] = useState(null);
-  const [submissionError, setSubmissionError] = useState(null);
   const [addMessage, setAddMessage] = useState(null);
   const [deleted, setDeleted] = useState(false);
-  const [deleteError, setDeleteError] = useState(null);
   const navigate = useNavigate();
-
-  function handleSubmissionErrors({ data }) {
-    if (data.error) setSubmissionError(data.error);
-  }
 
   const getSubmission = useCallback(async () => {
     const response = await fetcher(`assignments/${id}/current_submission`);
     if (response.status < 400) setSubmission(response.data);
     else {
       setSubmission(false);
-      handleSubmissionErrors(response);
+      handleErrors(response);
     }
-  }, [id]);
+  }, [id, handleErrors]);
 
   useEffect(() => {
     if (expandedId === id) {
@@ -61,20 +58,16 @@ export default function Assignment({
   }
 
   function handleAddErrors({ data }) {
-    let error;
+    let errorMessage;
     if (data.student.includes('is not unique'))
-      error = 'You have already started or completed this assignment.';
+      errorMessage = 'You have already started or completed this assignment.';
     else if (data.error) error = data.error;
-    setAddMessage(<span className="error">{error}</span>);
+    setAddMessage(<span className="error">{errorMessage}</span>);
   }
 
   function completeAdd(data) {
     setSubmission(data);
     setAddMessage('Assignment added!');
-  }
-
-  function handleDeleteErrors({ data }) {
-    if (data.error) setDeleteError(data.error);
   }
 
   function completeDelete() {
@@ -97,7 +90,7 @@ export default function Assignment({
   if (deleted) return 'Assignment has been deleted.';
 
   let details = 'Loading...';
-  if (submissionError) details = <div className="error">{submissionError}</div>;
+  if (error?.message) details = <div className="error">{error.message}</div>;
   else if (submission !== null)
     details = (
       <div>
@@ -144,12 +137,16 @@ export default function Assignment({
             id={id}
             buttonText="Delete"
             completeAction={completeDelete}
-            handleErrors={handleDeleteErrors}
           />
         )}
-        {deleteError && <div className="error">{deleteError}</div>}
       </h3>
       {expanded && details}
     </div>
   );
 }
+
+const Assignment = withErrorHandling(AssignmentBase, {
+  routed: false,
+  catchErrors: false,
+});
+export default Assignment;

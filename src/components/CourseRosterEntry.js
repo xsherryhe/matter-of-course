@@ -1,10 +1,10 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import '../styles/CourseRosterEntry.css';
-import fetcher from '../fetcher';
 import NavLink from './NavLink';
 import DeleteButton from './DeleteButton';
 import withPagination from './higher-order/withPagination';
+import CourseRosterEntryAssignmentSubmissions from './CourseRosterEntryAssignmentSubmissions';
 
 function CourseRosterEntryBase({
   courseId,
@@ -13,33 +13,13 @@ function CourseRosterEntryBase({
   submissionsPage,
   updateSubmissionsPage,
   submissionsPagination,
+  handleErrors,
 }) {
   const navigate = useNavigate();
   const { state, pathname } = useLocation();
   const submissionsOnId = state?.submissionsOn;
   const [submissionsOn, setSubmissionsOn] = useState(false);
-  const [submissions, setSubmissions] = useState(null);
   const [removed, setRemoved] = useState(false);
-  const [error, setError] = useState(null);
-
-  function handleErrors({ data }) {
-    if (data.error) setError(data.error);
-  }
-
-  const getSubmissions = useCallback(async () => {
-    const response = await fetcher(
-      `courses/${courseId}/assignment_submissions`,
-      { query: `student_id=${studentId}&page=${submissionsPage}` }
-    );
-    if (response.status < 400) {
-      setSubmissions(response.data.submissions);
-      updateSubmissionsPage(response.data);
-    } else handleErrors(response);
-  }, [courseId, studentId, submissionsPage, updateSubmissionsPage]);
-
-  useEffect(() => {
-    if (submissionsOn) getSubmissions();
-  }, [submissionsOn, getSubmissions]);
 
   useEffect(() => {
     if (submissionsOnId === studentId) {
@@ -62,57 +42,6 @@ function CourseRosterEntryBase({
         <td className="removed">Student has been removed from course.</td>
       </tr>
     );
-
-  let submissionsTD = 'Loading...';
-  if (submissions) {
-    if (submissions.length)
-      submissionsTD = (
-        <div>
-          <table className="submissions-table">
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Assignment</th>
-              </tr>
-            </thead>
-            <tbody>
-              {submissions.map(
-                ({
-                  id,
-                  completion_date: completionDate,
-                  assignment: { title },
-                }) => (
-                  <tr key={id}>
-                    <td>{completionDate}</td>
-                    <td>
-                      <NavLink
-                        to={`/assignment/${id}`}
-                        state={{
-                          back: {
-                            location: 'Roster',
-                            route: `/course/${courseId}`,
-                            state: {
-                              tab: 'roster',
-                              rosterPage,
-                              submissionsOn: studentId,
-                              submissionsPage,
-                            },
-                          },
-                        }}
-                      >
-                        {title}
-                      </NavLink>
-                    </td>
-                  </tr>
-                )
-              )}
-            </tbody>
-          </table>
-          {submissionsPagination}
-        </div>
-      );
-    else submissionsTD = 'This student has not submitted any assignments.';
-  }
 
   return (
     <tr className="entry">
@@ -155,13 +84,22 @@ function CourseRosterEntryBase({
           route={`courses/${courseId}/enrollments/${studentId}`}
           action="remove"
           completeAction={completeRemove}
-          handleErrors={handleErrors}
           buttonText="Remove Student"
           confirmText="Are you sure you wish to remove this student?"
         />
       </td>
-      {error && <td className="error">{error}</td>}
-      {submissionsOn && <td className="submissions">{submissionsTD}</td>}
+      {submissionsOn && (
+        <td className="submissions">
+          <CourseRosterEntryAssignmentSubmissions
+            courseId={courseId}
+            studentId={studentId}
+            rosterPage={rosterPage}
+            submissionsPage={submissionsPage}
+            updateSubmissionsPage={updateSubmissionsPage}
+            submissionsPagination={submissionsPagination}
+          />
+        </td>
+      )}
     </tr>
   );
 }

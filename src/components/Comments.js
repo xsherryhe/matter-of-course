@@ -15,7 +15,8 @@ export default function Comments({
   }
 
   let main = 'Loading...';
-  if (commentsError) main = <div className="error">{commentsError}</div>;
+  if (commentsError?.message)
+    main = <div className="error">{commentsError.message}</div>;
   else if (comments)
     main = (
       <main>

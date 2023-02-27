@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import fetcher from '../fetcher';
+
+import withErrorHandling from './higher-order/withErrorHandling';
 import withPagination from './higher-order/withPagination';
 import Invitation from './Invitation';
 
@@ -7,13 +9,9 @@ function InvitationsBase({
   invitationsPage,
   updateInvitationsPage,
   invitationsPagination,
+  handleErrors,
 }) {
   const [invitations, setInvitations] = useState(null);
-  const [error, setError] = useState(null);
-
-  function handleErrors({ data }) {
-    if (data.error) setError(data.error);
-  }
 
   useEffect(() => {
     async function getInvitations() {
@@ -35,11 +33,10 @@ function InvitationsBase({
 
     getInvitations();
     return updateInvitations;
-  }, [invitationsPage, updateInvitationsPage]);
+  }, [invitationsPage, updateInvitationsPage, handleErrors]);
 
   let main = 'Loading...';
-  if (error) main = <div className="error">{error}</div>;
-  else if (invitations) {
+  if (invitations) {
     if (invitations.length)
       main = (
         <div>
@@ -60,5 +57,7 @@ function InvitationsBase({
   );
 }
 
-const Invitations = withPagination(InvitationsBase, 'invitations');
+const Invitations = withErrorHandling(
+  withPagination(InvitationsBase, 'invitations')
+);
 export default Invitations;

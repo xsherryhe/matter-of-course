@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import fetcher from '../fetcher';
 
 import Comments from './Comments';
+import withErrorHandling from './higher-order/withErrorHandling';
 import withPagination from './higher-order/withPagination';
 
 function PaginatedCommentsBase({
@@ -10,13 +11,10 @@ function PaginatedCommentsBase({
   commentsPage,
   updateCommentsPage,
   commentsPagination,
+  handleErrors,
+  error,
 }) {
   const [comments, setComments] = useState(null);
-  const [error, setError] = useState(null);
-
-  function handleErrors({ data }) {
-    if (data.error) setError(data.error);
-  }
 
   useEffect(() => {
     async function getComments() {
@@ -30,7 +28,13 @@ function PaginatedCommentsBase({
       } else handleErrors(response);
     }
     getComments();
-  }, [commentable, commentableType, commentsPage, updateCommentsPage]);
+  }, [
+    commentable,
+    commentableType,
+    commentsPage,
+    updateCommentsPage,
+    handleErrors,
+  ]);
 
   return (
     <Comments
@@ -44,5 +48,12 @@ function PaginatedCommentsBase({
   );
 }
 
-const PaginatedComments = withPagination(PaginatedCommentsBase, 'comments');
+const ErrorHandledPaginatedComments = withErrorHandling(PaginatedCommentsBase, {
+  catchError: false,
+});
+
+const PaginatedComments = withPagination(
+  ErrorHandledPaginatedComments,
+  'comments'
+);
 export default PaginatedComments;

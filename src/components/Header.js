@@ -19,11 +19,11 @@ export default function Header() {
   if (user)
     userDisplay = (
       <div className="display">
-        <NavLink to="/new-course">
-          <button>New Course</button>
-        </NavLink>
         <NavLink to="/courses">
           <button>Browse Courses</button>
+        </NavLink>
+        <NavLink to="/new-course">
+          <button>New Course</button>
         </NavLink>
         <NavLink to="/my-courses">
           <button>My Courses</button>

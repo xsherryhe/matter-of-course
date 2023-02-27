@@ -9,7 +9,6 @@ import CourseInvitedInstructors from './CourseInvitedInstructors';
 export default function CourseOverview({
   course,
   setCourse,
-  setError,
   editButton,
   editForm,
   deleteButton,
@@ -33,11 +32,7 @@ export default function CourseOverview({
         <div>
           {editButton}
           <CourseStatusButton course={course} setCourse={setCourse} />
-          <LeaveInstructorButton
-            course={course}
-            setCourse={setCourse}
-            setCourseError={setError}
-          />
+          <LeaveInstructorButton course={course} setCourse={setCourse} />
           {deleteButton}
         </div>
       )}

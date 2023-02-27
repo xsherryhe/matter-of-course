@@ -14,6 +14,7 @@ import NavButton from './NavButton';
 import LessonMain from './LessonMain';
 import withPagination from './higher-order/withPagination';
 import NavLink from './NavLink';
+import withErrorHandling from './higher-order/withErrorHandling';
 
 function LessonBase({
   resource: lesson,
@@ -25,18 +26,15 @@ function LessonBase({
   postsPage,
   updatePostsPage,
   postsPagination,
+  postsError,
+  handlePostsErrors,
 }) {
   const courseId = useParams().courseId || lesson?.course_id;
   const stateTab = useLocation().state?.tab;
   const navigate = useNavigate();
   const [tab, setTab] = useState(stateTab || 'main');
   const [posts, setPosts] = useState(null);
-  const [postsError, setPostsError] = useState(null);
   const setMessage = useContext(MessageContext).set;
-
-  function handlePostsErrors({ data }) {
-    if (data.error) setPostsError(data.error);
-  }
 
   useEffect(() => {
     if (!lesson) return;
@@ -51,7 +49,7 @@ function LessonBase({
       } else handlePostsErrors(response);
     }
     if (tab === 'discussion') getPosts();
-  }, [lesson, tab, postsPage, updatePostsPage]);
+  }, [lesson, tab, postsPage, updatePostsPage, handlePostsErrors]);
 
   useEffect(() => {
     if (error?.status !== 401) return;
@@ -155,7 +153,11 @@ function LessonBase({
 }
 
 const PaginatedLessonBase = withPagination(LessonBase, 'posts');
-const Lesson = asResource(PaginatedLessonBase, LessonForm, 'lesson', {
+const ErrorHandledLessonBase = withErrorHandling(PaginatedLessonBase, {
+  resourceName: 'posts',
+  catchError: false,
+});
+const Lesson = asResource(ErrorHandledLessonBase, LessonForm, 'lesson', {
   formHeading: false,
   catchError: false,
   redirect: (lesson) => lesson && { route: `/course/${lesson.course_id}` },

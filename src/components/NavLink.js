@@ -14,9 +14,9 @@ export default function NavLink({
 
   const newMessage =
     authenticationMessage && !user ? (
-      <span className="error">
+      <div className="error">
         You need to sign in or sign up before continuing.
-      </span>
+      </div>
     ) : null;
 
   function resetMessage() {

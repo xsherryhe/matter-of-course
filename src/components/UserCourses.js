@@ -8,6 +8,7 @@ import NavLink from './NavLink';
 import CourseItem from './CourseItem';
 import NavButton from './NavButton';
 import withPagination from './higher-order/withPagination';
+import withErrorHandling from './higher-order/withErrorHandling';
 
 function UserCoursesBase({
   heading = true,
@@ -20,16 +21,12 @@ function UserCoursesBase({
   enrolledPage,
   updateEnrolledPage,
   enrolledPagination,
+  handleErrors,
 }) {
   const [name, setName] = useState(null);
   const [tab, setTab] = useState(null);
   const [courses, setCourses] = useState(null);
-  const [error, setError] = useState(null);
   const { id } = useParams();
-
-  function handleErrors({ data }) {
-    if (data.error) setError(data.error);
-  }
 
   useEffect(() => {
     async function getCourses() {
@@ -54,6 +51,7 @@ function UserCoursesBase({
     updateHostedPage,
     updateInstructedPage,
     updateEnrolledPage,
+    handleErrors,
   ]);
 
   function tabTo(tabOption) {
@@ -62,7 +60,6 @@ function UserCoursesBase({
     };
   }
 
-  if (error) return <div className="error">{error}</div>;
   if (!courses) return 'Loading...';
 
   const courseTypes = ['hosted', 'instructed', 'enrolled'].filter(
@@ -118,8 +115,9 @@ function UserCoursesBase({
   );
 }
 
-const UserCourses = ['hosted', 'instructed', 'enrolled'].reduce(
+const PaginatedUserCourses = ['hosted', 'instructed', 'enrolled'].reduce(
   (Component, resourceName) => withPagination(Component, resourceName),
   UserCoursesBase
 );
+const UserCourses = withErrorHandling(PaginatedUserCourses);
 export default UserCourses;

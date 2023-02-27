@@ -8,7 +8,6 @@ import CommentForm from './CommentForm';
 export default function Comment({ comment: initialComment }) {
   const [editOn, setEditOn] = useState(false);
   const [comment, setComment] = useState(initialComment);
-  const [error, setError] = useState(null);
 
   if (!comment) return;
 
@@ -37,10 +36,6 @@ export default function Comment({ comment: initialComment }) {
     setComment(null);
   }
 
-  function handleErrors({ data }) {
-    if (data.error) setError(data.error);
-  }
-
   if (editOn)
     return (
       <CommentForm
@@ -66,9 +61,7 @@ export default function Comment({ comment: initialComment }) {
             id={id}
             buttonText="Delete"
             completeAction={finishDelete}
-            handleErrors={handleErrors}
           />
-          {error && <div className="error">{error}</div>}
         </div>
       )}
       <div>{body}</div>

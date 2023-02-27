@@ -3,7 +3,6 @@ import NavButton from './NavButton';
 import NavLink from './NavLink';
 
 export default function UserAssignmentSubmissions({
-  heading = true,
   submissions,
   submissionsError,
   incompleteSubmissionsPagination,
@@ -21,7 +20,8 @@ export default function UserAssignmentSubmissions({
     };
   }
 
-  if (submissionsError) return <div className="error">{submissionsError}</div>;
+  if (submissionsError?.message)
+    return <div className="error">{submissionsError.message}</div>;
   if (!submissions) return 'Loading...';
 
   let main = <div>No assignments here!</div>;
@@ -75,7 +75,6 @@ export default function UserAssignmentSubmissions({
 
   return (
     <div>
-      {heading && <h1>My Assignments</h1>}
       {['incomplete', 'complete'].map((tabOption) => (
         <NavButton
           className="tab"

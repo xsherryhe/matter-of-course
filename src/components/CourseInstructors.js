@@ -12,14 +12,6 @@ export default function CourseInstructors({
   const [instructors] = useState(initialInstructors);
   const [invited, setInvited] = useState(false);
   const [removed, setRemoved] = useState([]);
-  const [errors, setErrors] = useState({});
-
-  function handleErrors(instructorId) {
-    return function ({ data }) {
-      if (data.error)
-        setErrors((errors) => ({ ...errors, [instructorId]: data.error }));
-    };
-  }
 
   function completeInvite(data) {
     setCourse(data);
@@ -67,11 +59,7 @@ export default function CourseInstructors({
                       buttonText="Remove"
                       action="remove"
                       completeAction={completeRemove(instructorId)}
-                      handleErrors={handleErrors(instructorId)}
                     />
-                  )}
-                  {errors[instructorId] && (
-                    <div className="error">{errors[instructorId]}</div>
                   )}
                 </span>
               )}

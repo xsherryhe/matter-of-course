@@ -1,4 +1,5 @@
 import { useLocation } from 'react-router-dom';
+
 import UserAssignmentSubmissions from './UserAssignmentSubmissions';
 
 export default function CourseUserAssignmentSubmissions({
@@ -16,7 +17,6 @@ export default function CourseUserAssignmentSubmissions({
     <div>
       <h2>My Assignments</h2>
       <UserAssignmentSubmissions
-        heading={false}
         submissions={submissions}
         submissionsError={submissionsError}
         incompleteSubmissionsPagination={incompleteSubmissionsPagination}

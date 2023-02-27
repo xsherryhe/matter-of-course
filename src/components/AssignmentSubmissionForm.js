@@ -5,6 +5,7 @@ import BackLink from './BackLink';
 import MessageContext from './contexts/MessageContext';
 
 import Field from './Field';
+import withErrorHandling from './higher-order/withErrorHandling';
 import withFormValidation from './higher-order/withFormValidation';
 import NavButton from './NavButton';
 
@@ -20,7 +21,8 @@ function AssignmentSubmissionFormBase({
   toValidate,
   formError: propsFormError,
   errors,
-  handleErrors,
+  handleErrors: handleFormErrors,
+  handleAssignmentErrors,
 }) {
   const state = useLocation().state;
   const back = propsBack && (propsBack.route ? propsBack : state?.back);
@@ -32,7 +34,6 @@ function AssignmentSubmissionFormBase({
   const [loading, setLoading] = useState(false);
   const [body, setBody] = useState(defaultValues.body);
   const [saved, setSaved] = useState(false);
-  const [pageError, setPageError] = useState(null);
   const [stateFormError, setStateFormError] = useState(null);
   const formError = propsFormError || stateFormError;
 
@@ -43,10 +44,6 @@ function AssignmentSubmissionFormBase({
   const authorized =
     (action === 'create' && assignment) || submissionAuthorized;
 
-  function handleAssignmentErrors({ data }) {
-    if (data.error) setPageError(data.error);
-  }
-
   useEffect(() => {
     if (initialAssignment || action === 'update' || !assignmentId) return;
 
@@ -56,7 +53,7 @@ function AssignmentSubmissionFormBase({
       else handleAssignmentErrors(response);
     }
     getAssignment();
-  }, [initialAssignment, assignmentId, action]);
+  }, [initialAssignment, assignmentId, action, handleAssignmentErrors]);
 
   function updateBody(e) {
     setBody(e.target.value);
@@ -77,6 +74,14 @@ function AssignmentSubmissionFormBase({
       return false;
     }
     return true;
+  }
+
+  function handleErrors(response) {
+    if (response.data.student.includes('is not unique'))
+      setStateFormError(
+        'You have already started or completed this assignment.'
+      );
+    handleFormErrors(response);
   }
 
   function handleSubmit(changeToComplete) {
@@ -120,7 +125,6 @@ function AssignmentSubmissionFormBase({
     };
   }
 
-  if (pageError) return <div className="error">{pageError}</div>;
   return (
     <form noValidate>
       {back && <BackLink back={back} />}
@@ -168,7 +172,15 @@ function AssignmentSubmissionFormBase({
   );
 }
 
-const AssignmentSubmissionForm = withFormValidation(
+const ValidatedAssignmentSubmissionForm = withFormValidation(
   AssignmentSubmissionFormBase
+);
+
+const AssignmentSubmissionForm = withErrorHandling(
+  ValidatedAssignmentSubmissionForm,
+  {
+    resourceName: 'assignment',
+    redirect: { route: '/my-assignments', location: 'My Assignments' },
+  }
 );
 export default AssignmentSubmissionForm;

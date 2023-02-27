@@ -1,20 +1,18 @@
 import { useState } from 'react';
 import '../styles/Invitation.css';
 import fetcher from '../fetcher';
+import withErrorHandling from './higher-order/withErrorHandling';
 
-export default function Invitation({
+function InvitationBase({
   invitation: {
     id,
     course: { title },
     sender: { username },
     response: invitationResponse,
   },
+  handleErrors,
 }) {
   const [message, setMessage] = useState(null);
-
-  function handleErrors({ data }) {
-    if (data.error) setMessage(<span className="error">{data.error}</span>);
-  }
 
   async function handleAccept() {
     const response = await fetcher(`instruction_invitations/${id}`, {
@@ -48,3 +46,6 @@ export default function Invitation({
     </div>
   );
 }
+
+const Invitation = withErrorHandling(InvitationBase, { routed: false });
+export default Invitation;

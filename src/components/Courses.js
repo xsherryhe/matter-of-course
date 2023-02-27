@@ -4,14 +4,15 @@ import fetcher from '../fetcher';
 import withPagination from './higher-order/withPagination';
 import CourseItem from './CourseItem';
 import NavLink from './NavLink';
+import withErrorHandling from './higher-order/withErrorHandling';
 
-function CoursesBase({ coursePage, updateCoursePage, coursePagination }) {
+function CoursesBase({
+  coursePage,
+  updateCoursePage,
+  coursePagination,
+  handleErrors,
+}) {
   const [courses, setCourses] = useState(null);
-  const [error, setError] = useState(null);
-
-  function handleErrors({ data }) {
-    if (data.error) setError(data.error);
-  }
 
   useEffect(() => {
     async function getCourses() {
@@ -24,11 +25,10 @@ function CoursesBase({ coursePage, updateCoursePage, coursePagination }) {
       } else handleErrors(response);
     }
     getCourses();
-  }, [coursePage, updateCoursePage]);
+  }, [coursePage, updateCoursePage, handleErrors]);
 
   let main = 'Loading...';
-  if (error) main = <div className="error">{error}</div>;
-  else if (courses) {
+  if (courses) {
     if (courses.length)
       main = (
         <div className="course-items">
@@ -59,5 +59,5 @@ function CoursesBase({ coursePage, updateCoursePage, coursePagination }) {
   );
 }
 
-const Courses = withPagination(CoursesBase, 'course');
+const Courses = withErrorHandling(withPagination(CoursesBase, 'course'));
 export default Courses;

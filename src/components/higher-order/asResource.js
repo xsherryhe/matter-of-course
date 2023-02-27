@@ -45,7 +45,7 @@ export default function asResource(
       if (redirectRoute) {
         setMessage(`Successfully deleted ${resourceName}.`);
         navigate(redirectRoute, { state: redirectState });
-      } else setError(`This ${resourceName} no longer exists.`);
+      } else setError({ message: `This ${resourceName} no longer exists.` });
     }
 
     useEffect(() => {
@@ -73,7 +73,7 @@ export default function asResource(
     }
 
     if (error) {
-      if (catchError) return <div className="error">{error}</div>;
+      if (catchError) return <div className="error">{error.message}</div>;
       else return <Base error={error} />;
     }
     if (!resource) return 'Loading...';
@@ -83,7 +83,6 @@ export default function asResource(
         resource={resource}
         setResource={setResource}
         error={error}
-        setError={setError}
         editForm={
           editOn && (
             <Form
@@ -108,7 +107,6 @@ export default function asResource(
             id={resource?.id}
             route={route(id)}
             completeAction={handleDelete}
-            handleErrors={handleErrors}
           />
         }
       />

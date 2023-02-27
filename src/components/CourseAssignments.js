@@ -30,7 +30,8 @@ export default function CourseAssignments({
   if (!authorized) return null;
 
   let main = 'Loading...';
-  if (assignmentsError) main = <div className="error">{assignmentsError}</div>;
+  if (assignmentsError?.message)
+    main = <div className="error">{assignmentsError.message}</div>;
   else if (assignments) {
     if (assignments.length)
       main = (

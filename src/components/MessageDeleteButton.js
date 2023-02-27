@@ -1,15 +1,9 @@
-import { useState } from 'react';
 import fetcher from '../fetcher';
 
+import withErrorHandling from './higher-order/withErrorHandling';
 import NavButton from './NavButton';
 
-export default function MessageDeleteButton({ id, completeDelete }) {
-  const [error, setError] = useState(null);
-
-  function handleErrors({ data }) {
-    if (data.error) setError(data.error);
-  }
-
+function MessageDeleteButtonBase({ id, completeDelete, handleErrors }) {
   async function deleteMessage() {
     const response = await fetcher(`messages/${id}`, {
       headers: { 'Content-Type': 'application/json' },
@@ -20,7 +14,10 @@ export default function MessageDeleteButton({ id, completeDelete }) {
     else handleErrors(response);
   }
 
-  if (error) return <span className="error">{error}</span>;
-
   return <NavButton onClick={deleteMessage}>Delete</NavButton>;
 }
+
+const MessageDeleteButton = withErrorHandling(MessageDeleteButtonBase, {
+  routed: false,
+});
+export default MessageDeleteButton;

@@ -16,6 +16,8 @@ export default function CourseEnrollButton({
     let error;
     if (data.student?.includes('is not unique'))
       error = 'You are already enrolled!';
+    if (data.student?.includes('is a host or instructor for the course'))
+      error = 'You are already an instructor or a host for this course.';
     else if (data.error === 'This enrollment no longer exists.')
       error = 'You are not enrolled yet.';
     else if (data.error) error = data.error;

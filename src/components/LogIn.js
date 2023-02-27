@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';
 import fetcher from '../fetcher';
 
@@ -47,10 +47,12 @@ function LogInBase({
     setLoading(false);
   }
 
-  if (user) {
+  useEffect(() => {
+    if (!user) return;
+
     setMessage('You are already signed in.');
-    return navigate('/');
-  }
+    navigate('/');
+  }, [user, setMessage, navigate]);
 
   return (
     <form noValidate onSubmit={handleSubmit}>

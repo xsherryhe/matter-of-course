@@ -1,20 +1,21 @@
 import { useState, useEffect } from 'react';
 import fetcher from '../fetcher';
 import { getUniqueBy } from '../utilities';
+import withErrorHandling from './higher-order/withErrorHandling';
 
 import MessageForm from './MessageForm';
 import NavLink from './NavLink';
 
-export default function Message({
+function MessageBase({
   message: initialMessage,
   messageId,
   type,
   deleteButton,
+  handleErrors,
 }) {
   const [message, setMessage] = useState(initialMessage);
   const [parentOn, setParentOn] = useState(false);
   const [replyOn, setReplyOn] = useState(false);
-  const [error, setError] = useState(null);
 
   const {
     id,
@@ -28,10 +29,6 @@ export default function Message({
     recipient,
   } = message || {};
 
-  function handleErrors({ data }) {
-    if (data.error) setError(data.error);
-  }
-
   useEffect(() => {
     if (message) return;
 
@@ -41,11 +38,11 @@ export default function Message({
       else handleErrors(response);
     }
     getMessage();
-  }, [message, messageId]);
+  }, [message, messageId, handleErrors]);
 
   useEffect(() => {
     if (!message) return;
-    if (readStatus === 'read') return;
+    if (type !== 'inbox' || readStatus === 'read') return;
 
     async function updateToRead() {
       const response = await fetcher(`messages/${id}`, {
@@ -57,7 +54,7 @@ export default function Message({
       else handleErrors(response);
     }
     updateToRead();
-  }, [message, readStatus, id]);
+  }, [message, type, readStatus, id, handleErrors]);
 
   function showParent() {
     setParentOn(true);
@@ -75,7 +72,6 @@ export default function Message({
     setReplyOn(false);
   }
 
-  if (error) return <div className="error">{error}</div>;
   if (!message) return 'Loading...';
 
   const parentMessage = (
@@ -138,3 +134,6 @@ export default function Message({
     </div>
   );
 }
+
+const Message = withErrorHandling(MessageBase, { routed: false });
+export default Message;

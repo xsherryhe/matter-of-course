@@ -9,7 +9,13 @@ export default function CourseRoster({
   rosterPage,
   rosterPagination,
 }) {
-  if (rosterError) return <div className="error">{rosterError}</div>;
+  if (rosterError?.message)
+    return (
+      <div>
+        <h2>Course Roster</h2>
+        <div className="error">{rosterError.message}</div>
+      </div>
+    );
 
   let tbody = (
     <tr>

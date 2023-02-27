@@ -4,6 +4,7 @@ import fetcher from '../fetcher';
 import { capitalize } from '../utilities';
 
 import withPagination from './higher-order/withPagination';
+import withErrorHandling from './higher-order/withErrorHandling';
 import asResource from './higher-order/asResource';
 import NavButton from './NavButton';
 import CourseStatusNotice from './CourseStatusNotice';
@@ -21,52 +22,39 @@ function CourseBase({
   resource: course,
   setResource: setCourse,
   error,
-  setError,
   editForm,
   editButton,
   deleteButton,
   rosterPage,
   updateRosterPage,
   rosterPagination,
+  handleRosterErrors,
+  rosterError,
   assignmentsPage,
   updateAssignmentsPage,
   assignmentsPagination,
+  handleAssignmentsErrors,
+  assignmentsError,
   incompleteSubmissionsPage,
   updateIncompleteSubmissionsPage,
   incompleteSubmissionsPagination,
   completeSubmissionsPage,
   updateCompleteSubmissionsPage,
   completeSubmissionsPagination,
+  handleSubmissionsErrors,
+  submissionsError,
   postsPage,
   updatePostsPage,
   postsPagination,
+  handlePostsErrors,
+  postsError,
 }) {
   const [roster, setRoster] = useState(null);
-  const [rosterError, setRosterError] = useState(null);
   const [assignments, setAssignments] = useState(null);
-  const [assignmentsError, setAssignmentsError] = useState(null);
   const [submissions, setSubmissions] = useState(null);
-  const [submissionsError, setSubmissionsError] = useState(null);
   const [posts, setPosts] = useState(null);
-  const [postsError, setPostsError] = useState(null);
   const stateTab = useLocation().state?.tab;
   const [tab, setTab] = useState(stateTab || 'overview');
-
-  function handleRosterErrors({ data }) {
-    if (data.error) setRosterError(data.error);
-  }
-
-  function handleAssignmentsErrors({ data }) {
-    if (data.error) setAssignmentsError(data.error);
-  }
-
-  function handleSubmissionsErrors({ data }) {
-    if (data.error) setSubmissionsError(data.error);
-  }
-
-  function handlePostsErrors({ data }) {
-    if (data.error) setPostsError(data.error);
-  }
 
   useEffect(() => {
     async function getRoster() {
@@ -125,14 +113,18 @@ function CourseBase({
     course,
     rosterPage,
     updateRosterPage,
+    handleRosterErrors,
     assignmentsPage,
     updateAssignmentsPage,
+    handleAssignmentsErrors,
     incompleteSubmissionsPage,
     updateIncompleteSubmissionsPage,
     completeSubmissionsPage,
     updateCompleteSubmissionsPage,
+    handleSubmissionsErrors,
     postsPage,
     updatePostsPage,
+    handlePostsErrors,
   ]);
 
   function tabTo(tabOption) {
@@ -202,7 +194,6 @@ function CourseBase({
           <CourseOverview
             course={course}
             setCourse={setCourse}
-            setError={setError}
             editButton={editButton}
             editForm={editForm}
             deleteButton={deleteButton}
@@ -261,7 +252,19 @@ const PaginatedCourseBase = [
   (Component, resourceName) => withPagination(Component, resourceName),
   CourseBase
 );
-const Course = asResource(PaginatedCourseBase, CourseForm, 'course', {
+
+const ErrorHandledCourseBase = [
+  'roster',
+  'assignments',
+  'submissions',
+  'posts',
+].reduce(
+  (Component, resourceName) =>
+    withErrorHandling(Component, { resourceName, catchError: false }),
+  PaginatedCourseBase
+);
+
+const Course = asResource(ErrorHandledCourseBase, CourseForm, 'course', {
   formHeading: false,
   catchError: false,
   redirect: () => ({ route: '/my-courses' }),

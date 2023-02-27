@@ -22,7 +22,13 @@ export default function Posts({
     setNewPostOn(false);
   }
 
-  if (postsError) return <div className="error">{postsError}</div>;
+  if (postsError?.message)
+    return (
+      <div>
+        <h2>Discussion</h2>
+        <div className="error">{postsError.message}</div>
+      </div>
+    );
 
   let main = 'Loading...';
   if (posts) {

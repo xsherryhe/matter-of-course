@@ -3,6 +3,7 @@ import fetcher from '../fetcher';
 
 import Comments from './Comments';
 import withAppendingPagination from './higher-order/withAppendingPagination';
+import withErrorHandling from './higher-order/withErrorHandling';
 
 function AppendedCommentsBase({
   commentable,
@@ -10,13 +11,10 @@ function AppendedCommentsBase({
   commentsPage,
   updateCommentsPage,
   commentsAppendButton,
+  handleErrors,
+  error,
 }) {
   const [comments, setComments] = useState(null);
-  const [error, setError] = useState(null);
-
-  function handleErrors({ data }) {
-    if (data.error) setError(data.error);
-  }
 
   useEffect(() => {
     async function getComments() {
@@ -45,7 +43,13 @@ function AppendedCommentsBase({
       } else handleErrors(response);
     }
     (commentsPage === 1 ? getComments : appendComments)();
-  }, [commentableType, commentable, commentsPage, updateCommentsPage]);
+  }, [
+    commentableType,
+    commentable,
+    commentsPage,
+    updateCommentsPage,
+    handleErrors,
+  ]);
 
   return (
     <Comments
@@ -59,8 +63,12 @@ function AppendedCommentsBase({
   );
 }
 
+const ErrorHandledAppendedComments = withErrorHandling(AppendedCommentsBase, {
+  catchError: false,
+});
+
 const AppendedComments = withAppendingPagination(
-  AppendedCommentsBase,
+  ErrorHandledAppendedComments,
   'comments'
 );
 export default AppendedComments;

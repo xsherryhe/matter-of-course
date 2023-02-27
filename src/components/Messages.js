@@ -8,6 +8,7 @@ import Message from './Message';
 import NavButton from './NavButton';
 import MessageDeleteButton from './MessageDeleteButton';
 import withPagination from './higher-order/withPagination';
+import withErrorHandling from './higher-order/withErrorHandling';
 
 function MessagesBase({
   inboxPage,
@@ -16,13 +17,13 @@ function MessagesBase({
   outboxPage,
   updateOutboxPage,
   outboxPagination,
+  handleErrors,
 }) {
   const [tab, setTab] = useState('inbox');
   const [message, setMessage] = useState(null);
   const [messages, setMessages] = useState(null);
   const [messagesFlash, setMessagesFlash] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
   const [newOn, setNewOn] = useState(false);
 
   function showNew() {
@@ -38,10 +39,6 @@ function MessagesBase({
     hideNew();
   }
 
-  function handleErrors({ data }) {
-    if (data.error) setError(data.error);
-  }
-
   const getMessages = useCallback(async () => {
     setLoading(true);
     const response = await fetcher(`current_messages/${tab}`, {
@@ -52,7 +49,14 @@ function MessagesBase({
       (tab === 'inbox' ? updateInboxPage : updateOutboxPage)(response.data);
     } else handleErrors(response);
     setLoading(false);
-  }, [tab, inboxPage, outboxPage, updateInboxPage, updateOutboxPage]);
+  }, [
+    tab,
+    inboxPage,
+    outboxPage,
+    updateInboxPage,
+    updateOutboxPage,
+    handleErrors,
+  ]);
 
   useEffect(() => {
     getMessages();
@@ -116,7 +120,11 @@ function MessagesBase({
         )}
         <div className="tabs">
           {['inbox', 'outbox'].map((tabOption) => (
-            <NavButton disabled={tab === tabOption} onClick={tabTo(tabOption)}>
+            <NavButton
+              key={tabOption}
+              disabled={tab === tabOption}
+              onClick={tabTo(tabOption)}
+            >
               {capitalize(tabOption)}
             </NavButton>
           ))}
@@ -126,7 +134,6 @@ function MessagesBase({
 
   let main;
   if (loading) main = 'Loading...';
-  else if (error) main = <div className="error">{error}</div>;
   else if (message)
     main = (
       <main>
@@ -183,8 +190,9 @@ function MessagesBase({
   );
 }
 
-const Messages = ['inbox', 'outbox'].reduce(
+const PaginatedMessages = ['inbox', 'outbox'].reduce(
   (Component, resourceName) => withPagination(Component, resourceName),
   MessagesBase
 );
+const Messages = withErrorHandling(PaginatedMessages);
 export default Messages;

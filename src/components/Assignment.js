@@ -146,7 +146,6 @@ function AssignmentBase({
 }
 
 const Assignment = withErrorHandling(AssignmentBase, {
-  routed: false,
-  catchErrors: false,
+  catchError: false,
 });
 export default Assignment;

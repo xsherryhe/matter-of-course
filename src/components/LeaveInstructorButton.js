@@ -1,47 +1,35 @@
-import { useState, useContext } from 'react';
-import MessageContext from './contexts/MessageContext';
+import { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 
+import MessageContext from './contexts/MessageContext';
 import UserContext from './contexts/UserContext';
 import DeleteButton from './DeleteButton';
 
-export default function LeaveInstructorButton({
-  course,
-  setCourse,
-  setCourseError,
-}) {
-  const [error, setError] = useState(null);
+export default function LeaveInstructorButton({ course, setCourse }) {
+  const navigate = useNavigate();
   const { user } = useContext(UserContext);
   const setMessage = useContext(MessageContext).set;
 
   function completeLeave() {
-    const message = 'You are no longer an instructor for this course.';
-    if (course.status === 'open' || course.host.id === user.id) {
-      setMessage(message);
+    setMessage(`You are no longer an instructor for ${course.title}.`);
+    if (course.host.id === user.id) {
       setCourse((course) => ({
         ...course,
         instructors: course.instructors.filter(({ id }) => id !== user.id),
       }));
-    } else setCourseError(message);
-  }
-
-  function handleErrors({ data }) {
-    if (data.error) setError(data.error);
+    } else navigate('/my-courses');
   }
 
   if (!course.instructors.some(({ id }) => id === user.id)) return null;
 
   return (
-    <span>
-      <DeleteButton
-        route={`courses/${course.id}/instructors/${user.id}`}
-        resource="instructor"
-        id={user.id}
-        buttonText="Leave Instructor Role"
-        confirmText="Are you sure you wish to stop being an instructor for this course?"
-        completeAction={completeLeave}
-        handleErrors={handleErrors}
-      />
-      {error && <div className="error">{error}</div>}
-    </span>
+    <DeleteButton
+      route={`courses/${course.id}/instructors/${user.id}`}
+      resource="instructor"
+      id={user.id}
+      buttonText="Leave Instructor Role"
+      confirmText="Are you sure you wish to stop being an instructor for this course?"
+      completeAction={completeLeave}
+    />
   );
 }

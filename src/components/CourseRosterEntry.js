@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import '../styles/CourseRosterEntry.css';
+
 import NavLink from './NavLink';
 import DeleteButton from './DeleteButton';
 import withPagination from './higher-order/withPagination';
@@ -13,7 +14,6 @@ function CourseRosterEntryBase({
   submissionsPage,
   updateSubmissionsPage,
   submissionsPagination,
-  handleErrors,
 }) {
   const navigate = useNavigate();
   const { state, pathname } = useLocation();

@@ -22,12 +22,12 @@ export default function CourseEnrollButton({
       error = 'You are not enrolled yet.';
     else if (data.error) error = data.error;
 
-    setMessage(<span className="error">{error}</span>);
+    setMessage(<div className="error">{error}</div>);
   }
 
   function validate() {
     if (!user) {
-      setMessage(<span className="error">Please sign in first.</span>);
+      setMessage(<div className="error">Please sign in first.</div>);
       return false;
     }
     return true;
@@ -36,14 +36,14 @@ export default function CourseEnrollButton({
   function validateEnroll() {
     if (!validate()) return false;
     if (enrolled) {
-      setMessage(<span className="error">You are already enrolled!</span>);
+      setMessage(<div className="error">You are already enrolled!</div>);
       return false;
     }
     if (authorized) {
       setMessage(
-        <span className="error">
+        <div className="error">
           You are already an instructor or a host for this course.
-        </span>
+        </div>
       );
       return false;
     }
@@ -70,7 +70,7 @@ export default function CourseEnrollButton({
   function validateUnenroll() {
     if (!validate()) return false;
     if (!enrolled) {
-      setMessage(<span className="error">You are not enrolled yet.</span>);
+      setMessage(<div className="error">You are not enrolled yet.</div>);
       return false;
     }
     return true;

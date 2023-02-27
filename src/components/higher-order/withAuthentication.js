@@ -18,9 +18,9 @@ export default function withAuthentication(Component) {
       if (user) return;
 
       setMessage(
-        <span className="error">
+        <div className="error">
           You need to sign in or sign up before continuing.
-        </span>
+        </div>
       );
     }, [user, setMessage]);
 

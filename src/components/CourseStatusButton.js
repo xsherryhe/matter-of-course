@@ -21,9 +21,9 @@ export default function CourseStatusButton({ course, setCourse }) {
   function validate() {
     if (newStatus === 1 && !lessons.length) {
       setMessage(
-        <span className="error">
+        <div className="error">
           You must have at least one lesson before opening a course.
-        </span>
+        </div>
       );
       return false;
     }
@@ -32,7 +32,7 @@ export default function CourseStatusButton({ course, setCourse }) {
 
   function handleErrors({ data }) {
     const error = data.error || data.base?.[0];
-    if (error) setMessage(<span className="error">{error}</span>);
+    if (error) setMessage(<div className="error">{error}</div>);
   }
 
   function completeStatusChange(data) {

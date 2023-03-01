@@ -99,7 +99,20 @@ function ResourceFormBase({
           required,
           handleFieldErrors,
           nested,
+          Component,
         }) => {
+          if (Component)
+            return (
+              <Component
+                key={attribute}
+                prefix={resource}
+                errors={errors}
+                toValidate={toValidate}
+                required={required}
+                attributeText={attributeText}
+                labelText={labelText}
+              />
+            );
           if (nested)
             return (
               <NestedFieldSet

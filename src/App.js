@@ -24,12 +24,14 @@ import AssignmentSubmissions from './components/AssignmentSubmissions';
 import Messages from './components/Messages';
 import MessageForm from './components/MessageForm';
 import Post from './components/Post';
+import Profile from './components/Profile';
 import withAuthentication from './components/higher-order/withAuthentication';
 
 const AuthenticatedUserCourses = withAuthentication(UserCourses);
 const AuthenticatedCourseForm = withAuthentication(CourseForm);
 const AuthenticatedLessonForm = withAuthentication(LessonForm);
 const AuthenticatedLesson = withAuthentication(Lesson);
+const AuthenticatedProfile = withAuthentication(Profile);
 const AuthenticatedInvitations = withAuthentication(Invitations);
 const AuthenticatedUserAllAssignmentSubmissions = withAuthentication(
   UserAllAssignmentSubmissions
@@ -94,6 +96,7 @@ function App() {
                     element={<AuthenticatedLesson />}
                   />
                   <Route path="/lesson/:id" element={<AuthenticatedLesson />} />
+                  <Route path="/me" element={<AuthenticatedProfile />} />
                   <Route
                     path="/my-invitations"
                     element={<AuthenticatedInvitations />}

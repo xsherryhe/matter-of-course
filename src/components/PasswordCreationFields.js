@@ -1,7 +1,13 @@
 import { useRef } from 'react';
 import Field from './Field';
 
-export default function PasswordCreationFields({ prefix, errors, toValidate }) {
+export default function PasswordCreationFields({
+  prefix,
+  errors,
+  toValidate,
+  required,
+  labelText,
+}) {
   const passwordRef = useRef();
   const passwordConfirmRef = useRef();
 
@@ -11,9 +17,10 @@ export default function PasswordCreationFields({ prefix, errors, toValidate }) {
         prefix={prefix}
         attributes={['password']}
         type="password"
+        labelText={labelText}
         errors={errors}
         toValidate={toValidate}
-        required={true}
+        required={required ?? true}
         parentInputRef={passwordRef}
       />
       <Field

@@ -59,15 +59,20 @@ function NestedFieldSetBase({
     };
   }
 
+  function instanceHeading(instance, i) {
+    const heading =
+      (resourceTitleAttribute && instance[resourceTitleAttribute]) ||
+      `${resourceText ?? capitalize(resource)}${multiple ? ` ${i + 1}` : ''}`;
+
+    return heading ? <h3>{heading}</h3> : null;
+  }
+
   return (
     <div>
       {heading && <h2>{heading}</h2>}
       {instances.map((instance, i) => (
         <div key={instance.id || instance.tempId}>
-          <h3>
-            {(resourceTitleAttribute && instance[resourceTitleAttribute]) ||
-              `${resourceText || capitalize(resource)} ${i + 1}`}
-          </h3>
+          {instanceHeading(instance, i)}
           {
             <Field
               prefix={parentResource}
@@ -150,7 +155,7 @@ function NestedFieldSetBase({
       ))}
       {multiple && (
         <button onClick={add}>
-          Add {resourceText || capitalize(resource)}
+          Add {resourceText ?? capitalize(resource)}
         </button>
       )}
     </div>

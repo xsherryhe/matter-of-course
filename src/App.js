@@ -54,7 +54,7 @@ function App() {
   useEffect(() => {
     async function getUser() {
       const response = await fetcher('current_user');
-      setUser(response.data);
+      if (response.status < 400) setUser(response.data);
     }
     getUser();
   }, []);

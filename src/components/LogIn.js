@@ -33,7 +33,7 @@ function LogInBase({
 
   async function handleSubmit(e) {
     e.preventDefault();
-    if (!validate(e.target)) return;
+    if (!(await validate(e.target))) return;
 
     setLoading(true);
     if (await loggedIn()) return setLoading(false);

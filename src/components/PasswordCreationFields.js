@@ -21,7 +21,7 @@ export default function PasswordCreationFields({
         errors={errors}
         toValidate={toValidate}
         required={required ?? true}
-        parentInputRef={passwordRef}
+        inputRef={passwordRef}
       />
       <Field
         prefix={prefix}
@@ -29,7 +29,7 @@ export default function PasswordCreationFields({
         type="password"
         errors={errors}
         toValidate={toValidate}
-        parentInputRef={passwordConfirmRef}
+        inputRef={passwordConfirmRef}
         match={{ name: 'Password', ref: passwordRef }}
       />
     </div>

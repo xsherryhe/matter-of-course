@@ -17,8 +17,10 @@ export default function withFormValidation(FormBase) {
     }
 
     function validate(form) {
-      setToValidate((validate) => (validate === 'true' ? true : 'true'));
-      return form.checkValidity();
+      setToValidate((toValidate) => (toValidate === 'true' ? true : 'true'));
+      return new Promise((resolve) =>
+        setTimeout(() => resolve(form.checkValidity()), 0)
+      );
     }
 
     return (

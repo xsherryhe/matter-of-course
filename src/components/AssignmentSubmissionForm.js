@@ -60,8 +60,8 @@ function AssignmentSubmissionFormBase({
     setSaved(false);
   }
 
-  function validate(form, changeToComplete) {
-    if (!validateForm(form)) return false;
+  async function validate(form, changeToComplete) {
+    if (!(await validateForm(form))) return false;
     if (!assignment) {
       setStateFormError('This assignment no longer exists.');
       return false;
@@ -88,7 +88,7 @@ function AssignmentSubmissionFormBase({
     return async function (e) {
       e.preventDefault();
       const form = e.target.closest('form');
-      if (!validate(form, changeToComplete)) return;
+      if (!(await validate(form, changeToComplete))) return;
 
       const formData = new FormData(form);
       if (changeToComplete)

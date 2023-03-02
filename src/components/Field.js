@@ -18,7 +18,7 @@ export default function Field({
   required,
   completed = false,
   match,
-  parentInputRef,
+  inputRef: propsInputRef,
 }) {
   const attributeName =
     attributeText || humanName(attributes[attributes.length - 1]);
@@ -42,12 +42,13 @@ export default function Field({
         )));
   const displayError = error || displayErrorFn(errors);
   const fieldInputRef = useRef();
-  const inputRef = parentInputRef || fieldInputRef;
+  const inputRef = propsInputRef || fieldInputRef;
 
   useEffect(() => {
     function validate() {
       if (!toValidate) return;
 
+      inputRef.current?.setCustomValidity('');
       inputRef.current?.checkValidity();
       if (match && inputRef.current?.value !== match.ref.current?.value)
         inputRef.current.setCustomValidity(

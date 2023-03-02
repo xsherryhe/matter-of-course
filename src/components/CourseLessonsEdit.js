@@ -40,7 +40,7 @@ function CourseLessonsEditBase({
 
   async function handleSubmit(e) {
     e.preventDefault();
-    if (!validate(e.target)) return;
+    if (!(await validate(e.target))) return;
 
     setLoading(true);
     const response = await fetcher(`courses/${id}`, {

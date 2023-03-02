@@ -50,7 +50,7 @@ export default function MessageForm({
       defaultValues={defaultValues}
       fields={fields}
       back={back}
-      flash="Message has been sent."
+      flash={() => 'Message has been sent.'}
       completeAction={() => {}}
       submitText="Send Message"
       {...props}

@@ -41,8 +41,8 @@ function ResourceFormBase({
 
     if (flash)
       setMessage(
-        typeof flash === 'string'
-          ? flash
+        typeof flash === 'function'
+          ? flash(data)
           : `Successfully ${action}d ${resource}.`
       );
     else setMessage(null);

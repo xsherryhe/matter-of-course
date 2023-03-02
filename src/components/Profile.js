@@ -16,7 +16,7 @@ function ProfileBase({
       <h1>{name}</h1>
       {!id && editButton}
       <h2>{username}</h2>
-      <div>Email: {email}</div>
+      <h3>{email}</h3>
       <div>
         <h2>{name}'s Courses</h2>
         <UserCourses heading={false} />
@@ -27,5 +27,6 @@ function ProfileBase({
 
 const Profile = asResource(ProfileBase, ProfileForm, 'user', {
   route: (id) => (id ? `users/${id}` : 'current_user'),
+  getResourceFromData: (data) => data.user,
 });
 export default Profile;

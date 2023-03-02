@@ -76,11 +76,15 @@ function NestedFieldSetBase({
           {
             <Field
               prefix={parentResource}
-              attributes={[
-                `${resource}_attributes`,
-                String(i),
-                instance.id ? 'id' : 'temp_id',
-              ]}
+              attributes={
+                multiple
+                  ? [
+                      `${resource}_attributes`,
+                      String(i),
+                      instance.id ? 'id' : 'temp_id',
+                    ]
+                  : [`${resource}_attributes`, instance.id ? 'id' : 'temp_id']
+              }
               type="hidden"
               defaultValue={instance.id || instance.tempId}
             />
@@ -106,12 +110,18 @@ function NestedFieldSetBase({
               <Field
                 key={attribute}
                 prefix={parentResource}
-                attributes={[`${resource}_attributes`, String(i), attribute]}
-                errorAttributes={[
-                  `${resource}_errors`,
-                  String(instance.id || instance.tempId),
-                  attribute,
-                ]}
+                attributes={
+                  multiple
+                    ? [`${resource}_attributes`, String(i), attribute]
+                    : [`${resource}_attributes`, attribute]
+                }
+                errorAttributes={
+                  multiple && [
+                    `${resource}_errors`,
+                    String(instance.id || instance.tempId),
+                    attribute,
+                  ]
+                }
                 type={type}
                 onChange={
                   order && handleReOrder(instance.id || instance.tempId)

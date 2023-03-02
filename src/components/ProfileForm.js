@@ -35,5 +35,13 @@ export default function ProfileForm(props) {
     },
   ];
 
-  return <ResourceForm resource="user" fields={fields} {...props} />;
+  return (
+    <ResourceForm
+      resource="user"
+      route="users"
+      fields={fields}
+      flash={(data) => data.message}
+      {...props}
+    />
+  );
 }

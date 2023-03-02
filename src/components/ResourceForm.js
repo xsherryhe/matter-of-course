@@ -18,6 +18,7 @@ function ResourceFormBase({
   action,
   navPrefix = '',
   routePrefix = '',
+  route,
   validate,
   toValidate,
   formError,
@@ -60,7 +61,7 @@ function ResourceFormBase({
 
     setLoading(true);
     const response = await fetcher(
-      `${routePrefix}${resource}s${id ? `/${id}` : ''}`,
+      route || `${routePrefix}${resource}s${id ? `/${id}` : ''}`,
       {
         method: { create: 'POST', update: 'PATCH' }[action],
         body: new FormData(e.target),

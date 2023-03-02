@@ -16,6 +16,7 @@ export default function asResource(
     redirect = () => null,
     formHeading = true,
     catchError = true,
+    getResourceFromData = (data) => data,
   }
 ) {
   return function Resource() {
@@ -68,7 +69,7 @@ export default function asResource(
     }
 
     function finishEdit(data) {
-      setResource(data);
+      setResource(getResourceFromData(data));
       hideEdit();
     }
 

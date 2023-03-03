@@ -27,6 +27,21 @@ import Post from './components/Post';
 import Profile from './components/Profile';
 import withAuthentication from './components/higher-order/withAuthentication';
 
+const AuthenticatedHome = withAuthentication(Home, {
+  authenticatedPage: false,
+});
+const AuthenticatedSignUp = withAuthentication(SignUp, {
+  authenticatedPage: false,
+});
+const AuthenticatedLogIn = withAuthentication(LogIn, {
+  authenticatedPage: false,
+});
+const AuthenticatedCourses = withAuthentication(Courses, {
+  authenticatedPage: false,
+});
+const AuthenticatedCourse = withAuthentication(Course, {
+  authenticatedPage: false,
+});
 const AuthenticatedUserCourses = withAuthentication(UserCourses);
 const AuthenticatedCourseForm = withAuthentication(CourseForm);
 const AuthenticatedLessonForm = withAuthentication(LessonForm);
@@ -73,11 +88,11 @@ function App() {
               {message}
               <main>
                 <Routes>
-                  <Route path="/" element={<Home />} />
-                  <Route path="/home" element={<Home />} />
-                  <Route path="/sign-up" element={<SignUp />} />
-                  <Route path="/log-in" element={<LogIn />} />
-                  <Route path="/courses" element={<Courses />} />
+                  <Route path="/" element={<AuthenticatedHome />} />
+                  <Route path="/home" element={<AuthenticatedHome />} />
+                  <Route path="/sign-up" element={<AuthenticatedSignUp />} />
+                  <Route path="/log-in" element={<AuthenticatedLogIn />} />
+                  <Route path="/courses" element={<AuthenticatedCourses />} />
                   <Route
                     path="/my-courses"
                     element={<AuthenticatedUserCourses />}
@@ -86,7 +101,7 @@ function App() {
                     path="/new-course"
                     element={<AuthenticatedCourseForm action="create" />}
                   />
-                  <Route path="/course/:id" element={<Course />} />
+                  <Route path="/course/:id" element={<AuthenticatedCourse />} />
                   <Route
                     path="/course/:courseId/new-lesson"
                     element={<AuthenticatedLessonForm action="create" />}

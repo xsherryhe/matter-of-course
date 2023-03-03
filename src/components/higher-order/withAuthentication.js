@@ -1,21 +1,32 @@
-import { useEffect } from 'react';
-import { useContext } from 'react';
+import { useEffect, useContext } from 'react';
 import { Navigate, useLocation, useSearchParams } from 'react-router-dom';
+import fetcher from '../../fetcher';
 
 import MessageContext from '../contexts/MessageContext';
 import UserContext from '../contexts/UserContext';
 
-export default function withAuthentication(Component) {
+export default function withAuthentication(
+  Component,
+  { authenticatedPage = true } = {}
+) {
   return function AuthenticatedComponent(props) {
     const location = useLocation();
     const [searchParams] = useSearchParams();
     const from = searchParams.get('from');
 
-    const { user } = useContext(UserContext);
+    const { user, set: setUser } = useContext(UserContext);
     const setMessage = useContext(MessageContext).set;
 
     useEffect(() => {
-      if (user) return;
+      async function updateUser() {
+        const response = await fetcher('current_user');
+        if (response.status < 400) setUser(response.data);
+      }
+      updateUser();
+    }, [setUser]);
+
+    useEffect(() => {
+      if (user || !authenticatedPage) return;
 
       setMessage(
         <div className="error">
@@ -24,7 +35,7 @@ export default function withAuthentication(Component) {
       );
     }, [user, setMessage]);
 
-    if (user) return <Component {...props} />;
+    if (user || !authenticatedPage) return <Component {...props} />;
     return (
       <Navigate
         to={`/log-in?from=${

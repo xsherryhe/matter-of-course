@@ -1,6 +1,5 @@
 import { useContext } from 'react';
 import { Link } from 'react-router-dom';
-import fetcher from '../fetcher';
 
 import MessageContext from './contexts/MessageContext';
 import UserContext from './contexts/UserContext';
@@ -11,7 +10,7 @@ export default function NavLink({
   ...props
 }) {
   const setMessage = useContext(MessageContext).set;
-  const { user, set: setUser } = useContext(UserContext);
+  const { user } = useContext(UserContext);
 
   const newMessage =
     authenticationMessage && !user ? (
@@ -24,14 +23,8 @@ export default function NavLink({
     setMessage(newMessage);
   }
 
-  async function updateUser() {
-    const response = await fetcher('current_user');
-    if (response.status < 400) setUser(response.data);
-  }
-
   function handleClick() {
     resetMessage();
-    updateUser();
   }
 
   return (

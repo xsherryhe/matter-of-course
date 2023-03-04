@@ -26,6 +26,7 @@ import MessageForm from './components/MessageForm';
 import Post from './components/Post';
 import Profile from './components/Profile';
 import withAuthentication from './components/higher-order/withAuthentication';
+import EditProfileAndRegistration from './components/EditProfileAndRegistration';
 
 const AuthenticatedHome = withAuthentication(Home, {
   authenticatedPage: false,
@@ -47,6 +48,9 @@ const AuthenticatedCourseForm = withAuthentication(CourseForm);
 const AuthenticatedLessonForm = withAuthentication(LessonForm);
 const AuthenticatedLesson = withAuthentication(Lesson);
 const AuthenticatedProfile = withAuthentication(Profile);
+const AuthenticatedEditProfileAndRegistration = withAuthentication(
+  EditProfileAndRegistration
+);
 const AuthenticatedInvitations = withAuthentication(Invitations);
 const AuthenticatedUserAllAssignmentSubmissions = withAuthentication(
   UserAllAssignmentSubmissions
@@ -112,6 +116,10 @@ function App() {
                   />
                   <Route path="/lesson/:id" element={<AuthenticatedLesson />} />
                   <Route path="/me" element={<AuthenticatedProfile />} />
+                  <Route
+                    path="/edit-profile"
+                    element={<AuthenticatedEditProfileAndRegistration />}
+                  />
                   <Route
                     path="/my-invitations"
                     element={<AuthenticatedInvitations />}

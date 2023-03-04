@@ -1,10 +1,11 @@
 import { useContext, useEffect, useState, useCallback } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import fetcher from '../../fetcher';
+import { capitalize } from '../../utilities';
 
 import NavButton from '../NavButton';
 import DeleteButton from '../DeleteButton';
-import { capitalize } from '../../utilities';
+import BackLink from '../BackLink';
 import MessageContext from '../contexts/MessageContext';
 
 export default function asResource(
@@ -16,7 +17,6 @@ export default function asResource(
     redirect = () => null,
     formHeading = true,
     catchError = true,
-    getResourceFromData = (data) => data,
   }
 ) {
   return function Resource() {
@@ -27,8 +27,8 @@ export default function asResource(
     const [resource, setResource] = useState(data);
     const [editOn, setEditOn] = useState(false);
     const [error, setError] = useState(null);
-    const { route: redirectRoute, state: redirectState } =
-      state?.back || redirect(resource) || {};
+    const redirectObject = state?.back || redirect(resource);
+    const { route: redirectRoute, state: redirectState } = redirectObject || {};
 
     const setMessage = useContext(MessageContext).set;
 
@@ -69,12 +69,18 @@ export default function asResource(
     }
 
     function finishEdit(data) {
-      setResource(getResourceFromData(data));
+      setResource(data);
       hideEdit();
     }
 
     if (error) {
-      if (catchError) return <div className="error">{error.message}</div>;
+      if (catchError)
+        return (
+          <div>
+            <div className="error">{error.message}</div>
+            <BackLink back={redirectObject} />
+          </div>
+        );
       else return <Base error={error} />;
     }
     if (!resource) return 'Loading...';

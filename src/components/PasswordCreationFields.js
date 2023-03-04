@@ -7,6 +7,7 @@ export default function PasswordCreationFields({
   toValidate,
   required,
   labelText,
+  confirmationLabelText,
 }) {
   const passwordRef = useRef();
   const passwordConfirmRef = useRef();
@@ -27,6 +28,7 @@ export default function PasswordCreationFields({
         prefix={prefix}
         attributes={['password_confirmation']}
         type="password"
+        labelText={confirmationLabelText}
         errors={errors}
         toValidate={toValidate}
         inputRef={passwordConfirmRef}

@@ -18,7 +18,6 @@ function ResourceFormBase({
   action,
   navPrefix = '',
   routePrefix = '',
-  route,
   validate,
   toValidate,
   formError,
@@ -42,8 +41,8 @@ function ResourceFormBase({
 
     if (flash)
       setMessage(
-        typeof flash === 'function'
-          ? flash(data)
+        typeof flash === 'string'
+          ? flash
           : `Successfully ${action}d ${resource}.`
       );
     else setMessage(null);
@@ -61,7 +60,7 @@ function ResourceFormBase({
 
     setLoading(true);
     const response = await fetcher(
-      route || `${routePrefix}${resource}s${id ? `/${id}` : ''}`,
+      `${routePrefix}${resource}s${id ? `/${id}` : ''}`,
       {
         method: { create: 'POST', update: 'PATCH' }[action],
         body: new FormData(e.target),

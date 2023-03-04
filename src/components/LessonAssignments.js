@@ -70,7 +70,7 @@ export default function LessonAssignments({
         close={hideEdit}
         completeAction={finishEdit}
         submitText="Update Assignments"
-        flash={() => 'Successfully updated assignments.'}
+        flash="Successfully updated assignments."
       />
     );
   else {

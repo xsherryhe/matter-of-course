@@ -7,6 +7,7 @@ import UserContext from './contexts/UserContext';
 import Field from './Field';
 import PasswordCreationFields from './PasswordCreationFields';
 import withFormValidation from './higher-order/withFormValidation';
+import LogInSignUpLinks from './LogInSignUpLinks';
 
 function SignUpBase({ validate, toValidate, formError, errors, handleErrors }) {
   const [loading, setLoading] = useState(false);
@@ -47,56 +48,56 @@ function SignUpBase({ validate, toValidate, formError, errors, handleErrors }) {
   }, [user, setMessage, navigate]);
 
   return (
-    <form noValidate onSubmit={handleSubmit}>
-      {formError && <div className="error">{formError}</div>}
-      <h1>Sign up</h1>
-      <Field
-        prefix="user"
-        attributes={['profile_attributes', 'first_name']}
-        errors={errors}
-        toValidate={toValidate}
-        required={true}
-      />
-      <Field
-        prefix="user"
-        attributes={['profile_attributes', 'middle_name']}
-        errors={errors}
-        toValidate={toValidate}
-      />
-      <Field
-        prefix="user"
-        attributes={['profile_attributes', 'last_name']}
-        errors={errors}
-        toValidate={toValidate}
-        required={true}
-      />
-      <Field
-        prefix="user"
-        attributes={['email']}
-        type="email"
-        errors={errors}
-        toValidate={toValidate}
-        required={true}
-      />
-      <Field
-        prefix="user"
-        attributes={['username']}
-        errors={errors}
-        toValidate={toValidate}
-        required={true}
-      />
-      <PasswordCreationFields
-        prefix="user"
-        errors={errors}
-        toValidate={toValidate}
-      />
-      <button disabled={loading} type="submit">
-        Sign up
-      </button>
-    </form>
-    // Log in link
-    // Forgot password link
-    // Confirmation instructions link
+    <div>
+      <form noValidate onSubmit={handleSubmit}>
+        {formError && <div className="error">{formError}</div>}
+        <h1>Sign up</h1>
+        <Field
+          prefix="user"
+          attributes={['profile_attributes', 'first_name']}
+          errors={errors}
+          toValidate={toValidate}
+          required={true}
+        />
+        <Field
+          prefix="user"
+          attributes={['profile_attributes', 'middle_name']}
+          errors={errors}
+          toValidate={toValidate}
+        />
+        <Field
+          prefix="user"
+          attributes={['profile_attributes', 'last_name']}
+          errors={errors}
+          toValidate={toValidate}
+          required={true}
+        />
+        <Field
+          prefix="user"
+          attributes={['email']}
+          type="email"
+          errors={errors}
+          toValidate={toValidate}
+          required={true}
+        />
+        <Field
+          prefix="user"
+          attributes={['username']}
+          errors={errors}
+          toValidate={toValidate}
+          required={true}
+        />
+        <PasswordCreationFields
+          prefix="user"
+          errors={errors}
+          toValidate={toValidate}
+        />
+        <button disabled={loading} type="submit">
+          Sign up
+        </button>
+      </form>
+      <LogInSignUpLinks />
+    </div>
   );
 }
 

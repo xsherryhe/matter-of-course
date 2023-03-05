@@ -6,6 +6,7 @@ import Field from './Field';
 import MessageContext from './contexts/MessageContext';
 import UserContext from './contexts/UserContext';
 import withFormValidation from './higher-order/withFormValidation';
+import LogInSignUpLinks from './LogInSignUpLinks';
 
 function LogInBase({ validate, toValidate, formError, errors, handleErrors }) {
   const [loading, setLoading] = useState(false);
@@ -46,38 +47,38 @@ function LogInBase({ validate, toValidate, formError, errors, handleErrors }) {
   }, [user, setMessage, navigate]);
 
   return (
-    <form noValidate onSubmit={handleSubmit}>
-      {formError && <div className="error">{formError}</div>}
-      <h1>Log in</h1>
-      <Field
-        prefix="user"
-        attributes={['login']}
-        errors={errors}
-        toValidate={toValidate}
-        required={true}
-      />
-      <Field
-        prefix="user"
-        attributes={['password']}
-        type="password"
-        errors={errors}
-        toValidate={toValidate}
-        required={true}
-      />
-      <Field
-        prefix="user"
-        attributes={['remember_me']}
-        type="checkbox"
-        errors={errors}
-        toValidate={toValidate}
-      />
-      <button disabled={loading} type="submit">
-        Log in
-      </button>
-    </form>
-    // Sign up link
-    // Forgot password link
-    // Confirmation instructions link
+    <div>
+      <form noValidate onSubmit={handleSubmit}>
+        {formError && <div className="error">{formError}</div>}
+        <h1>Log in</h1>
+        <Field
+          prefix="user"
+          attributes={['login']}
+          errors={errors}
+          toValidate={toValidate}
+          required={true}
+        />
+        <Field
+          prefix="user"
+          attributes={['password']}
+          type="password"
+          errors={errors}
+          toValidate={toValidate}
+          required={true}
+        />
+        <Field
+          prefix="user"
+          attributes={['remember_me']}
+          type="checkbox"
+          errors={errors}
+          toValidate={toValidate}
+        />
+        <button disabled={loading} type="submit">
+          Log in
+        </button>
+      </form>
+      <LogInSignUpLinks />
+    </div>
   );
 }
 

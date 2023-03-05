@@ -27,6 +27,7 @@ import Post from './components/Post';
 import Profile from './components/Profile';
 import withAuthentication from './components/higher-order/withAuthentication';
 import EditProfileAndRegistration from './components/EditProfileAndRegistration';
+import ForgotPassword from './components/ForgotPassword';
 
 const AuthenticatedHome = withAuthentication(Home, {
   authenticatedPage: false,
@@ -35,6 +36,9 @@ const AuthenticatedSignUp = withAuthentication(SignUp, {
   authenticatedPage: false,
 });
 const AuthenticatedLogIn = withAuthentication(LogIn, {
+  authenticatedPage: false,
+});
+const AuthenticatedForgotPassword = withAuthentication(ForgotPassword, {
   authenticatedPage: false,
 });
 const AuthenticatedCourses = withAuthentication(Courses, {
@@ -96,6 +100,10 @@ function App() {
                   <Route path="/home" element={<AuthenticatedHome />} />
                   <Route path="/sign-up" element={<AuthenticatedSignUp />} />
                   <Route path="/log-in" element={<AuthenticatedLogIn />} />
+                  <Route
+                    path="/forgot-password"
+                    element={<AuthenticatedForgotPassword />}
+                  />
                   <Route path="/courses" element={<AuthenticatedCourses />} />
                   <Route
                     path="/my-courses"

@@ -28,6 +28,7 @@ import Profile from './components/Profile';
 import withAuthentication from './components/higher-order/withAuthentication';
 import EditProfileAndRegistration from './components/EditProfileAndRegistration';
 import ForgotPassword from './components/ForgotPassword';
+import EditPassword from './components/EditPassword';
 
 const AuthenticatedHome = withAuthentication(Home, {
   authenticatedPage: false,
@@ -39,6 +40,9 @@ const AuthenticatedLogIn = withAuthentication(LogIn, {
   authenticatedPage: false,
 });
 const AuthenticatedForgotPassword = withAuthentication(ForgotPassword, {
+  authenticatedPage: false,
+});
+const AuthenticatedEditPassword = withAuthentication(EditPassword, {
   authenticatedPage: false,
 });
 const AuthenticatedCourses = withAuthentication(Courses, {
@@ -103,6 +107,10 @@ function App() {
                   <Route
                     path="/forgot-password"
                     element={<AuthenticatedForgotPassword />}
+                  />
+                  <Route
+                    path="/edit-password"
+                    element={<AuthenticatedEditPassword />}
                   />
                   <Route path="/courses" element={<AuthenticatedCourses />} />
                   <Route

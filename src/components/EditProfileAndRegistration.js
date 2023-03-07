@@ -20,10 +20,11 @@ function EditProfileAndRegistrationBase({
   const navigate = useNavigate();
 
   const setMessage = useContext(MessageContext).set;
-  const { user } = useContext(UserContext);
+  const { user, set: setUser } = useContext(UserContext);
 
   function updateUser(data) {
     setMessage(data.message);
+    setUser(data.user);
     navigate('/me');
   }
 

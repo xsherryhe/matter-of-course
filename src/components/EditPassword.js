@@ -1,10 +1,11 @@
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import fetcher from '../fetcher';
 
 import Field from './Field';
 import PasswordCreationFields from './PasswordCreationFields';
 import MessageContext from './contexts/MessageContext';
+import UserContext from './contexts/UserContext';
 import withFormValidation from './higher-order/withFormValidation';
 
 function EditPasswordBase({
@@ -17,7 +18,10 @@ function EditPasswordBase({
   const [searchParams] = useSearchParams();
   const resetPasswordToken = searchParams.get('reset-password-token');
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+
   const setMessage = useContext(MessageContext).set;
+  const setUser = useContext(UserContext).set;
 
   useEffect(() => {
     if (!resetPasswordToken) navigate('/forgot-password');
@@ -25,6 +29,7 @@ function EditPasswordBase({
 
   function updatePassword(data) {
     setMessage(data.message);
+    setUser(data.user);
     navigate('/');
   }
 
@@ -32,12 +37,14 @@ function EditPasswordBase({
     e.preventDefault();
     if (!(await validate(e.target))) return;
 
+    setLoading(true);
     const response = await fetcher('users/password', {
       method: 'PATCH',
       body: new FormData(e.target),
     });
     if (response.status < 400) updatePassword(response.data);
     else handleErrors(response);
+    setLoading(false);
   }
 
   return (
@@ -60,7 +67,9 @@ function EditPasswordBase({
         toValidate={toValidate}
         required={true}
       />
-      <button type="submit">Change My Password</button>
+      <button disabled={loading} type="submit">
+        Change My Password
+      </button>
     </form>
   );
 }

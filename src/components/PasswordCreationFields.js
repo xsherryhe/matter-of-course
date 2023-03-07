@@ -32,6 +32,7 @@ export default function PasswordCreationFields({
         errors={errors}
         toValidate={toValidate}
         inputRef={passwordConfirmRef}
+        required={required ?? true}
         match={{ name: 'Password', ref: passwordRef }}
       />
     </div>

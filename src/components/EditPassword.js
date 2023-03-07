@@ -1,19 +1,21 @@
 import { useContext, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import fetcher from '../fetcher';
 
 import Field from './Field';
 import PasswordCreationFields from './PasswordCreationFields';
 import MessageContext from './contexts/MessageContext';
+import withFormValidation from './higher-order/withFormValidation';
 
-export default function EditPassword({
+function EditPasswordBase({
   validate,
   toValidate,
   formError,
   errors,
   handleErrors,
 }) {
-  const { resetPasswordToken } = useParams();
+  const [searchParams] = useSearchParams();
+  const resetPasswordToken = searchParams.get('reset-password-token');
   const navigate = useNavigate();
   const setMessage = useContext(MessageContext).set;
 
@@ -39,7 +41,7 @@ export default function EditPassword({
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form noValidate onSubmit={handleSubmit}>
       {formError && <div className="error">{formError}</div>}
       <h1>Change your password</h1>
       <Field
@@ -62,3 +64,6 @@ export default function EditPassword({
     </form>
   );
 }
+
+const EditPassword = withFormValidation(EditPasswordBase);
+export default EditPassword;

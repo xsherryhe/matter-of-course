@@ -29,6 +29,7 @@ import withAuthentication from './components/higher-order/withAuthentication';
 import EditProfileAndRegistration from './components/EditProfileAndRegistration';
 import ForgotPassword from './components/ForgotPassword';
 import EditPassword from './components/EditPassword';
+import CancelAccount from './components/CancelAccount';
 
 const AuthenticatedHome = withAuthentication(Home, {
   authenticatedPage: false,
@@ -59,6 +60,7 @@ const AuthenticatedProfile = withAuthentication(Profile);
 const AuthenticatedEditProfileAndRegistration = withAuthentication(
   EditProfileAndRegistration
 );
+const AuthenticatedCancelAccount = withAuthentication(CancelAccount);
 const AuthenticatedInvitations = withAuthentication(Invitations);
 const AuthenticatedUserAllAssignmentSubmissions = withAuthentication(
   UserAllAssignmentSubmissions
@@ -135,6 +137,10 @@ function App() {
                   <Route
                     path="/edit-profile"
                     element={<AuthenticatedEditProfileAndRegistration />}
+                  />
+                  <Route
+                    path="/cancel-account"
+                    element={<AuthenticatedCancelAccount />}
                   />
                   <Route
                     path="/my-invitations"

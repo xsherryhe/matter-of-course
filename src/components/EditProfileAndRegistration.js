@@ -8,6 +8,7 @@ import MessageContext from './contexts/MessageContext';
 import UserContext from './contexts/UserContext';
 import withFormValidation from './higher-order/withFormValidation';
 import BackLink from './BackLink';
+import CancelAccountFlowButton from './CancelAccountFlowButton';
 
 function EditProfileAndRegistrationBase({
   validate,
@@ -43,64 +44,70 @@ function EditProfileAndRegistrationBase({
   }
 
   return (
-    <form noValidate onSubmit={handleSubmit}>
-      {formError && <div className="error">{formError}</div>}
-      <BackLink back={{ route: '/me', location: 'My Profile' }} />
-      <h1>Edit Profile and Registration</h1>
-      <Field
-        prefix="user"
-        attributes={['profile_attributes', 'first_name']}
-        defaultValue={user?.profile.first_name}
-        errors={errors}
-        toValidate={toValidate}
-        required={true}
-      />
-      <Field
-        prefix="user"
-        attributes={['profile_attributes', 'middle_name']}
-        defaultValue={user?.profile.middle_name}
-        errors={errors}
-        toValidate={toValidate}
-      />
-      <Field
-        prefix="user"
-        attributes={['profile_attributes', 'last_name']}
-        defaultValue={user?.profile.last_name}
-        errors={errors}
-        toValidate={toValidate}
-        required={true}
-      />
-      <Field
-        prefix="user"
-        attributes={['email']}
-        defaultValue={user?.email}
-        type="email"
-        errors={errors}
-        toValidate={toValidate}
-        required={true}
-      />
-      <div>Username (Cannot be changed): {user?.username}</div>
-      <PasswordCreationFields
-        prefix="user"
-        labelText="New Password (Leave blank if you don't want to change it)"
-        confirmationLabelText="New Password Confirmation"
-        errors={errors}
-        toValidate={toValidate}
-        required={false}
-      />
-      <Field
-        prefix="user"
-        type="password"
-        labelText="Current Password (Needed to confirm changes)"
-        attributes={['current_password']}
-        errors={errors}
-        toValidate={toValidate}
-        required={true}
-      />
-      <button disabled={loading} type="submit">
-        Update
-      </button>
-    </form>
+    <div>
+      <form noValidate onSubmit={handleSubmit}>
+        {formError && <div className="error">{formError}</div>}
+        <BackLink back={{ route: '/me', location: 'My Profile' }} />
+        <h1>Edit Profile and Registration</h1>
+        <Field
+          prefix="user"
+          attributes={['profile_attributes', 'first_name']}
+          defaultValue={user?.profile.first_name}
+          errors={errors}
+          toValidate={toValidate}
+          required={true}
+        />
+        <Field
+          prefix="user"
+          attributes={['profile_attributes', 'middle_name']}
+          defaultValue={user?.profile.middle_name}
+          errors={errors}
+          toValidate={toValidate}
+        />
+        <Field
+          prefix="user"
+          attributes={['profile_attributes', 'last_name']}
+          defaultValue={user?.profile.last_name}
+          errors={errors}
+          toValidate={toValidate}
+          required={true}
+        />
+        <Field
+          prefix="user"
+          attributes={['email']}
+          defaultValue={user?.email}
+          type="email"
+          errors={errors}
+          toValidate={toValidate}
+          required={true}
+        />
+        <div>Username (Cannot be changed): {user?.username}</div>
+        <PasswordCreationFields
+          prefix="user"
+          labelText="New Password (Leave blank if you don't want to change it)"
+          confirmationLabelText="New Password Confirmation"
+          errors={errors}
+          toValidate={toValidate}
+          required={false}
+        />
+        <Field
+          prefix="user"
+          type="password"
+          labelText="Current Password (Needed to confirm changes)"
+          attributes={['current_password']}
+          errors={errors}
+          toValidate={toValidate}
+          required={true}
+        />
+        <button disabled={loading} type="submit">
+          Update
+        </button>
+      </form>
+      <div>
+        <h2>Cancel My Account</h2>
+        <CancelAccountFlowButton />
+      </div>
+    </div>
   );
 }
 

@@ -24,7 +24,11 @@ function CancelAccountFlowButtonBase({ handleErrors }) {
   }, [handleErrors]);
 
   if (!exclusiveAuthorizedCourses) return <button>Loading...</button>;
-  if (exclusiveAuthorizedCourses.length === 0) return <CancelAccountButton />;
+
+  const noConflict = ['hosted', 'instructed'].every(
+    (key) => exclusiveAuthorizedCourses[key]?.length === 0
+  );
+  if (noConflict) return <CancelAccountButton />;
   return (
     <NavLink to="/cancel-account" state={{ exclusiveAuthorizedCourses }}>
       <button>Cancel My Account</button>

@@ -1,7 +1,8 @@
-import { useContext, useNavigate } from "react";
+import { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import DeleteButton from "./DeleteButton";
-import MessageContext from "./contexts/MessageContext";
+import DeleteButton from './DeleteButton';
+import MessageContext from './contexts/MessageContext';
 
 export default function CancelAccountButton() {
   const setMessage = useContext(MessageContext).set;

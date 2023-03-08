@@ -27,7 +27,11 @@ function CancelAccountBase({ handleErrors }) {
   }, [initialConflictingCourses, handleErrors]);
 
   if (conflictingCourses === null) return 'Loading...';
-  if (conflictingCourses.length === 0)
+
+  const noConflict = ['hosted', 'instructed'].every(
+    (key) => conflictingCourses[key]?.length === 0
+  );
+  if (noConflict)
     return (
       <div>
         <h1>Cancel My Account</h1>

@@ -22,19 +22,10 @@ export default function CourseInstructors({
   function completeRemove(instructorId) {
     return function () {
       setRemoved((removed) => [...removed, instructorId]);
-      setCourse((course) => {
-        const instructors = course.instructors;
-        const instructorIndex = instructors.findIndex(
-          ({ id }) => id === instructorId
-        );
-        return {
-          ...course,
-          instructors: [
-            ...instructors.slice(0, instructorIndex),
-            ...instructors.slice(instructorIndex + 1),
-          ],
-        };
-      });
+      setCourse((course) => ({
+        ...course,
+        instructors: course.instructors.filter(({ id }) => id !== instructorId),
+      }));
     };
   }
 

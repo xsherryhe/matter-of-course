@@ -1,20 +1,6 @@
 import { getUniqueBy } from '../utilities';
 import ResourceForm from './ResourceForm';
 
-export const hostSelectField = (defaultValues) => ({
-  attribute: 'host_id',
-  type: 'select',
-  labelText: 'Host (Changing this will remove you as the host)',
-  attributeText: 'Host',
-  valueOptions: getUniqueBy(
-    [defaultValues.host, ...defaultValues.instructors],
-    'id'
-  ).map(({ id, name }) => ({
-    name,
-    value: id,
-  })),
-});
-
 export const instructorLoginsField = {
   attribute: 'instructor_logins',
   value: (_defaultValues, errors) =>
@@ -39,7 +25,20 @@ export default function CourseForm({ action, defaultValues, ...props }) {
     { attribute: 'description', type: 'textarea', required: true },
     instructorLoginsField,
   ];
-  if (defaultValues?.hosted) fields.push(hostSelectField(defaultValues));
+  if (defaultValues?.hosted)
+    fields.push({
+      attribute: 'host_id',
+      type: 'select',
+      labelText: 'Host (Changing this will remove you as the host)',
+      attributeText: 'Host',
+      valueOptions: getUniqueBy(
+        [defaultValues.host, ...defaultValues.instructors],
+        'id'
+      ).map(({ id, name }) => ({
+        name,
+        value: id,
+      })),
+    });
 
   return (
     <ResourceForm

@@ -4,6 +4,7 @@ import fetcher from '../fetcher';
 
 import withErrorHandling from './higher-order/withErrorHandling';
 import CancelAccountButton from './CancelAccountButton';
+import CancelAccountHostedCourse from './CancelAccountHostedCourse';
 
 function CancelAccountBase({ handleErrors }) {
   const initialConflictingCourses =
@@ -40,12 +41,28 @@ function CancelAccountBase({ handleErrors }) {
       </div>
     );
 
+  // TO DO: Conflicting instructed courses
   return (
     <div>
       <h1>Cancel My Account</h1>
       <div>
         Before you cancel your account, you must reassign your host/instructor
-        role for the following courses:
+        role for the following courses.
+        {initialConflictingCourses.hosted && (
+          <div>
+            <h2>Hosted Courses</h2>
+            <div>
+              Please change the host of these courses to a different instructor.
+            </div>
+            {initialConflictingCourses.hosted.map((course) => (
+              <CancelAccountHostedCourse
+                key={course.id}
+                course={course}
+                setConflictingCourses={setConflictingCourses}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

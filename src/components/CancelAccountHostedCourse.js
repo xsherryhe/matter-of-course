@@ -8,15 +8,17 @@ export default function CancelAccountHostedCourse({
   setConflictingCourses,
 }) {
   const [resolved, setResolved] = useState(false);
-  const [hidden, setHidden] = useState(false);
 
   function resolveCourse() {
     setResolved(true);
-    setConflictingCourses((courses) => ({
-      ...courses,
-      hosted: courses.hosted.filter(({ id }) => id !== course.id),
-    }));
-    setTimeout(() => setHidden(true), 2000);
+    setTimeout(
+      () =>
+        setConflictingCourses((courses) => ({
+          ...courses,
+          hosted: courses.hosted.filter(({ id }) => id !== course.id),
+        })),
+      2000
+    );
   }
 
   const otherInstructors = course.instructors.filter(
@@ -33,7 +35,7 @@ export default function CancelAccountHostedCourse({
     })),
   };
 
-  if (hidden || !otherInstructors.length) return null;
+  if (!otherInstructors.length) return null;
   if (resolved) return <div>Host changed!</div>;
   return (
     <div>

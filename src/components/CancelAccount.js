@@ -5,6 +5,8 @@ import fetcher from '../fetcher';
 import withErrorHandling from './higher-order/withErrorHandling';
 import CancelAccountButton from './CancelAccountButton';
 import CancelAccountHostedCourse from './CancelAccountHostedCourse';
+import CourseInviteInstructorsForm from './CourseInviteInstructorsForm';
+import BackLink from './BackLink';
 
 function CancelAccountBase({ handleErrors }) {
   const initialConflictingCourses =
@@ -41,26 +43,42 @@ function CancelAccountBase({ handleErrors }) {
       </div>
     );
 
-  // TO DO: Conflicting instructed courses
   return (
     <div>
       <h1>Cancel My Account</h1>
       <div>
         Before you cancel your account, you must reassign your host/instructor
         role for the following courses.
-        {initialConflictingCourses.hosted && (
+        {conflictingCourses.hosted?.length > 0 && (
           <div>
             <h2>Hosted Courses</h2>
             <div>
               Please change the host of these courses to a different instructor.
             </div>
-            {initialConflictingCourses.hosted.map((course) => (
+            {conflictingCourses.hosted.map((course) => (
               <CancelAccountHostedCourse
                 key={course.id}
                 course={course}
                 setConflictingCourses={setConflictingCourses}
               />
             ))}
+          </div>
+        )}
+        {conflictingCourses.instructed?.length > 0 && (
+          <div>
+            <h2>Courses Where You Are The Only Instructor</h2>
+            <div>
+              Please invite someone else to be an instructor for these courses.
+              You will have to wait for them to accept your invite before you
+              can delete your account.
+            </div>
+            {conflictingCourses.instructed.map(({ id, title }) => (
+              <div>
+                <h3>{title}</h3>
+                <CourseInviteInstructorsForm key={id} courseId={id} />
+              </div>
+            ))}
+            <BackLink back={{ route: '/me', location: 'My Profile' }} />
           </div>
         )}
       </div>

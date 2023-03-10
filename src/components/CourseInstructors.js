@@ -1,23 +1,15 @@
 import { useState } from 'react';
 import '../styles/CourseInstructors.css';
 
-import ResourceForm from './ResourceForm';
-import { instructorLoginsField } from './CourseForm';
 import DeleteButton from './DeleteButton';
+import CourseInviteInstructorsForm from './CourseInviteInstructorsForm';
 
 export default function CourseInstructors({
   course: { id, instructors: initialInstructors, hosted, authorized },
   setCourse,
 }) {
   const [instructors] = useState(initialInstructors);
-  const [invited, setInvited] = useState(false);
   const [removed, setRemoved] = useState([]);
-
-  function completeInvite(data) {
-    setCourse(data);
-    setInvited(true);
-    setTimeout(() => setInvited(false), 2000);
-  }
 
   function completeRemove(instructorId) {
     return function () {
@@ -59,17 +51,7 @@ export default function CourseInstructors({
           );
         })}
       </ul>
-      <ResourceForm
-        heading={false}
-        flash={false}
-        resource="course"
-        fields={[instructorLoginsField]}
-        action="update"
-        id={id}
-        completeAction={completeInvite}
-        submitText="Invite"
-      />
-      {invited && 'Invited!'}
+      <CourseInviteInstructorsForm courseId={id} setCourse={setCourse} />
     </div>
   );
 }

@@ -1,0 +1,9 @@
+.user {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.user .avatar {
+  width: 2rem;
+}

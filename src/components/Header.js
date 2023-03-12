@@ -6,6 +6,7 @@ import NavLink from './NavLink';
 import LogInButton from './LogInButton';
 import LogOutButton from './LogOutButton';
 import SignUpButton from './SignUpButton';
+import User from './User';
 
 export default function Header() {
   const user = useContext(UserContext).user;
@@ -40,7 +41,7 @@ export default function Header() {
         <NavLink to="/my-messages">
           <button>My Messages</button>
         </NavLink>
-        {user.name}
+        <User user={user} />
         <LogOutButton />
       </div>
     );

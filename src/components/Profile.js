@@ -26,6 +26,7 @@ function ProfileBase({ handleErrors }) {
   if (!profileUser) return 'Loading...';
   return (
     <div>
+      <img src={profileUser.avatar_url} alt="" />
       <h1>{profileUser.name}</h1>
       {!id && (
         <NavLink to="/edit-profile">

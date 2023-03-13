@@ -1,3 +1,5 @@
+import '../styles/Message.css';
+
 import { useState, useEffect } from 'react';
 import fetcher from '../fetcher';
 import { getUniqueBy } from '../utilities';
@@ -5,6 +7,7 @@ import withErrorHandling from './higher-order/withErrorHandling';
 
 import MessageForm from './MessageForm';
 import NavLink from './NavLink';
+import User from './User';
 
 function MessageBase({
   message: initialMessage,
@@ -95,11 +98,15 @@ function MessageBase({
   }
 
   return (
-    <div>
+    <div className="message">
       {parentId && parentMessage}
       <div>Subject: {subject}</div>
-      <div>From: {sender.name}</div>
-      <div>To: {recipient.name}</div>
+      <div className="from">
+        From: <User user={sender} />
+      </div>
+      <div className="to">
+        To: <User user={recipient} />
+      </div>
       <div>{bodyDisplay}</div>
       <div className="buttons">
         <button onClick={showReply} disabled={replyOn}>

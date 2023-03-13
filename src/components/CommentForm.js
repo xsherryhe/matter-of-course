@@ -2,6 +2,7 @@ import { useContext } from 'react';
 
 import UserContext from './contexts/UserContext';
 import ResourceForm from './ResourceForm';
+import User from './User';
 
 export default function CommentForm({
   action,
@@ -15,7 +16,7 @@ export default function CommentForm({
       attribute: 'creator',
       type: 'immutable',
       labelText: '',
-      defaultValue: () => user.name,
+      defaultValue: () => <User user={user} />,
     },
     {
       attribute: 'body',

@@ -1,0 +1,8 @@
+.course-overview .host, 
+.course-overview .instructors, 
+.course-overview .instructors > span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}

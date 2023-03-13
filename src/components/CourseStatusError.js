@@ -1,9 +1,12 @@
+import '../styles/CourseStatusError.css';
+
 import NavLink from './NavLink';
+import User from './User';
 
 export default function CourseStatusError({ error: { status, host } }) {
   return (
-    <div className="error">
-      This course is {status}. For details, contact the course host,{' '}
+    <div className="error course-status-error">
+      This course is {status}. For details, contact the course host:{' '}
       <NavLink
         to="/new-message"
         state={{
@@ -15,7 +18,7 @@ export default function CourseStatusError({ error: { status, host } }) {
           ],
         }}
       >
-        {host.name}
+        <User user={host} />
       </NavLink>
       .
     </div>

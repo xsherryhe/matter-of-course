@@ -1,10 +1,13 @@
-import { capitalize, list } from '../utilities';
+import '../styles/CourseOverview.css';
+import { capitalize } from '../utilities';
 
 import CourseStatusButton from './CourseStatusButton';
 import LeaveInstructorButton from './LeaveInstructorButton';
 import CourseEnrollButton from './CourseEnrollButton';
 import CourseMessageButton from './CourseMessageButton';
 import CourseInvitedInstructors from './CourseInvitedInstructors';
+import User from './User';
+import List from './List';
 
 export default function CourseOverview({
   course,
@@ -25,7 +28,7 @@ export default function CourseOverview({
   if (editForm) return editForm;
 
   return (
-    <div>
+    <div className="course-overview">
       <CourseEnrollButton course={course} setCourse={setCourse} />
       <CourseMessageButton course={course} />
       {authorized && (
@@ -36,8 +39,17 @@ export default function CourseOverview({
           {deleteButton}
         </div>
       )}
-      <div>Host: {host.name}</div>
-      <div>Instructors: {list(instructors.map(({ name }) => name))}</div>
+      <div className="host">
+        Host: <User user={host} />
+      </div>
+      <div className="instructors">
+        Instructors:{' '}
+        <List
+          items={instructors.map((instructor) => (
+            <User key={instructor.id} user={instructor} />
+          ))}
+        />
+      </div>
       {authorized && (
         <CourseInvitedInstructors invitations={instructionInvitations} />
       )}

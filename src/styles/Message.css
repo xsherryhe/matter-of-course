@@ -1,0 +1,4 @@
+.message .from, .message .to {
+  display: flex;
+  justify-content: center;
+}

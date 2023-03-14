@@ -9,6 +9,7 @@ import DeleteButton from './DeleteButton';
 import MessageContext from './contexts/MessageContext';
 import withPagination from './higher-order/withPagination';
 import withErrorHandling from './higher-order/withErrorHandling';
+import User from './User';
 
 function AssignmentSubmissionsBase({
   submissionsPage,
@@ -94,13 +95,11 @@ function AssignmentSubmissionsBase({
             </thead>
             <tbody>
               {submissions.map(
-                ({
-                  id,
-                  completion_date: completionDate,
-                  student: { name },
-                }) => (
+                ({ id, completion_date: completionDate, student }) => (
                   <tr key={id}>
-                    <td>{name}</td>
+                    <td>
+                      <User user={student} />
+                    </td>
                     <td>{completionDate}</td>
                     <td>
                       <NavLink

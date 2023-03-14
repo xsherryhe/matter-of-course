@@ -1,12 +1,23 @@
-import { list } from '../utilities';
+import List from './List';
+import User from './User';
 
 export default function CourseInvitedInstructors({ invitations }) {
   if (!invitations.length) return null;
 
   return (
-    <div>
+    <div className="invited-instructors">
       Invited Instructors:{' '}
-      {list((invitations || []).map(({ recipient: { username } }) => username))}
+      {
+        <List
+          items={(invitations || []).map(({ recipient }) => (
+            <User
+              key={recipient.id}
+              user={recipient}
+              labelAttribute="username"
+            />
+          ))}
+        />
+      }
     </div>
   );
 }

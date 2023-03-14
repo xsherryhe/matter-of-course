@@ -9,6 +9,7 @@ import NavButton from './NavButton';
 import MessageDeleteButton from './MessageDeleteButton';
 import withPagination from './higher-order/withPagination';
 import withErrorHandling from './higher-order/withErrorHandling';
+import User from './User';
 
 function MessagesBase({
   inboxPage,
@@ -162,8 +163,16 @@ function MessagesBase({
                   tab === 'inbox' ? message.read_status : ''
                 }`}
               >
-                {tab === 'inbox' && <div>From: {message.sender.name}</div>}
-                {tab === 'outbox' && <div>To: {message.recipient.name}</div>}
+                {tab === 'inbox' && (
+                  <div className="from">
+                    From: <User user={message.sender} />
+                  </div>
+                )}
+                {tab === 'outbox' && (
+                  <div className="to">
+                    To: <User user={message.recipient} />
+                  </div>
+                )}
                 <div>{message.subject}</div>
               </NavButton>
               {tab === 'inbox' && (

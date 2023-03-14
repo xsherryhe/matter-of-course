@@ -1,0 +1,10 @@
+.heading-with-user {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.heading-with-user .heading-avatar {
+  width: 3rem;
+}

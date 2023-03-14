@@ -3,6 +3,7 @@ import '../styles/CourseInstructors.css';
 
 import DeleteButton from './DeleteButton';
 import CourseInviteInstructorsForm from './CourseInviteInstructorsForm';
+import User from './User';
 
 export default function CourseInstructors({
   course: { id, instructors: initialInstructors, hosted, authorized },
@@ -27,21 +28,21 @@ export default function CourseInstructors({
     <div className="course-instructors">
       <h2>Instructors</h2>
       <ul>
-        {instructors.map(({ id: instructorId, name }) => {
-          const instructorRemoved = removed.includes(instructorId);
+        {instructors.map((instructor) => {
+          const instructorRemoved = removed.includes(instructor.id);
           return (
-            <li key={instructorId}>
+            <li key={instructor.id}>
               {!instructorRemoved && (
                 <span>
-                  {name}
+                  <User user={instructor} />
                   {hosted && (
                     <DeleteButton
-                      route={`courses/${id}/instructors/${instructorId}`}
+                      route={`courses/${id}/instructors/${instructor.id}`}
                       resource="instructor"
-                      id={instructorId}
+                      id={instructor.id}
                       buttonText="Remove"
                       action="remove"
-                      completeAction={completeRemove(instructorId)}
+                      completeAction={completeRemove(instructor.id)}
                     />
                   )}
                 </span>

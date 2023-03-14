@@ -1,3 +1,9 @@
 .messages .message-item.unread {
   font-weight: 600;
 }
+
+.messages .message-item .from, .messages .message-item .to {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+}

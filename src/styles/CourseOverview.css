@@ -1,6 +1,7 @@
 .course-overview .host, 
 .course-overview .instructors, 
-.course-overview .instructors > span {
+.course-overview .instructors > span,
+.course-overview .invited-instructors {
   display: flex;
   align-items: center;
   justify-content: center;

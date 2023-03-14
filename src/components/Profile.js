@@ -6,6 +6,7 @@ import UserContext from './contexts/UserContext';
 import withErrorHandling from './higher-order/withErrorHandling';
 import NavLink from './NavLink';
 import UserCourses from './UserCourses';
+import HeadingWithUser from './HeadingWithUser';
 
 function ProfileBase({ handleErrors }) {
   const { id } = useParams();
@@ -25,7 +26,7 @@ function ProfileBase({ handleErrors }) {
 
   if (!profileUser) return 'Loading...';
   return (
-    <div>
+    <div className="profile">
       <img src={profileUser.avatar_url} alt="" />
       <h1>{profileUser.name}</h1>
       {!id && (
@@ -36,7 +37,10 @@ function ProfileBase({ handleErrors }) {
       <h2>{profileUser.username}</h2>
       <h3>{profileUser.email}</h3>
       <div>
-        <h2>{profileUser.name}'s Courses</h2>
+        <HeadingWithUser
+          user={profileUser}
+          text={`${profileUser.name}'s Courses`}
+        />
         <UserCourses heading={false} />
       </div>
     </div>

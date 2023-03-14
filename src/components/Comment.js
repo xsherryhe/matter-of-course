@@ -4,6 +4,7 @@ import { capitalize } from '../utilities';
 import NavButton from './NavButton';
 import DeleteButton from './DeleteButton';
 import CommentForm from './CommentForm';
+import User from './User';
 
 export default function Comment({ comment: initialComment }) {
   const [editOn, setEditOn] = useState(false);
@@ -11,13 +12,7 @@ export default function Comment({ comment: initialComment }) {
 
   if (!comment) return;
 
-  const {
-    id,
-    authorized,
-    body,
-    creator_role: creatorRole,
-    creator: { name },
-  } = comment;
+  const { id, authorized, body, creator_role: creatorRole, creator } = comment;
 
   function showEdit() {
     setEditOn(true);
@@ -50,7 +45,7 @@ export default function Comment({ comment: initialComment }) {
   return (
     <div>
       <div>
-        {name}
+        <User user={creator} />
         {creatorRole && <span>{capitalize(creatorRole)}</span>}
       </div>
       {authorized && (

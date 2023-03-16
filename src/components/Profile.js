@@ -6,7 +6,7 @@ import UserContext from './contexts/UserContext';
 import withErrorHandling from './higher-order/withErrorHandling';
 import NavLink from './NavLink';
 import UserCourses from './UserCourses';
-import HeadingWithUser from './HeadingWithUser';
+import TextWithUser from './TextWithUser';
 
 function ProfileBase({ handleErrors }) {
   const { id } = useParams();
@@ -37,10 +37,12 @@ function ProfileBase({ handleErrors }) {
       <h2>{profileUser.username}</h2>
       <h3>{profileUser.email}</h3>
       <div>
-        <HeadingWithUser
-          user={profileUser}
-          text={`${profileUser.name}'s Courses`}
-        />
+        <h2>
+          <TextWithUser
+            user={profileUser}
+            text={`${profileUser.name}'s Courses`}
+          />
+        </h2>
         <UserCourses heading={false} />
       </div>
     </div>

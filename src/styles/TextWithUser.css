@@ -1,10 +1,10 @@
-.heading-with-user {
+.text-with-user {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
 }
 
-.heading-with-user .heading-avatar {
+.text-with-user .text-avatar {
   width: 3rem;
 }

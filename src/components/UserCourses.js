@@ -9,6 +9,7 @@ import CourseItem from './CourseItem';
 import NavButton from './NavButton';
 import withPagination from './higher-order/withPagination';
 import withErrorHandling from './higher-order/withErrorHandling';
+import TextWithUser from './TextWithUser';
 
 function UserCoursesBase({
   heading = true,
@@ -23,7 +24,7 @@ function UserCoursesBase({
   enrolledPagination,
   handleErrors,
 }) {
-  const [name, setName] = useState(null);
+  const [user, setUser] = useState(null);
   const [tab, setTab] = useState(null);
   const [courses, setCourses] = useState(null);
   const { id } = useParams();
@@ -34,7 +35,7 @@ function UserCoursesBase({
         query: `with=all_courses&page=${hostedPage},${instructedPage},${enrolledPage}`,
       });
       if (response.status < 400) {
-        setName(response.data.name);
+        setUser(response.data);
         const responseCourses = response.data.all_courses;
         setCourses(responseCourses);
         updateHostedPage(responseCourses.hosted);
@@ -109,7 +110,11 @@ function UserCoursesBase({
 
   return (
     <div className="user-courses">
-      {heading && <h1>{name}'s Courses</h1>}
+      {heading && (
+        <h1>
+          <TextWithUser user={user} text={`${user.name}'s Courses`} />
+        </h1>
+      )}
       {main}
     </div>
   );

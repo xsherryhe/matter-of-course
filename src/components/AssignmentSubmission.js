@@ -5,7 +5,7 @@ import asResource from './higher-order/asResource';
 import AssignmentSubmissionForm from './AssignmentSubmissionForm';
 import AppendedComments from './AppendedComments';
 import BackLink from './BackLink';
-import HeadingWithUser from './HeadingWithUser';
+import TextWithUser from './TextWithUser';
 
 function AssignmentSubmissionBase({
   resource: submission,
@@ -30,13 +30,15 @@ function AssignmentSubmissionBase({
   else
     main = (
       <main>
-        <HeadingWithUser
-          user={submission.student}
-          text={`${
-            submission.owned ? 'Your' : `${submission.student.name}'s`
-          } completed
+        <h2>
+          <TextWithUser
+            user={submission.student}
+            text={`${
+              submission.owned ? 'Your' : `${submission.student.name}'s`
+            } completed
           assignment:`}
-        />
+          />
+        </h2>
         {submission.authorized && submission.assignment && editButton}
         {submission.owned && deleteButton}
         <div className="completion-date">

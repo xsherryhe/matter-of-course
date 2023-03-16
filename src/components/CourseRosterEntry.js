@@ -6,15 +6,17 @@ import NavLink from './NavLink';
 import DeleteButton from './DeleteButton';
 import withPagination from './higher-order/withPagination';
 import CourseRosterEntryAssignmentSubmissions from './CourseRosterEntryAssignmentSubmissions';
+import User from './User';
 
 function CourseRosterEntryBase({
   courseId,
-  student: { id: studentId, name, username },
+  student,
   rosterPage,
   submissionsPage,
   updateSubmissionsPage,
   submissionsPagination,
 }) {
+  const { id: studentId, name, username } = student;
   const navigate = useNavigate();
   const { state, pathname } = useLocation();
   const submissionsOnId = state?.submissionsOn;
@@ -45,7 +47,9 @@ function CourseRosterEntryBase({
 
   return (
     <tr className="entry">
-      <td>{name}</td>
+      <td>
+        <User user={student} />
+      </td>
       <td>{username}</td>
       <td>
         <NavLink

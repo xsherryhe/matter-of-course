@@ -7,17 +7,11 @@ export default function CourseInvitedInstructors({ invitations }) {
   return (
     <div className="invited-instructors">
       Invited Instructors:{' '}
-      {
-        <List
-          items={(invitations || []).map(({ recipient }) => (
-            <User
-              key={recipient.id}
-              user={recipient}
-              labelAttribute="username"
-            />
-          ))}
-        />
-      }
+      <List
+        items={(invitations || []).map(({ recipient }) => (
+          <User key={recipient.id} user={recipient} labelAttribute="username" />
+        ))}
+      />
     </div>
   );
 }

@@ -2,12 +2,13 @@ import { useState } from 'react';
 import '../styles/Invitation.css';
 import fetcher from '../fetcher';
 import withErrorHandling from './higher-order/withErrorHandling';
+import User from './User';
 
 function InvitationBase({
   invitation: {
     id,
     course: { title },
-    sender: { username },
+    sender,
     response: invitationResponse,
   },
   handleErrors,
@@ -36,8 +37,9 @@ function InvitationBase({
 
   return (
     <div className="invitation">
-      <div className={invitationResponse}>
-        {username} invited you to instruct the course {title}.
+      <div className={`text ${invitationResponse}`}>
+        <User user={sender} labelAttribute="username" /> invited you to instruct
+        the course {title}.
       </div>
       <div className="buttons">
         <button onClick={handleAccept}>Accept</button>

@@ -41,3 +41,9 @@
   display: inline;
   font-size: 1rem;
 }
+
+.course-item > .instructors, .course-item > .instructors > span {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}

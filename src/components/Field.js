@@ -18,6 +18,8 @@ export default function Field({
   required,
   completed = false,
   match,
+  accept,
+  fileTypes,
   inputRef: propsInputRef,
 }) {
   const attributeName =
@@ -54,10 +56,19 @@ export default function Field({
         inputRef.current.setCustomValidity(
           `${attributeName} must match ${match.name}.`
         );
+      if (fileTypes) {
+        const fileTypesReg = new RegExp(`\\.(${fileTypes.join('|')})$`, 'i');
+        if (!fileTypesReg.test(inputRef.current?.value))
+          inputRef.current.setCustomValidity(
+            `File type is not allowed. File type must be one of the following: ${fileTypes
+              .map((type) => type.toUpperCase())
+              .join(', ')}`
+          );
+      }
       setError(inputRef.current?.validationMessage);
     }
     validate();
-  }, [toValidate, inputRef, match, attributeName]);
+  }, [toValidate, inputRef, match, fileTypes, attributeName]);
 
   useEffect(() => {
     setFieldValue((fieldValue) => (value === false ? fieldValue : value));
@@ -88,6 +99,7 @@ export default function Field({
       name={name}
       id={id}
       required={required}
+      accept={accept}
       ref={inputRef}
     />
   );

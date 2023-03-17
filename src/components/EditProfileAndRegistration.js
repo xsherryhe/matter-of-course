@@ -9,6 +9,7 @@ import UserContext from './contexts/UserContext';
 import withFormValidation from './higher-order/withFormValidation';
 import BackLink from './BackLink';
 import CancelAccountFlowButton from './CancelAccountFlowButton';
+import AvatarField from './AvatarField';
 
 function EditProfileAndRegistrationBase({
   validate,
@@ -49,6 +50,7 @@ function EditProfileAndRegistrationBase({
         {formError && <div className="error">{formError}</div>}
         <BackLink back={{ route: '/me', location: 'My Profile' }} />
         <h1>Edit Profile and Registration</h1>
+        <AvatarField user={user} errors={errors} toValidate={toValidate} />
         <Field
           prefix="user"
           attributes={['profile_attributes', 'first_name']}

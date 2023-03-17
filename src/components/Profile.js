@@ -1,5 +1,6 @@
 import { useContext, useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import '../styles/Profile.css';
 import fetcher from '../fetcher';
 
 import UserContext from './contexts/UserContext';
@@ -27,7 +28,7 @@ function ProfileBase({ handleErrors }) {
   if (!profileUser) return 'Loading...';
   return (
     <div className="profile">
-      <img src={profileUser.avatar_url} alt="" />
+      <img className="avatar" src={profileUser.avatar_url} alt="" />
       <h1>{profileUser.name}</h1>
       {!id && (
         <NavLink to="/edit-profile">

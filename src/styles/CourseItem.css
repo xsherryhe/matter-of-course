@@ -11,29 +11,34 @@
 
 .course-item {
   background-color: lightblue;
-  padding: 1rem;
+  padding: 0.5rem 1rem;
   display: grid;
-  grid-template: repeat(3, max-content) / repeat(2, max-content);
+  grid-template: repeat(3, max-content) / 5rem 1fr max-content;
   justify-content: space-between;
+  column-gap: 0.5rem;
+}
+
+.course-item > .avatar {
+  grid-column: 1;
+  grid-row: 1 / span 3;
+  justify-self: stretch;
+  align-self: center;
 }
 
 .course-item > .title {
   margin: 0;
-  grid-row: 1 / span 2;
+  grid-row: 1 / span 3;
+  grid-column: 2;
+  justify-self: start;
+  align-self: center;
 }
 
 .course-item > .description {
-  grid-row: 3;
   padding: 0.5rem 0;
 }
 
-.course-item > .title, .course-item > .description {
-  grid-column: 1;
-  justify-self: start;
-}
-
-.course-item > :not(.title):not(.description) {
-  grid-column: 2;
+.course-item > :not(.avatar):not(.title) {
+  grid-column: 3;
   justify-self: end;
 }
 

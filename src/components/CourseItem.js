@@ -5,10 +5,11 @@ import NavLink from './NavLink';
 import User from './User';
 import List from './List';
 
-export default function CourseItem({ course, includeDescription = false }) {
+export default function CourseItem({ course, includeDescription = true }) {
   return (
     <NavLink className="course-item-link" to={`/course/${course.id}`}>
       <div className="course-item">
+        <img className="avatar" src={course.avatar_url} alt="" />
         <h2 className="title">{course.title}</h2>
         {includeDescription && (
           <div className="description">{course.description}</div>

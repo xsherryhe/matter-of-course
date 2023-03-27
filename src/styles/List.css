@@ -1,0 +1,12 @@
+.list {
+  display: flex;
+  align-items: center;
+}
+
+.list-and {
+  padding: 0 0.5rem;
+}
+
+.list-comma {
+  padding-right: 0.5rem;
+}

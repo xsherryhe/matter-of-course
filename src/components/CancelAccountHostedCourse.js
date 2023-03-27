@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { getUniqueBy } from '../utilities';
+import CourseAvatarAndTitle from './CourseAvatarAndTitle';
 
 import ResourceForm from './ResourceForm';
 
@@ -39,7 +40,9 @@ export default function CancelAccountHostedCourse({
   if (resolved) return <div>Host changed!</div>;
   return (
     <div>
-      <h3>{course.title}</h3>
+      <h3>
+        <CourseAvatarAndTitle course={course} />
+      </h3>
       <ResourceForm
         heading={false}
         flash={false}

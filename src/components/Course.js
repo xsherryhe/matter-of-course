@@ -9,6 +9,7 @@ import asResource from './higher-order/asResource';
 import NavButton from './NavButton';
 import CourseStatusNotice from './CourseStatusNotice';
 import CourseForm from './CourseForm';
+import CourseAvatarAndTitle from './CourseAvatarAndTitle';
 import CourseInstructors from './CourseInstructors';
 import CourseLessons from './CourseLessons';
 import CourseRoster from './CourseRoster';
@@ -236,7 +237,9 @@ function CourseBase({
   return (
     <div>
       {<CourseStatusNotice status={course.status} />}
-      <h1>{course.title}</h1>
+      <h1>
+        <CourseAvatarAndTitle course={course} />
+      </h1>
       {main}
     </div>
   );

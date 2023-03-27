@@ -6,6 +6,7 @@ import withErrorHandling from './higher-order/withErrorHandling';
 import CancelAccountButton from './CancelAccountButton';
 import CancelAccountHostedCourse from './CancelAccountHostedCourse';
 import CourseInviteInstructorsForm from './CourseInviteInstructorsForm';
+import CourseAvatarAndTitle from './CourseAvatarAndTitle';
 import BackLink from './BackLink';
 
 function CancelAccountBase({ handleErrors }) {
@@ -72,10 +73,15 @@ function CancelAccountBase({ handleErrors }) {
               You will have to wait for them to accept your invite before you
               can delete your account.
             </div>
-            {conflictingCourses.instructed.map(({ id, title }) => (
+            {conflictingCourses.instructed.map((course) => (
               <div>
-                <h3>{title}</h3>
-                <CourseInviteInstructorsForm key={id} courseId={id} />
+                <h3>
+                  <CourseAvatarAndTitle course={course} />
+                </h3>
+                <CourseInviteInstructorsForm
+                  key={course.id}
+                  courseId={course.id}
+                />
               </div>
             ))}
             <BackLink back={{ route: '/me', location: 'My Profile' }} />

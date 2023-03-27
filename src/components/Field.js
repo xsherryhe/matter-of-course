@@ -56,9 +56,9 @@ export default function Field({
         inputRef.current.setCustomValidity(
           `${attributeName} must match ${match.name}.`
         );
-      if (fileTypes) {
+      if (fileTypes && inputRef.current?.value) {
         const fileTypesReg = new RegExp(`\\.(${fileTypes.join('|')})$`, 'i');
-        if (!fileTypesReg.test(inputRef.current?.value))
+        if (!fileTypesReg.test(inputRef.current.value))
           inputRef.current.setCustomValidity(
             `File type is not allowed. File type must be one of the following: ${fileTypes
               .map((type) => type.toUpperCase())

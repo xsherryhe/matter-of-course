@@ -105,7 +105,9 @@ function ResourceFormBase({
             return (
               <Component
                 key={attribute}
+                defaultValues={defaultValues}
                 prefix={resource}
+                attributes={[attribute]}
                 errors={errors}
                 toValidate={toValidate}
                 required={required}

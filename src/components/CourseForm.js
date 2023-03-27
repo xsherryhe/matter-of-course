@@ -1,5 +1,6 @@
 import { getUniqueBy } from '../utilities';
 import ResourceForm from './ResourceForm';
+import AvatarField from './AvatarField';
 
 export const instructorLoginsField = {
   attribute: 'instructor_logins',
@@ -21,6 +22,7 @@ export const instructorLoginsField = {
 
 export default function CourseForm({ action, defaultValues, ...props }) {
   const fields = [
+    { attribute: 'avatar', Component: AvatarField },
     { attribute: 'title', required: true },
     { attribute: 'description', type: 'textarea', required: true },
     instructorLoginsField,

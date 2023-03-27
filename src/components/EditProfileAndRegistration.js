@@ -50,7 +50,13 @@ function EditProfileAndRegistrationBase({
         {formError && <div className="error">{formError}</div>}
         <BackLink back={{ route: '/me', location: 'My Profile' }} />
         <h1>Edit Profile and Registration</h1>
-        <AvatarField user={user} errors={errors} toValidate={toValidate} />
+        <AvatarField
+          defaultValues={user}
+          prefix="user"
+          attributes={['profile_attributes', 'avatar']}
+          errors={errors}
+          toValidate={toValidate}
+        />
         <Field
           prefix="user"
           attributes={['profile_attributes', 'first_name']}

@@ -32,7 +32,7 @@ export default function AvatarField({
 
   return (
     <div className="avatar-field">
-      <img className="preview" src={previewSrc} alt="" />
+      {previewSrc && <img className="preview" src={previewSrc} alt="" />}
       <Field
         prefix={prefix}
         attributes={attributes}

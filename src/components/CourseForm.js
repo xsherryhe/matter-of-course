@@ -1,4 +1,6 @@
 import { getUniqueBy } from '../utilities';
+import server from '../server';
+
 import ResourceForm from './ResourceForm';
 import AvatarField from './AvatarField';
 
@@ -20,7 +22,11 @@ export const instructorLoginsField = {
     ),
 };
 
-export default function CourseForm({ action, defaultValues, ...props }) {
+export default function CourseForm({
+  action,
+  defaultValues = { avatar_url: `${server}/default-course-avatar.svg` },
+  ...props
+}) {
   const fields = [
     { attribute: 'avatar', Component: AvatarField },
     { attribute: 'title', required: true },

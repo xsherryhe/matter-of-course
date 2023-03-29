@@ -4,6 +4,7 @@ import fetcher from '../fetcher';
 
 import withErrorHandling from './higher-order/withErrorHandling';
 import ResourceForm from './ResourceForm';
+import VideosField from './VideosField';
 
 export const assignmentsFields = {
   nested: {
@@ -99,6 +100,10 @@ function LessonFormBase({
             attribute: 'title',
             attributeText: 'Section Title',
             required: true,
+          },
+          {
+            attribute: 'video',
+            Component: VideosField,
           },
           {
             attribute: 'body',

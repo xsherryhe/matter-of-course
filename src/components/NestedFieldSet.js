@@ -106,51 +106,87 @@ function NestedFieldSetBase({
               attributeText,
               required,
               handleFieldErrors,
-            }) => (
-              <Field
-                key={attribute}
-                prefix={parentResource}
-                attributes={
-                  multiple
-                    ? [`${resource}_attributes`, String(i), attribute]
-                    : [`${resource}_attributes`, attribute]
-                }
-                errorAttributes={
-                  multiple && [
-                    `${resource}_errors`,
-                    String(instance.id || instance.tempId),
-                    attribute,
-                  ]
-                }
-                type={type}
-                onChange={
-                  order && handleReOrder(instance.id || instance.tempId)
-                }
-                labelText={labelText}
-                attributeText={attributeText}
-                value={
-                  value ? value(instance, errors) : order && instance.order
-                }
-                defaultValue={
-                  defaultValue
-                    ? defaultValue(instance, errors)
-                    : instance[attribute]
-                }
-                valueOptions={
-                  valueOptions ||
-                  (order &&
-                    [...new Array(instances.length)].map((_, i) => ({
-                      name: i + 1,
-                      value: i + 1,
-                    })))
-                }
-                errors={errors}
-                handleErrors={handleFieldErrors}
-                toValidate={toValidate}
-                required={required}
-                completed={completed}
-              />
-            )
+              Component,
+            }) => {
+              if (Component)
+                return (
+                  <Component
+                    key={attribute}
+                    defaultValues={instance}
+                    prefix={parentResource}
+                    attributes={
+                      multiple
+                        ? [`${resource}_attributes`, String(i), attribute]
+                        : [`${resource}_attributes`, attribute]
+                    }
+                    errorAttributes={
+                      multiple && [
+                        `${resource}_errors`,
+                        String(instance.id || instance.tempId),
+                        attribute,
+                      ]
+                    }
+                    attributeText={attributeText}
+                    labelText={labelText}
+                    value={value && value(instance, errors)}
+                    defaultValue={
+                      defaultValue
+                        ? defaultValue(instance, errors)
+                        : instance[attribute]
+                    }
+                    errors={errors}
+                    handleErrors={handleFieldErrors}
+                    toValidate={toValidate}
+                    required={required}
+                    completed={completed}
+                  />
+                );
+              return (
+                <Field
+                  key={attribute}
+                  prefix={parentResource}
+                  attributes={
+                    multiple
+                      ? [`${resource}_attributes`, String(i), attribute]
+                      : [`${resource}_attributes`, attribute]
+                  }
+                  errorAttributes={
+                    multiple && [
+                      `${resource}_errors`,
+                      String(instance.id || instance.tempId),
+                      attribute,
+                    ]
+                  }
+                  type={type}
+                  onChange={
+                    order && handleReOrder(instance.id || instance.tempId)
+                  }
+                  labelText={labelText}
+                  attributeText={attributeText}
+                  value={
+                    value ? value(instance, errors) : order && instance.order
+                  }
+                  defaultValue={
+                    defaultValue
+                      ? defaultValue(instance, errors)
+                      : instance[attribute]
+                  }
+                  valueOptions={
+                    valueOptions ||
+                    (order &&
+                      [...new Array(instances.length)].map((_, i) => ({
+                        name: i + 1,
+                        value: i + 1,
+                      })))
+                  }
+                  errors={errors}
+                  handleErrors={handleFieldErrors}
+                  toValidate={toValidate}
+                  required={required}
+                  completed={completed}
+                />
+              );
+            }
           )}
         </div>
       ))}

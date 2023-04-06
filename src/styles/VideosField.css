@@ -1,0 +1,32 @@
+.videos-field .previews {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.videos-field .preview {
+  width: 12rem;
+  height: 12rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid black;
+  position: relative;
+}
+
+.videos-field .preview img {
+  width: 12rem;
+  height: 12rem;
+  object-fit: cover;
+}
+
+.videos-field .preview .loading {
+  width: 2rem;
+  height: 2rem;
+}
+
+.videos-field .preview .play {
+  position: absolute;
+  top: 6rem;
+  left: 6rem;
+}
